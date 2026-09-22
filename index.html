@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0E9594">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Speak & Learn">
+<title>Speak & Learn</title>
+<meta name="description" content="Interactive English vocabulary and collocations glossary with click-to-hear pronunciation and Persian meanings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F6F4; --surface:#FFFFFF; --surface-alt:#ECF1EF;
+    --ink:#16233A; --ink-soft:#4B5768;
+    --accent:#0E9594; --accent-ink:#FFFFFF;
+    --accent-2:#C98A2E; --border:#DCE3E0;
+    --shadow: 0 1px 2px rgba(22,35,58,.06), 0 6px 20px rgba(22,35,58,.06);
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F1720; --surface:#17212C; --surface-alt:#1C2833;
+      --ink:#EDF2F4; --ink-soft:#A9B6C2;
+      --accent:#33D6CF; --accent-ink:#06231F;
+      --accent-2:#E7B75B; --border:#2A3644;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F1720; --surface:#17212C; --surface-alt:#1C2833;
+    --ink:#EDF2F4; --ink-soft:#A9B6C2;
+    --accent:#33D6CF; --accent-ink:#06231F;
+    --accent-2:#E7B75B; --border:#2A3644;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Inter",-apple-system,sans-serif;
+    padding-inline:16px;
+  }
+  .wrap{ max-width:900px; margin:0 auto; }
+  .fa{ font-family:"Vazirmatn","Inter",sans-serif; direction:rtl; unicode-bidi:isolate; }
+
+  /* ---------- Header ---------- */
+  header.top{
+    position:sticky; top:env(safe-area-inset-top,0px);
+    background:var(--bg);
+    padding-block:14px 10px;
+    z-index:20;
+    border-bottom:1px solid var(--border);
+  }
+  .title-row{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  h1{
+    font-family:"Fraunces",serif; font-weight:600; font-size:clamp(22px,4.5vw,30px);
+    margin:0; letter-spacing:-0.01em;
+  }
+  .sub{ color:var(--ink-soft); font-size:13.5px; margin:4px 0 0 0; }
+  .controls{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+  .search{
+    flex:1 1 220px; min-width:0;
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:9px 12px; font-size:14px; color:var(--ink);
+    font-family:inherit;
+  }
+  .search:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  .seg{ display:flex; background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .seg button{
+    border:none; background:transparent; color:var(--ink-soft); font:inherit; font-weight:600;
+    font-size:13px; padding:9px 14px; cursor:pointer;
+  }
+  .seg button.active{ background:var(--accent); color:var(--accent-ink); }
+  .accent-toggle{
+    border:1px solid var(--border); background:var(--surface); color:var(--ink-soft);
+    border-radius:10px; padding:9px 12px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+  .accent-toggle:hover{ border-color:var(--accent); color:var(--accent); }
+
+  /* ---------- Category chip nav ---------- */
+  .chipnav{
+    display:flex; gap:6px; overflow-x:auto; padding:10px 0 2px 0; margin-bottom:2px;
+    scrollbar-width:thin;
+  }
+  .chipnav::-webkit-scrollbar{ height:5px; }
+  .chip{
+    flex:none; font-size:12.5px; font-weight:600; color:var(--ink-soft);
+    background:var(--surface); border:1px solid var(--border); border-radius:999px;
+    padding:6px 12px; cursor:pointer; white-space:nowrap; font-family:inherit;
+  }
+  .chip:hover{ border-color:var(--accent); color:var(--accent); }
+
+  main{ padding-bottom:60px; }
+
+  /* ---------- Section band ---------- */
+  .band{
+    display:flex; justify-content:space-between; align-items:baseline; gap:10px;
+    background:var(--ink); color:var(--bg);
+    border-radius:10px; padding:10px 14px; margin:26px 0 12px 0;
+    scroll-margin-top:150px;
+  }
+  :root[data-theme="dark"] .band, @media (prefers-color-scheme:dark){ }
+  .band .en{ font-family:"Fraunces",serif; font-weight:600; font-size:16px; }
+  .band .fa{ color:var(--accent-2); font-size:13.5px; }
+
+  /* ---------- Vocab cards ---------- */
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px;
+  }
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:12px 14px; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .card.hide{ display:none; }
+  .term-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .term{ font-weight:700; font-size:15px; color:var(--ink); }
+  .meaning{ color:var(--ink-soft); font-size:14px; }
+  .example{ font-style:italic; color:var(--ink-soft); font-size:13px; line-height:1.45; display:flex; gap:6px; align-items:flex-start; }
+  .example .ex-text{ flex:1; }
+
+  .spk{
+    flex:none; width:30px; height:30px; border-radius:999px; border:1px solid var(--border);
+    background:var(--surface-alt); color:var(--accent); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .12s ease;
+  }
+  .spk:hover{ border-color:var(--accent); }
+  .spk:active{ transform:scale(0.92); }
+  .spk.small{ width:22px; height:22px; }
+  .spk.playing{ background:var(--accent); color:var(--accent-ink); }
+  .spk svg{ width:14px; height:14px; }
+  .spk.small svg{ width:11px; height:11px; }
+
+  /* ---------- Phrase list (Part 2) ---------- */
+  .phrase-box{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:10px 14px; margin-bottom:10px; box-shadow:var(--shadow);
+  }
+  .phrase-box.hide{ display:none; }
+  .phrase-row{
+    display:flex; align-items:flex-start; gap:8px; padding:7px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .phrase-row:last-child{ border-bottom:none; }
+  .phrase-row .txt{ flex:1; font-size:13.6px; color:var(--ink); line-height:1.45; }
+
+  .tabpanel{ display:none; }
+  .tabpanel.active{ display:block; }
+
+  .empty{ color:var(--ink-soft); font-size:14px; padding:30px 4px; text-align:center; }
+
+  /* ---------- Flashcards ---------- */
+  #chipnav.mode-cards .chip.active{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+
+  .cards-toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    margin:16px 0 4px; flex-wrap:wrap; font-size:13px; color:var(--ink-soft);
+  }
+  .unlearned-toggle{ display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none; }
+  .unlearned-toggle input{ accent-color:var(--accent); width:15px; height:15px; }
+  .cards-stats{ font-variant-numeric:tabular-nums; }
+
+  .stage{ perspective:1400px; display:flex; justify-content:center; padding:14px 0 8px; }
+  .flashcard{
+    width:100%; max-width:420px; min-height:250px; position:relative;
+    cursor:pointer; outline:none;
+  }
+  .flashcard .face{
+    position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    border-radius:18px; border:1px solid var(--border); background:var(--surface);
+    box-shadow:var(--shadow); display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:10px; padding:26px 22px; text-align:center;
+    transition:transform .5s cubic-bezier(.4,.2,.2,1); transform:rotateY(0deg);
+  }
+  .flashcard .back{ transform:rotateY(180deg); }
+  .flashcard.flipped .front{ transform:rotateY(-180deg); }
+  .flashcard.flipped .back{ transform:rotateY(0deg); }
+  .flashcard.is-known .face{ border-color:var(--accent); }
+  .fc-cat{ font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; }
+  .fc-term{ font-family:"Fraunces",serif; font-weight:600; font-size:clamp(20px,5vw,28px); }
+  .fc-hint{ font-size:12px; color:var(--ink-soft); opacity:.75; position:absolute; bottom:14px; }
+  .fc-meaning{ font-size:19px; font-weight:600; }
+  .fc-example{
+    font-style:italic; color:var(--ink-soft); font-size:13.5px; line-height:1.5;
+    display:flex; align-items:flex-start; gap:8px;
+  }
+  .spk.big{ position:absolute; top:14px; right:14px; width:36px; height:36px; }
+  .spk.big svg{ width:16px; height:16px; }
+
+  .cards-progress{
+    text-align:center; font-size:12.5px; color:var(--ink-soft); margin-top:10px;
+    font-variant-numeric:tabular-nums;
+  }
+  .cards-controls{ display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .cbtn{
+    border:1px solid var(--border); background:var(--surface); color:var(--ink);
+    font:inherit; font-weight:600; font-size:13px; padding:9px 16px; border-radius:999px; cursor:pointer;
+  }
+  .cbtn.ghost{ padding:9px 14px; color:var(--ink-soft); }
+  .cbtn.ghost:hover{ border-color:var(--accent); color:var(--accent); }
+  .cbtn.learning{ border-color:var(--accent-2); color:var(--accent-2); }
+  .cbtn.learning:hover{ background:var(--accent-2); color:var(--accent-ink); }
+  .cbtn.known{ border-color:var(--accent); color:var(--accent); }
+  .cbtn.known:hover{ background:var(--accent); color:var(--accent-ink); }
+  .cards-footer-row{ display:flex; justify-content:center; gap:18px; margin-top:12px; }
+  .linklike{ border:none; background:none; color:var(--ink-soft); font:inherit; font-size:12.5px; text-decoration:underline; cursor:pointer; padding:4px; }
+  .linklike:hover{ color:var(--accent); }
+
+  footer{
+    text-align:center; color:var(--ink-soft); font-size:12px; padding:18px 0 30px 0;
+  }
+  a.credit{ color:var(--accent); text-decoration:none; }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <div class="title-row">
+      <div>
+        <h1>Speak &amp; Learn</h1>
+        <p class="sub">Vocabulary &amp; collocations from your 12 sessions — click <span style="color:var(--accent)">▶</span> to hear it spoken</p>
+      </div>
+    </div>
+    <div class="controls">
+      <input class="search" id="search" type="text" placeholder="Search a word, meaning, or phrase… / جستجو…" />
+      <div class="seg" id="tabSeg">
+        <button data-tab="vocab" class="active">Vocabulary</button>
+        <button data-tab="phrases">Conversation Toolkit</button>
+        <button data-tab="cards">Flashcards</button>
+      </div>
+      <button class="accent-toggle" id="accentToggle" title="Toggle pronunciation accent">🔊 US English</button>
+    </div>
+    <div class="chipnav" id="chipnav"></div>
+  </header>
+
+  <main>
+    <div class="tabpanel active" id="panel-vocab"></div>
+    <div class="tabpanel" id="panel-phrases"></div>
+    <div class="tabpanel" id="panel-cards">
+      <div class="cards-toolbar">
+        <label class="unlearned-toggle">
+          <input type="checkbox" id="unlearnedOnly" />
+          <span>Unlearned only / فقط کلمات یادنگرفته</span>
+        </label>
+        <span class="cards-stats" id="cardsStats"></span>
+      </div>
+
+      <div class="stage" id="cardStage">
+        <div class="flashcard" id="flashcard">
+          <div class="face front">
+            <button class="spk big" id="cardSpkFront" type="button" aria-label="Play pronunciation"></button>
+            <div class="fc-cat" id="fcCatFront"></div>
+            <div class="fc-term" id="fcTerm"></div>
+            <div class="fc-hint">Tap to flip / لمس کن</div>
+          </div>
+          <div class="face back">
+            <div class="fc-meaning fa" id="fcMeaning"></div>
+            <div class="fc-example">
+              <span id="fcExampleText"></span>
+              <button class="spk small" id="cardSpkBack" type="button" aria-label="Play example"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cards-progress" id="cardsProgress"></div>
+
+      <div class="cards-controls">
+        <button class="cbtn ghost" id="prevCard" aria-label="Previous card">◀ Prev</button>
+        <button class="cbtn learning" id="markLearning">Still learning</button>
+        <button class="cbtn known" id="markKnown">Got it ✓</button>
+        <button class="cbtn ghost" id="nextCard" aria-label="Next card">Next ▶</button>
+      </div>
+      <div class="cards-footer-row">
+        <button class="linklike" id="shuffleDeck">🔀 Shuffle deck</button>
+        <button class="linklike" id="resetProgress">Reset progress</button>
+      </div>
+
+      <div class="empty" id="cardsEmpty" style="display:none;"></div>
+    </div>
+    <div class="empty" id="emptyMsg" style="display:none;">No matches found. / موردی پیدا نشد.</div>
+  </main>
+
+  <footer>
+    Tap the speaker icon on any word, sentence or phrase to hear it. Uses your browser's built-in voice — works offline, no audio files.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ============================================================
+  // DATA
+  // ============================================================
+  var VOCAB = [
+    ["1. Persuasion & Argumentation", "متقاعدسازی و استدلال", [
+      ["persuasive", "متقاعدکننده، قانع‌کننده", "Her speech was so persuasive that even the skeptics changed their minds."],
+      ["compelling", "بسیار قانع‌کننده، تأثیرگذار", "He gave a compelling argument for reducing working hours."],
+      ["flawed", "دارای ایراد یا نقص منطقی", "The plan looked good on paper, but the logic behind it was flawed."],
+      ["valid", "معتبر، منطقاً درست", "That's a valid point — we hadn't considered the cost at all."],
+      ["credible", "قابل‌اعتماد، باورپذیر", "You need a credible source before you can substantiate that claim."],
+      ["substantiated", "مستند، اثبات‌شده با دلیل", "The claim wasn't substantiated by any real evidence."],
+      ["plausible", "قابل‌قبول، محتمل", "It's a plausible explanation, but probably not the only one."],
+      ["counterargument", "استدلال مخالف، پاد-استدلال", "Before giving your counterargument, acknowledge the original point first."],
+      ["premise", "مقدمه یا فرض پایه‌ی یک استدلال", "The whole argument rests on a premise that may not even be true."]
+    ]],
+    ["2. Society & Social Structures", "جامعه و ساختارهای اجتماعی", [
+      ["social cohesion", "انسجام اجتماعی", "Diverse neighborhoods can either strengthen or weaken social cohesion."],
+      ["social inequality", "نابرابری اجتماعی", "Social inequality has widened significantly over the past decade."],
+      ["social mobility", "تحرک اجتماعی (جابه‌جایی طبقاتی)", "Free education is often seen as a key driver of social mobility."],
+      ["social welfare", "رفاه اجتماعی", "The government increased spending on social welfare programs."],
+      ["public interest", "منافع عمومی", "Journalists argued that publishing the report was in the public interest."],
+      ["collective responsibility", "مسئولیت جمعی", "Tackling climate change requires a sense of collective responsibility."],
+      ["individual autonomy", "استقلال فردی", "The law tries to balance individual autonomy with public safety."],
+      ["social norms", "هنجارهای اجتماعی", "Social norms around remote work have changed a lot since the pandemic."],
+      ["marginalized groups", "گروه‌های به‌حاشیه‌رانده‌شده", "The policy aims to give a voice to marginalized groups."],
+      ["discrimination", "تبعیض", "The company was fined for discrimination in its hiring practices."]
+    ]],
+    ["3. Freedom & Rights", "آزادی و حقوق", [
+      ["civil liberties", "آزادی‌های مدنی", "Civil liberties can come under pressure during a national crisis."],
+      ["freedom of expression", "آزادی بیان", "Freedom of expression doesn't mean freedom from criticism."],
+      ["personal autonomy", "استقلال شخصی", "Many people value personal autonomy over financial security."],
+      ["privacy rights", "حق حریم خصوصی", "New technologies keep raising difficult questions about privacy rights."],
+      ["individual rights", "حقوق فردی", "The court ruled in favor of individual rights over state interests."],
+      ["collective interests", "منافع جمعی", "Sometimes individual freedom has to be weighed against collective interests."],
+      ["government intervention", "مداخله‌ی دولت", "Some economists argue that too much government intervention hurts growth."],
+      ["state regulation", "مقررات دولتی", "The industry has resisted stricter state regulation for years."],
+      ["restriction", "محدودیت", "The new restriction on travel caused widespread frustration."],
+      ["infringement of rights", "نقض حقوق", "Critics called the surveillance program an infringement of rights."]
+    ]],
+    ["4. Problems & Consequences", "مشکلات و پیامدها", [
+      ["unintended consequences", "پیامدهای ناخواسته", "Well-meaning policies can still have unintended consequences."],
+      ["long-term repercussions", "عواقب بلندمدت", "Ignoring the warning could have long-term repercussions."],
+      ["economic downturn", "رکود اقتصادی", "Many small businesses struggled during the economic downturn."],
+      ["social unrest", "ناآرامی اجتماعی", "The price increases triggered widespread social unrest."],
+      ["disparity", "نابرابری، تفاوت فاحش", "There's a huge disparity between rural and urban healthcare."],
+      ["vulnerability", "آسیب‌پذیری", "The report highlighted the vulnerability of elderly residents during heatwaves."],
+      ["polarization", "دوقطبی‌شدن (شکاف در جامعه)", "Social media has been blamed for growing political polarization."],
+      ["backlash", "واکنش منفی شدید", "The announcement provoked an immediate public backlash."],
+      ["trade-off", "مصالحه (گرفتن یک چیز به قیمت از دست‌دادن چیز دیگر)", "Every policy decision involves some kind of trade-off."],
+      ["burden", "بار، مسئولیت سنگین", "The new tax placed an extra burden on small businesses."]
+    ]],
+    ["5. Government & Policy", "دولت و سیاست‌گذاری", [
+      ["public expenditure", "هزینه‌ی عمومی (دولتی)", "Public expenditure on healthcare rose again this year."],
+      ["fiscal policy", "سیاست مالی", "The government adjusted its fiscal policy to control inflation."],
+      ["tax incentives", "مشوق‌های مالیاتی", "Tax incentives were introduced to encourage green investment."],
+      ["public funding", "بودجه‌ی دولتی", "The project relies heavily on public funding."],
+      ["welfare provision", "خدمات رفاهی", "Welfare provision varies significantly between countries."],
+      ["regulatory framework", "چارچوب قانونی/نظارتی", "A clear regulatory framework is essential for new technologies."],
+      ["policy measure", "اقدام سیاستی", "The tax cut was just one policy measure among several."],
+      ["legislative reform", "اصلاح قوانین", "Legislative reform is needed to close this loophole."],
+      ["resource allocation", "تخصیص منابع", "Fair resource allocation is one of the government's biggest challenges."],
+      ["sustainable policy", "سیاست پایدار", "We need a sustainable policy, not just a quick fix."]
+    ]],
+    ["6. Compromise & Decision-Making", "مصالحه و تصمیم‌گیری", [
+      ["compromise", "مصالحه، توافق دوطرفه", "After hours of debate, they finally reached a compromise."],
+      ["consensus", "اجماع، توافق جمعی", "It took a long meeting, but the team eventually reached consensus."],
+      ["concession", "امتیازدادن، عقب‌نشینی در مذاکره", "Each side had to make a concession before the deal was signed."],
+      ["middle ground", "راه‌حل میانه، نقطه‌ی مشترک", "There has to be some middle ground between the two proposals."],
+      ["priority", "اولویت", "Reducing emissions should be our top priority."],
+      ["feasibility", "امکان‌پذیری، عملی‌بودن", "We need to study the feasibility of the project before investing."],
+      ["viability", "قابلیت اجرا و دوام", "Investors questioned the long-term viability of the business model."],
+      ["rationale", "دلیل منطقی، مبنای استدلال", "Can you explain the rationale behind this decision?"],
+      ["constraint", "محدودیت، قید", "Budget constraints forced them to cancel the project."],
+      ["criterion", "معیار", "Cost shouldn't be the only criterion for choosing a supplier."],
+      ["cost-benefit analysis", "تحلیل هزینه-فایده", "A proper cost-benefit analysis showed the project wasn't worth it."],
+      ["competing interests", "منافع متضاد", "The negotiation involved balancing several competing interests."]
+    ]],
+    ["7. Human Behavior & Psychology", "رفتار انسانی و روان‌شناسی", [
+      ["motivation", "انگیزه", "Understanding someone's motivation can help explain their behavior."],
+      ["intention", "قصد، نیت", "I don't think he meant any harm — I trust his intentions."],
+      ["impulse", "انگیزه‌ی آنی، تکانه", "She resisted the impulse to reply immediately."],
+      ["insecurity", "عدم اعتماد به نفس، ناامنی درونی", "His constant need for approval comes from deep insecurity."],
+      ["self-esteem", "عزت‌نفس", "Constant criticism can seriously damage a child's self-esteem."],
+      ["resentment", "کینه، دلخوری پایدار", "Years of being overlooked at work built up into quiet resentment."],
+      ["frustration", "ناکامی، سرخوردگی", "His frustration grew as the meeting dragged on with no decision."],
+      ["ambition", "جاه‌طلبی، بلندپروازی", "Her ambition pushed her to apply for the promotion."],
+      ["reluctance", "بی‌میلی، تمایل‌نداشتن", "He agreed, but with obvious reluctance."],
+      ["inclination", "تمایل، گرایش", "She has always had an inclination toward risk-taking."],
+      ["vulnerability", "آسیب‌پذیری (احساسی)", "Talking about failure openly requires a certain vulnerability."],
+      ["self-awareness", "خودآگاهی", "Good leaders usually have a strong sense of self-awareness."]
+    ]],
+    ["8. Psychological Collocations", "ترکیب‌های رایج روان‌شناسی", [
+      ["underlying motivation", "انگیزه‌ی پنهان/زیربنایی", "It's worth asking what the underlying motivation for the decision really was."],
+      ["underlying cause", "علت اصلی/زیربنایی", "The doctor tried to identify the underlying cause of the symptoms."],
+      ["hidden agenda", "هدف پنهان، نقشه‌ی پنهانی", "Some suspected he had a hidden agenda behind the proposal."],
+      ["unconscious bias", "تعصب ناخودآگاه", "The training was designed to reduce unconscious bias in hiring."],
+      ["deep-rooted insecurity", "ناامنی ریشه‌دار", "His arrogance seemed to mask a deep-rooted insecurity."],
+      ["emotional response", "واکنش احساسی", "The advertisement was designed to trigger an emotional response."],
+      ["rational decision", "تصمیم منطقی", "It's hard to make a rational decision when you're this tired."],
+      ["irrational behavior", "رفتار غیرمنطقی", "Fear can sometimes lead to completely irrational behavior."],
+      ["defensive reaction", "واکنش دفاعی", "Any criticism triggered a defensive reaction from him."],
+      ["coping mechanism", "مکانیزم مقابله (با استرس)", "Exercise has become her main coping mechanism for stress."],
+      ["personal boundaries", "مرزهای شخصی", "It's important to set personal boundaries at work."],
+      ["sense of identity", "حس هویت", "Moving abroad challenged her sense of identity."]
+    ]],
+    ["9. Relationships", "روابط انسانی", [
+      ["mutual understanding", "درک متقابل", "The agreement was built on mutual understanding, not compromise."],
+      ["emotional attachment", "وابستگی عاطفی", "He had a strong emotional attachment to his childhood home."],
+      ["interpersonal conflict", "تعارض بین‌فردی", "The training focused on resolving interpersonal conflict at work."],
+      ["breakdown in communication", "ازهم‌پاشیدگی ارتباط", "The delay was caused by a breakdown in communication between teams."],
+      ["strained relationship", "رابطه‌ی تنش‌دار", "Years of arguing over money left them with a strained relationship."],
+      ["close-knit family", "خانواده‌ی صمیمی و به‌هم‌پیوسته", "She grew up in a close-knit family that did everything together."],
+      ["sense of belonging", "حس تعلق", "Joining the club gave him a real sense of belonging."],
+      ["trust and loyalty", "اعتماد و وفاداری", "Trust and loyalty are the foundation of any long friendship."],
+      ["emotional support", "حمایت عاطفی", "She relied on her sister for emotional support during the divorce."],
+      ["peer pressure", "فشار همسالان", "Peer pressure was one reason he started smoking."]
+    ]],
+    ["10. Policy & Debate Collocations", "ترکیب‌های رایج در بحث و سیاست‌گذاری", [
+      ["strike a balance between X and Y", "بین X و Y تعادل برقرارکردن", "It's hard to strike a balance between growth and sustainability."],
+      ["take X into consideration", "X را در نظرگرفتن", "You need to take the long-term costs into consideration."],
+      ["give priority to X", "به X اولویت‌دادن", "The council decided to give priority to public transport."],
+      ["address an issue", "به یک موضوع رسیدگی‌کردن", "The new law aims to address the issue of housing shortages."],
+      ["tackle a problem", "با یک مشکل مقابله‌کردن", "The city is finally tackling the problem of traffic congestion."],
+      ["pose a threat to X", "برای X تهدیدی‌بودن", "Rising sea levels pose a threat to coastal cities."],
+      ["have far-reaching consequences", "پیامدهای گسترده‌داشتن", "The decision could have far-reaching consequences for the whole industry."],
+      ["come at a cost", "هزینه یا عواقب‌داشتن", "Faster growth often comes at a cost to the environment."],
+      ["place a burden on X", "بار مسئولیت را روی دوش X گذاشتن", "The new fees place a burden on low-income families."],
+      ["allocate resources", "منابع را تخصیص‌دادن", "The committee must decide how to allocate resources fairly."],
+      ["reach a consensus", "به اجماع رسیدن", "It took three meetings to reach a consensus on the budget."],
+      ["make a concession", "امتیازدادن", "Neither side was willing to make a concession."],
+      ["find common ground", "نقطه‌ی مشترک پیداکردن", "Despite their differences, they managed to find common ground."],
+      ["weigh the pros and cons", "مزایا و معایب را سبک‌سنگین‌کردن", "Take some time to weigh the pros and cons before deciding."],
+      ["take a long-term view", "دید بلندمدت‌داشتن", "Investors are being encouraged to take a long-term view."],
+      ["meet a particular need", "پاسخ‌گوی یک نیاز خاص‌بودن", "The program was designed to meet a particular need in rural areas."],
+      ["serve the public interest", "در خدمت منافع عمومی‌بودن", "The regulation is meant to serve the public interest, not private profit."],
+      ["be economically viable", "از نظر اقتصادی قابل‌اجرا بودن", "The project has to be economically viable before it gets approved."],
+      ["be politically feasible", "از نظر سیاسی امکان‌پذیر بودن", "The reform sounds good in theory, but is it politically feasible?"]
+    ]]
+  ];
+
+  var PHRASES = [
+    ["Starting a discussion / giving your view", "شروع بحث و بیان دیدگاه", [
+      "I'd argue that…", "One could argue that…", "The way I see it…",
+      "It seems to me that…", "So, what's your take on this?",
+      "Can I just say something here?", "Let's start with…"
+    ]],
+    ["Giving a hedged / careful opinion", "بیان نظر با احتیاط", [
+      "To some extent, I agree that…", "I'm inclined to think that…",
+      "It could be argued that…", "On balance, I'd say…",
+      "I wouldn't go so far as to say that…, but…"
+    ]],
+    ["Agreeing", "موافقت‌کردن", [
+      "That's a fair point.", "I completely agree with that.",
+      "That's precisely what I was thinking.", "There is certainly some truth in that."
+    ]],
+    ["Disagreeing / challenging politely", "مخالفت مؤدبانه", [
+      "I'm not entirely convinced by that argument.",
+      "I can see why you might think that. However…",
+      "My concern would be that…", "I'd question the assumption that…",
+      "Wouldn't you agree that…?"
+    ]],
+    ["Persuading someone", "متقاعدکردن دیگران", [
+      "According to recent research…", "If we consider the long-term consequences…",
+      "Imagine what it would be like to…", "From my experience…",
+      "The real question isn't whether we can afford it, but whether we can afford not to."
+    ]],
+    ["Negotiating & compromising", "مذاکره و مصالحه", [
+      "I'd suggest that we…", "Perhaps we could strike a balance between…",
+      "I'm prepared to meet you halfway.", "Could we find a middle ground?",
+      "So, are we agreed that…?"
+    ]],
+    ["Speculating about reasons / motives", "حدس‌زدن درباره‌ی دلایل و انگیزه‌ها", [
+      "They might have become…", "It's conceivable that…",
+      "There could be several factors at play.",
+      "She must have been…", "She can't have known…",
+      "It's difficult to say without knowing the circumstances."
+    ]],
+    ["Problem-solving & reaching a decision", "حل مسئله و تصمیم‌گیری", [
+      "The underlying issue appears to be…",
+      "What evidence do we have to support that?",
+      "Taking everything into consideration, I'd opt for…",
+      "Shall we settle on…?"
+    ]],
+    ["Telling a story", "روایت‌کردن یک داستان", [
+      "Little did they know that…", "It wasn't until later that…",
+      "As it turned out…", "What happened next took everyone by surprise."
+    ]],
+    ["Everyday discourse markers", "رابط‌های گفتمانی روزمره", [
+      "Actually…", "In fact…", "Basically…", "In other words…",
+      "By the way…", "Incidentally…", "All in all…",
+      "On the one hand… on the other hand…"
+    ]],
+    ["Ending / summarizing a discussion", "جمع‌بندی و پایان بحث", [
+      "On the whole, this seems to be the most viable option.",
+      "I think we can agree that…", "So, to sum up…",
+      "That's a good point to end on."
+    ]]
+  ];
+
+  // ============================================================
+  // SPEECH
+  // ============================================================
+  var currentAccent = "en-US";
+  try {
+    var savedAccent = localStorage.getItem("speakLearnAccent");
+    if (savedAccent) currentAccent = savedAccent;
+  } catch (e) {}
+
+  function updateAccentLabel(){
+    var btn = document.getElementById("accentToggle");
+    btn.textContent = "🔊 " + (currentAccent === "en-US" ? "US English" : "UK English");
+  }
+
+  document.getElementById("accentToggle").addEventListener("click", function(){
+    currentAccent = (currentAccent === "en-US") ? "en-GB" : "en-US";
+    try { localStorage.setItem("speakLearnAccent", currentAccent); } catch(e) {}
+    updateAccentLabel();
+  });
+  updateAccentLabel();
+
+  var activeBtn = null;
+  function speak(text, btn){
+    try {
+      if (!("speechSynthesis" in window)) {
+        alert("Sorry, your browser doesn't support spoken pronunciation.");
+        return;
+      }
+      window.speechSynthesis.cancel();
+      if (activeBtn) activeBtn.classList.remove("playing");
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = currentAccent;
+      u.rate = 0.92;
+      if (btn) {
+        btn.classList.add("playing");
+        activeBtn = btn;
+        u.onend = function(){ btn.classList.remove("playing"); };
+        u.onerror = function(){ btn.classList.remove("playing"); };
+      }
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* no-op */ }
+  }
+
+  var SPK_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 12a4.5 4.5 0 0 0-2.5-4.03v8.06a4.5 4.5 0 0 0 2.5-4.03z"/></svg>';
+
+  function makeSpkBtn(text, small){
+    var b = document.createElement("button");
+    b.className = "spk" + (small ? " small" : "");
+    b.type = "button";
+    b.setAttribute("aria-label", "Play pronunciation");
+    b.innerHTML = SPK_ICON;
+    b.addEventListener("click", function(){ speak(text, b); });
+    return b;
+  }
+
+  // ============================================================
+  // BUILD VOCAB PANEL
+  // ============================================================
+  var panelVocab = document.getElementById("panel-vocab");
+  var chipnav = document.getElementById("chipnav");
+  var allCards = []; // {el, term, meaning, example}
+  var allSections = []; // {el, catEl}
+  var currentMode = "vocab";
+
+  function setActiveChip(el){
+    var chips = chipnav.querySelectorAll(".chip");
+    Array.prototype.forEach.call(chips, function(c){ c.classList.remove("active"); });
+    el.classList.add("active");
+  }
+
+  var chipAll = document.createElement("button");
+  chipAll.className = "chip chip-all active";
+  chipAll.textContent = "All";
+  chipAll.addEventListener("click", function(){
+    if (currentMode === "cards"){
+      cardsCatFilter = "all";
+      setActiveChip(chipAll);
+      rebuildDeck();
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+  chipnav.appendChild(chipAll);
+
+  VOCAB.forEach(function(cat, ci){
+    var titleEn = cat[0], titleFa = cat[1], rows = cat[2];
+    var secId = "vcat-" + ci;
+
+    var band = document.createElement("div");
+    band.className = "band";
+    band.id = secId;
+    band.innerHTML = '<div class="en">' + titleEn + '</div><div class="fa">' + titleFa + '</div>';
+    panelVocab.appendChild(band);
+
+    var grid = document.createElement("div");
+    grid.className = "grid";
+    panelVocab.appendChild(grid);
+
+    rows.forEach(function(row){
+      var term = row[0], meaning = row[1], example = row[2];
+      var card = document.createElement("div");
+      card.className = "card";
+
+      var termRow = document.createElement("div");
+      termRow.className = "term-row";
+      var termSpan = document.createElement("span");
+      termSpan.className = "term";
+      termSpan.textContent = term;
+      termRow.appendChild(termSpan);
+      termRow.appendChild(makeSpkBtn(term, false));
+      card.appendChild(termRow);
+
+      var meaningDiv = document.createElement("div");
+      meaningDiv.className = "meaning fa";
+      meaningDiv.textContent = meaning;
+      card.appendChild(meaningDiv);
+
+      var exDiv = document.createElement("div");
+      exDiv.className = "example";
+      var exText = document.createElement("span");
+      exText.className = "ex-text";
+      exText.textContent = example;
+      exDiv.appendChild(exText);
+      exDiv.appendChild(makeSpkBtn(example, true));
+      card.appendChild(exDiv);
+
+      grid.appendChild(card);
+      allCards.push({ el: card, term: term.toLowerCase(), meaning: meaning, example: example.toLowerCase() });
+    });
+
+    allSections.push({ el: grid, band: band });
+
+    var chip = document.createElement("button");
+    chip.className = "chip";
+    chip.textContent = titleEn.replace(/^\d+\.\s*/, "");
+    chip.addEventListener("click", function(){
+      if (currentMode === "cards"){
+        cardsCatFilter = ci;
+        setActiveChip(chip);
+        rebuildDeck();
+      } else {
+        document.getElementById(secId).scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+    chipnav.appendChild(chip);
+  });
+
+  // ============================================================
+  // BUILD PHRASES PANEL
+  // ============================================================
+  var panelPhrases = document.getElementById("panel-phrases");
+  var allPhraseBoxes = []; // {el, text[]}
+
+  PHRASES.forEach(function(cat){
+    var titleEn = cat[0], titleFa = cat[1], items = cat[2];
+    var box = document.createElement("div");
+    box.className = "phrase-box";
+
+    var head = document.createElement("div");
+    head.className = "band";
+    head.style.margin = "0 0 8px 0";
+    head.innerHTML = '<div class="en" style="font-size:14px;">' + titleEn + '</div><div class="fa" style="font-size:12.5px;">' + titleFa + '</div>';
+    box.appendChild(head);
+
+    var texts = [];
+    items.forEach(function(phrase){
+      var row = document.createElement("div");
+      row.className = "phrase-row";
+      var txt = document.createElement("div");
+      txt.className = "txt";
+      txt.textContent = phrase;
+      row.appendChild(txt);
+      row.appendChild(makeSpkBtn(phrase.replace(/…/g, "..."), true));
+      box.appendChild(row);
+      texts.push(phrase.toLowerCase());
+    });
+
+    panelPhrases.appendChild(box);
+    allPhraseBoxes.push({ el: box, texts: texts });
+  });
+
+  // ============================================================
+  // TABS
+  // ============================================================
+  var tabButtons = document.querySelectorAll("#tabSeg button");
+  tabButtons.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      tabButtons.forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      var tab = btn.getAttribute("data-tab");
+      currentMode = tab;
+      document.getElementById("panel-vocab").classList.toggle("active", tab === "vocab");
+      document.getElementById("panel-phrases").classList.toggle("active", tab === "phrases");
+      document.getElementById("panel-cards").classList.toggle("active", tab === "cards");
+      chipnav.style.display = (tab === "phrases") ? "none" : "flex";
+      chipnav.classList.toggle("mode-cards", tab === "cards");
+      applyFilter();
+    });
+  });
+
+  // ============================================================
+  // SEARCH / FILTER
+  // ============================================================
+  var searchInput = document.getElementById("search");
+  var emptyMsg = document.getElementById("emptyMsg");
+
+  function applyFilter(){
+    var q = searchInput.value.trim().toLowerCase();
+    var activeTab = document.querySelector("#tabSeg button.active").getAttribute("data-tab");
+
+    if (activeTab === "cards"){
+      emptyMsg.style.display = "none";
+      rebuildDeck();
+      return;
+    }
+
+    var anyVisible = false;
+
+    if (activeTab === "vocab") {
+      allSections.forEach(function(sec){ sec.band.style.display = ""; sec.el.style.display = ""; });
+      allCards.forEach(function(c){
+        var match = !q || c.term.indexOf(q) !== -1 || c.meaning.indexOf(q) !== -1 || c.example.indexOf(q) !== -1;
+        c.el.classList.toggle("hide", !match);
+        if (match) anyVisible = true;
+      });
+      // hide empty category sections
+      allSections.forEach(function(sec){
+        var visibleCount = 0;
+        Array.prototype.forEach.call(sec.el.children, function(card){
+          if (!card.classList.contains("hide")) visibleCount++;
+        });
+        var show = visibleCount > 0;
+        sec.band.style.display = show ? "" : "none";
+        sec.el.style.display = show ? "" : "none";
+      });
+    } else {
+      allPhraseBoxes.forEach(function(pb){
+        var match = !q || pb.texts.some(function(t){ return t.indexOf(q) !== -1; });
+        pb.el.classList.toggle("hide", !match);
+        if (match) anyVisible = true;
+      });
+    }
+    emptyMsg.style.display = anyVisible ? "none" : "block";
+  }
+
+  searchInput.addEventListener("input", applyFilter);
+
+  // ============================================================
+  // FLASHCARDS
+  // ============================================================
+  var FLAT = [];
+  VOCAB.forEach(function(cat, ci){
+    var titleEn = cat[0], titleFa = cat[1], rows = cat[2];
+    rows.forEach(function(row){
+      FLAT.push({
+        ci: ci,
+        catEn: titleEn.replace(/^\d+\.\s*/, ""),
+        term: row[0], meaning: row[1], example: row[2]
+      });
+    });
+  });
+
+  var KNOWN_KEY = "speakLearnKnown";
+  var knownSet = {};
+  try {
+    var savedKnown = JSON.parse(localStorage.getItem(KNOWN_KEY) || "{}");
+    if (savedKnown && typeof savedKnown === "object") knownSet = savedKnown;
+  } catch (e) {}
+  function cardKey(item){ return item.ci + "::" + item.term; }
+  function saveKnown(){ try { localStorage.setItem(KNOWN_KEY, JSON.stringify(knownSet)); } catch(e) {} }
+
+  var cardsCatFilter = "all";
+  var cardsUnlearnedOnly = false;
+  var cardsOrder = [];
+  var cardsPos = 0;
+  var curTermText = "", curExampleText = "";
+
+  var flashcardEl = document.getElementById("flashcard");
+  var fcTerm = document.getElementById("fcTerm");
+  var fcCatFront = document.getElementById("fcCatFront");
+  var fcMeaning = document.getElementById("fcMeaning");
+  var fcExampleText = document.getElementById("fcExampleText");
+  var cardsProgress = document.getElementById("cardsProgress");
+  var cardsStats = document.getElementById("cardsStats");
+  var cardsEmpty = document.getElementById("cardsEmpty");
+  var cardStage = document.getElementById("cardStage");
+  var cardsControlsEl = document.querySelector(".cards-controls");
+  var cardsFooterRowEl = document.querySelector(".cards-footer-row");
+
+  function buildCardsDeck(){
+    var q = searchInput.value.trim().toLowerCase();
+    var idxs = [];
+    FLAT.forEach(function(item, i){
+      if (cardsCatFilter !== "all" && item.ci !== cardsCatFilter) return;
+      if (cardsUnlearnedOnly && knownSet[cardKey(item)]) return;
+      if (q && item.term.toLowerCase().indexOf(q) === -1 &&
+          item.meaning.indexOf(q) === -1 &&
+          item.example.toLowerCase().indexOf(q) === -1) return;
+      idxs.push(i);
+    });
+    return idxs;
+  }
+
+  function shuffleArray(arr){
+    for (var i = arr.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  function refreshCardsStats(){
+    var knownCount = Object.keys(knownSet).filter(function(k){ return knownSet[k]; }).length;
+    cardsStats.textContent = FLAT.length + " cards total · " + knownCount + " known";
+  }
+
+  function rebuildDeck(){
+    cardsOrder = buildCardsDeck();
+    cardsPos = 0;
+    refreshCardsStats();
+    showCard();
+  }
+
+  function showCard(){
+    flashcardEl.classList.remove("flipped");
+    if (cardsOrder.length === 0){
+      cardStage.style.display = "none";
+      cardsControlsEl.style.display = "none";
+      cardsFooterRowEl.style.display = "none";
+      cardsProgress.textContent = "";
+      cardsEmpty.style.display = "block";
+      cardsEmpty.textContent = cardsUnlearnedOnly
+        ? "🎉 All matching words are marked as known! Turn off \"Unlearned only\" to review them again."
+        : "No cards match. / کارتی پیدا نشد.";
+      return;
+    }
+    cardStage.style.display = "flex";
+    cardsControlsEl.style.display = "flex";
+    cardsFooterRowEl.style.display = "flex";
+    cardsEmpty.style.display = "none";
+
+    var item = FLAT[cardsOrder[cardsPos]];
+    curTermText = item.term;
+    curExampleText = item.example;
+    fcTerm.textContent = item.term;
+    fcCatFront.textContent = item.catEn;
+    fcMeaning.textContent = item.meaning;
+    fcExampleText.textContent = item.example;
+
+    var known = !!knownSet[cardKey(item)];
+    flashcardEl.classList.toggle("is-known", known);
+    cardsProgress.textContent = "Card " + (cardsPos + 1) + " of " + cardsOrder.length + (known ? " · ✓ known" : "");
+  }
+
+  flashcardEl.addEventListener("click", function(){
+    flashcardEl.classList.toggle("flipped");
+  });
+  flashcardEl.setAttribute("tabindex", "0");
+  flashcardEl.setAttribute("role", "button");
+  flashcardEl.addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      flashcardEl.classList.toggle("flipped");
+    }
+  });
+
+  document.getElementById("cardSpkFront").innerHTML = SPK_ICON;
+  document.getElementById("cardSpkBack").innerHTML = SPK_ICON;
+  document.getElementById("cardSpkFront").addEventListener("click", function(e){
+    e.stopPropagation(); speak(curTermText, this);
+  });
+  document.getElementById("cardSpkBack").addEventListener("click", function(e){
+    e.stopPropagation(); speak(curExampleText, this);
+  });
+
+  document.getElementById("nextCard").addEventListener("click", function(){
+    if (cardsOrder.length === 0) return;
+    cardsPos = (cardsPos + 1) % cardsOrder.length;
+    showCard();
+  });
+  document.getElementById("prevCard").addEventListener("click", function(){
+    if (cardsOrder.length === 0) return;
+    cardsPos = (cardsPos - 1 + cardsOrder.length) % cardsOrder.length;
+    showCard();
+  });
+  document.getElementById("markKnown").addEventListener("click", function(){
+    if (cardsOrder.length === 0) return;
+    var item = FLAT[cardsOrder[cardsPos]];
+    knownSet[cardKey(item)] = true;
+    saveKnown();
+    refreshCardsStats();
+    if (cardsUnlearnedOnly){
+      cardsOrder.splice(cardsPos, 1);
+      if (cardsPos >= cardsOrder.length) cardsPos = 0;
+      showCard();
+    } else {
+      cardsPos = (cardsPos + 1) % cardsOrder.length;
+      showCard();
+    }
+  });
+  document.getElementById("markLearning").addEventListener("click", function(){
+    if (cardsOrder.length === 0) return;
+    var item = FLAT[cardsOrder[cardsPos]];
+    if (knownSet[cardKey(item)]){
+      delete knownSet[cardKey(item)];
+      saveKnown();
+      refreshCardsStats();
+    }
+    cardsPos = (cardsPos + 1) % cardsOrder.length;
+    showCard();
+  });
+  document.getElementById("shuffleDeck").addEventListener("click", function(){
+    shuffleArray(cardsOrder);
+    cardsPos = 0;
+    showCard();
+  });
+  document.getElementById("resetProgress").addEventListener("click", function(){
+    knownSet = {};
+    saveKnown();
+    refreshCardsStats();
+    showCard();
+  });
+  document.getElementById("unlearnedOnly").addEventListener("change", function(){
+    cardsUnlearnedOnly = this.checked;
+    rebuildDeck();
+  });
+
+  rebuildDeck();
+})();
+</script>
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>

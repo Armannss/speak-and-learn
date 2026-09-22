@@ -1,0 +1,15 @@
+{
+  "name": "Speak & Learn",
+  "short_name": "Speak & Learn",
+  "description": "Interactive English vocabulary, collocations, and conversation phrases with click-to-hear pronunciation and Persian meanings.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F5F6F4",
+  "theme_color": "#0E9594",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
