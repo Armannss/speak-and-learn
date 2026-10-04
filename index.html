@@ -22,6 +22,7 @@
     --accent:#0E9594; --accent-ink:#FFFFFF;
     --accent-2:#C98A2E; --border:#DCE3E0;
     --shadow: 0 1px 2px rgba(22,35,58,.06), 0 6px 20px rgba(22,35,58,.06);
+    --good:#1E8E5A; --bad:#C0443A;
     padding-top:env(safe-area-inset-top,0px);
     padding-bottom:env(safe-area-inset-bottom,0px);
   }
@@ -32,6 +33,7 @@
       --accent:#33D6CF; --accent-ink:#06231F;
       --accent-2:#E7B75B; --border:#2A3644;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+      --good:#4CCB8D; --bad:#F0786C;
     }
   }
   :root[data-theme="dark"]{
@@ -40,6 +42,7 @@
     --accent:#33D6CF; --accent-ink:#06231F;
     --accent-2:#E7B75B; --border:#2A3644;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --good:#4CCB8D; --bad:#F0786C;
   }
 
   *{box-sizing:border-box;}
@@ -161,10 +164,12 @@
   /* ---------- Flashcards ---------- */
   #chipnav.mode-cards .chip.active{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
 
+  .phrase-fa{ font-size:12.5px; color:var(--ink-soft); margin-top:2px; }
   .cards-toolbar{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
     margin:16px 0 4px; flex-wrap:wrap; font-size:13px; color:var(--ink-soft);
   }
+  .toggles{ display:flex; gap:16px; flex-wrap:wrap; }
   .unlearned-toggle{ display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none; }
   .unlearned-toggle input{ accent-color:var(--accent); width:15px; height:15px; }
   .cards-stats{ font-variant-numeric:tabular-nums; }
@@ -215,6 +220,88 @@
   .linklike{ border:none; background:none; color:var(--ink-soft); font:inherit; font-size:12.5px; text-decoration:underline; cursor:pointer; padding:4px; }
   .linklike:hover{ color:var(--accent); }
 
+
+  /* ---------- Practice ---------- */
+  .pr-hero{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:16px 18px; margin-top:16px; box-shadow:var(--shadow);
+  }
+  .pr-streak{ font-family:"Fraunces",serif; font-weight:600; font-size:22px; }
+  .pr-goal-text{ color:var(--ink-soft); font-size:13px; margin:4px 0 10px; font-variant-numeric:tabular-nums; }
+  .pbar{ height:8px; background:var(--surface-alt); border-radius:999px; overflow:hidden; border:1px solid var(--border); }
+  .pbar-fill{ height:100%; background:var(--accent); border-radius:999px; transition:width .3s ease; }
+  .pr-due{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    margin-top:10px; padding:10px 14px; font-size:13px; color:var(--ink-soft);
+    background:var(--surface-alt); border-radius:12px;
+  }
+  .pr-modes{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px; margin-top:14px; }
+  .pr-mode{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:14px; display:flex; flex-direction:column; gap:8px; align-items:flex-start;
+  }
+  .pr-mode.primary{ border-color:var(--accent); box-shadow:var(--shadow); }
+  .pr-mode-head{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; width:100%; flex-wrap:wrap; }
+  .pr-mode-title{ font-weight:700; font-size:15px; }
+  .pr-mode-time{ font-size:12px; color:var(--ink-soft); }
+  .pr-mode-desc{ font-size:13px; color:var(--ink-soft); line-height:1.45; flex:1; }
+  .pr-tip{ margin-top:16px; font-size:12.5px; color:var(--ink-soft); text-align:center; }
+
+  .pr-top{ display:flex; align-items:center; gap:12px; margin:14px 0 10px; }
+  .pr-top-title{ font-weight:700; font-size:14px; flex:1; }
+  .pr-top-right{ font-size:12.5px; color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+  .pr-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:18px; margin-top:12px; box-shadow:var(--shadow);
+  }
+  .pr-card.center{ text-align:center; }
+  .pr-tag{ font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; margin:12px 0 6px; }
+  .pr-tag:first-child{ margin-top:0; }
+  .pr-prompt{ font-size:18px; line-height:1.5; font-weight:600; margin-bottom:14px; }
+  .pr-prompt.small{ font-size:14px; font-weight:500; color:var(--ink-soft); }
+  .pr-opts{ display:grid; gap:8px; }
+  .pr-opt{
+    text-align:left; font:inherit; font-size:14.5px; padding:12px 14px; border-radius:10px; cursor:pointer;
+    background:var(--surface); color:var(--ink); border:1px solid var(--border);
+  }
+  .pr-opt:hover:not(:disabled){ border-color:var(--accent); }
+  .pr-opt:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+  .pr-opt.right{ border-color:var(--good); background:color-mix(in srgb, var(--good) 14%, var(--surface)); }
+  .pr-opt.wrong{ border-color:var(--bad); background:color-mix(in srgb, var(--bad) 14%, var(--surface)); }
+  .pr-opt:disabled{ cursor:default; }
+  .pr-feedback{
+    margin-top:12px; padding:14px; border-radius:12px; background:var(--surface-alt);
+    border:1px solid var(--border);
+  }
+  .pr-fb-head{ font-weight:700; font-size:14.5px; }
+  .pr-fb-head.good{ color:var(--good); }
+  .pr-fb-head.bad{ color:var(--bad); }
+  .pr-fb-note{ font-size:13px; color:var(--ink-soft); margin-top:6px; line-height:1.45; }
+  .pr-fb-sentence{ display:flex; align-items:flex-start; gap:8px; margin-top:8px; font-style:italic; font-size:13.5px; }
+  .pr-fb-sentence span{ flex:1; }
+  .pr-play{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .spk.big-inline{ width:44px; height:44px; }
+  .spk.big-inline svg{ width:20px; height:20px; }
+  .pr-input{
+    width:100%; font:inherit; font-size:15px; padding:12px 14px; border-radius:10px;
+    background:var(--surface); color:var(--ink); border:1px solid var(--border);
+  }
+  .pr-input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  .pr-diff{ margin-top:8px; font-size:15px; line-height:1.7; }
+  .w-ok{ color:var(--good); }
+  .w-miss{ color:var(--bad); text-decoration:underline; }
+  .pr-score{ font-family:"Fraunces",serif; font-weight:600; font-size:44px; }
+  .pr-topic{ font-size:17px; line-height:1.5; font-weight:600; }
+  .pr-targets{ display:grid; gap:6px; }
+  .pr-target{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:14px; padding:6px 0; border-bottom:1px solid var(--border); }
+  .pr-target:last-child{ border-bottom:none; }
+  .pr-phase{ margin-top:14px; font-size:13.5px; color:var(--ink-soft); text-align:center; }
+  .pr-clock{ font-family:"Fraunces",serif; font-weight:600; font-size:48px; text-align:center; font-variant-numeric:tabular-nums; }
+  .pr-clock.speaking{ color:var(--accent); }
+  .pr-checks{ display:grid; gap:8px; margin-top:12px; }
+  .pr-check{ display:flex; align-items:center; gap:8px; font-size:14px; cursor:pointer; }
+  .pr-check input{ accent-color:var(--accent); width:16px; height:16px; }
+
   footer{
     text-align:center; color:var(--ink-soft); font-size:12px; padding:18px 0 30px 0;
   }
@@ -238,6 +325,7 @@
         <button data-tab="vocab" class="active">Vocabulary</button>
         <button data-tab="phrases">Conversation Toolkit</button>
         <button data-tab="cards">Flashcards</button>
+        <button data-tab="practice">Practice</button>
       </div>
       <button class="accent-toggle" id="accentToggle" title="Toggle pronunciation accent">🔊 US English</button>
     </div>
@@ -249,10 +337,16 @@
     <div class="tabpanel" id="panel-phrases"></div>
     <div class="tabpanel" id="panel-cards">
       <div class="cards-toolbar">
-        <label class="unlearned-toggle">
-          <input type="checkbox" id="unlearnedOnly" />
-          <span>Unlearned only / فقط کلمات یادنگرفته</span>
-        </label>
+        <div class="toggles">
+          <label class="unlearned-toggle">
+            <input type="checkbox" id="dueOnly" />
+            <span>Due today</span>
+          </label>
+          <label class="unlearned-toggle">
+            <input type="checkbox" id="unlearnedOnly" />
+            <span>Unlearned only</span>
+          </label>
+        </div>
         <span class="cards-stats" id="cardsStats"></span>
       </div>
 
@@ -266,7 +360,7 @@
           </div>
           <div class="face back">
             <div class="fc-meaning fa" id="fcMeaning"></div>
-            <div class="fc-example">
+            <div class="fc-example" id="fcExampleRow">
               <span id="fcExampleText"></span>
               <button class="spk small" id="cardSpkBack" type="button" aria-label="Play example"></button>
             </div>
@@ -289,6 +383,7 @@
 
       <div class="empty" id="cardsEmpty" style="display:none;"></div>
     </div>
+    <div class="tabpanel" id="panel-practice"></div>
     <div class="empty" id="emptyMsg" style="display:none;">No matches found. / موردی پیدا نشد.</div>
   </main>
 
@@ -438,65 +533,135 @@
       ["serve the public interest", "در خدمت منافع عمومی‌بودن", "The regulation is meant to serve the public interest, not private profit."],
       ["be economically viable", "از نظر اقتصادی قابل‌اجرا بودن", "The project has to be economically viable before it gets approved."],
       ["be politically feasible", "از نظر سیاسی امکان‌پذیر بودن", "The reform sounds good in theory, but is it politically feasible?"]
+    ]],
+    ["11. Building & Defending an Argument", "ساختن و دفاع از یک استدلال", [
+      ["make a compelling case for something", "استدلال قانع‌کننده‌ای برای چیزی ارائه‌دادن", "She made a compelling case for remote work policies."],
+      ["put forward an argument", "یک استدلال را مطرح‌کردن", "He put forward a strong argument in favor of the reform."],
+      ["back up a claim", "ادعا را با دلیل پشتیبانی‌کردن", "You need solid data to back up that claim."],
+      ["provide supporting evidence", "شواهد پشتیبان ارائه‌دادن", "The report failed to provide supporting evidence for its conclusions."],
+      ["reach a convincing conclusion", "به یک نتیجه‌گیری قانع‌کننده رسیدن", "After weighing all the evidence, the jury reached a convincing conclusion."],
+      ["present a balanced argument", "استدلالی متوازن و بی‌طرفانه ارائه‌دادن", "A good journalist should present a balanced argument on controversial topics."],
+      ["take a particular stance", "موضع خاصی اتخاذ‌کردن", "The senator took a particular stance on immigration reform."],
+      ["adopt a position", "یک موضع را اتخاذ/اختیار کردن", "The committee adopted a cautious position on the new policy."],
+      ["justify a decision", "تصمیمی را توجیه‌کردن", "He struggled to justify his decision to the board."],
+      ["defend a viewpoint", "از یک دیدگاه دفاع‌کردن", "She calmly defended her viewpoint despite strong opposition."],
+      ["have a vested interest in something", "منفعت شخصی در چیزی داشتن", "He has a vested interest in the company's success."]
+    ]],
+    ["12. Challenging & Influencing Others", "به چالش‌کشیدن و تأثیرگذاری بر دیگران", [
+      ["raise an objection", "اعتراض مطرح‌کردن", "One committee member raised an objection to the proposal."],
+      ["address a concern", "به یک نگرانی رسیدگی‌کردن", "The manager addressed every concern raised by the staff."],
+      ["counter an argument", "در برابر یک استدلال، استدلال مقابل آوردن", "She countered his argument with a well-researched rebuttal."],
+      ["challenge an assumption", "یک فرض را به چالش‌کشیدن", "Good critical thinkers regularly challenge their own assumptions."],
+      ["undermine an argument", "یک استدلال را تضعیف‌کردن", "A single contradictory fact can undermine an entire argument."],
+      ["acknowledge a valid point", "یک نکته‌ی درست را تأییدکردن (بدون کوتاه‌آمدن کامل)", "A skilled debater knows how to acknowledge a valid point without losing ground."],
+      ["draw a distinction between X and Y", "بین X و Y تمایز قائل‌شدن", "It's important to draw a distinction between correlation and causation."],
+      ["take something out of context", "چیزی را از متن و زمینه‌اش جدا کردن", "The quote was taken out of context by the news outlet."],
+      ["influence public opinion", "افکار عمومی را تحت تأثیر قراردادن", "Celebrities often try to influence public opinion on social issues."],
+      ["shape perceptions", "برداشت‌ها و درک‌ها را شکل‌دادن", "The media plays a powerful role in shaping public perceptions."],
+      ["sway someone's opinion", "نظر کسی را عوض/متقاعدکردن", "A single persuasive speech can sway someone's opinion completely."],
+      ["win someone over", "کسی را با خودتان همراه/متقاعدکردن", "By the end of the debate, she had won over most of the audience."],
+      ["appeal to emotions", "متوسل‌شدن به احساسات", "Advertisers often appeal to emotions rather than logic."],
+      ["appeal to reason", "متوسل‌شدن به منطق و عقل", "A good debater knows when to appeal to reason instead of emotion."],
+      ["exert influence", "اعمال نفوذ‌کردن", "Large corporations exert significant influence over government policy."],
+      ["gain credibility", "کسب اعتبارکردن", "Citing reliable sources helps a speaker gain credibility."]
+    ]],
+    ["13. Persuasion Techniques & Bias", "فنون اقناع و جانبداری", [
+      ["emotional appeal", "جذابیت یا تأثیرگذاری احساسی", "The campaign relied heavily on emotional appeal rather than facts."],
+      ["rhetorical device", "ابزار بلاغی، فن بیان", "Repetition is a common rhetorical device used in speeches."],
+      ["deliberate framing", "چارچوب‌بندی عمدی (برای القای یک برداشت خاص)", "The deliberate framing of the headline made the story seem worse than it was."],
+      ["misleading claim", "ادعای گمراه‌کننده", "The advertisement made a misleading claim about the product's effects."],
+      ["biased presentation", "ارائه‌ی جانبدارانه", "Critics accused the documentary of offering a biased presentation of events."],
+      ["selective use of evidence", "استفاده‌ی گزینشی از شواهد", "Selective use of evidence can make a weak argument look strong."],
+      ["hidden agenda", "انگیزه یا هدف پنهان", "Some suspected the report had a hidden agenda."],
+      ["propaganda", "تبلیغات مغرضانه، پروپاگاندا", "The government was accused of spreading propaganda during the crisis."],
+      ["manipulation", "دستکاری روانی، سوءاستفاده از احساسات دیگران", "Emotional manipulation is a common tactic in advertising."],
+      ["deception", "فریب، گول‌زدن", "The scandal involved years of deliberate deception."]
     ]]
   ];
 
   var PHRASES = [
     ["Starting a discussion / giving your view", "شروع بحث و بیان دیدگاه", [
-      "I'd argue that…", "One could argue that…", "The way I see it…",
-      "It seems to me that…", "So, what's your take on this?",
-      "Can I just say something here?", "Let's start with…"
+      ["I'd argue that…", "من استدلال می‌کنم که..."],
+      ["One could argue that…", "می‌شه این‌طور استدلال کرد که..."],
+      ["The way I see it…", "از نظر من..."],
+      ["It seems to me that…", "به نظرم می‌رسه که..."],
+      ["So, what's your take on this?", "خب، نظر تو درباره‌ی این چیه؟"],
+      ["Can I just say something here?", "می‌تونم یه چیزی اینجا بگم؟"],
+      ["Let's start with…", "بیایید با ... شروع کنیم"]
     ]],
     ["Giving a hedged / careful opinion", "بیان نظر با احتیاط", [
-      "To some extent, I agree that…", "I'm inclined to think that…",
-      "It could be argued that…", "On balance, I'd say…",
-      "I wouldn't go so far as to say that…, but…"
+      ["To some extent, I agree that…", "تا حدی قبول دارم که..."],
+      ["I'm inclined to think that…", "گرایش دارم فکر کنم که..."],
+      ["It could be argued that…", "می‌توان گفت که..."],
+      ["On balance, I'd say…", "با در نظرگرفتن همه‌چیز، می‌گم..."],
+      ["I wouldn't go so far as to say that…, but…", "اونقدرها هم نمی‌گم که...، اما..."]
     ]],
     ["Agreeing", "موافقت‌کردن", [
-      "That's a fair point.", "I completely agree with that.",
-      "That's precisely what I was thinking.", "There is certainly some truth in that."
+      ["That's a fair point.", "حرف منصفانه‌ایه."],
+      ["I completely agree with that.", "کاملاً با این موافقم."],
+      ["That's precisely what I was thinking.", "دقیقاً همون چیزیه که فکر می‌کردم."],
+      ["There is certainly some truth in that.", "قطعاً یه مقدار حقیقت توش هست."]
     ]],
     ["Disagreeing / challenging politely", "مخالفت مؤدبانه", [
-      "I'm not entirely convinced by that argument.",
-      "I can see why you might think that. However…",
-      "My concern would be that…", "I'd question the assumption that…",
-      "Wouldn't you agree that…?"
+      ["I'm not entirely convinced by that argument.", "کاملاً با اون استدلال قانع نشدم."],
+      ["I can see why you might think that. However…", "می‌فهمم چرا ممکنه این‌طور فکر کنی. اما..."],
+      ["My concern would be that…", "نگرانی من اینه که..."],
+      ["I'd question the assumption that…", "این فرض رو زیر سوال می‌برم که..."],
+      ["Wouldn't you agree that…?", "موافق نیستی که...؟"],
+      ["I don't think that argument holds up when we consider…", "فکر نمی‌کنم اون استدلال وقتی ... رو در نظر بگیریم، درست از آب دربیاد."],
+      ["I'm not convinced that the evidence supports that conclusion.", "قانع نشدم که شواهد از اون نتیجه‌گیری پشتیبانی می‌کنه."],
+      ["I accept the premise of your argument, but I'm not sure the conclusion necessarily follows.", "مقدمه‌ی استدلالت رو قبول دارم، ولی مطمئن نیستم نتیجه‌اش حتماً درست دربیاد."],
+      ["That's a valid point, and it highlights an aspect of the issue we haven't considered.", "نکته‌ی درستیه، و جنبه‌ای از موضوع رو نشون می‌ده که در نظر نگرفته بودیم."]
     ]],
     ["Persuading someone", "متقاعدکردن دیگران", [
-      "According to recent research…", "If we consider the long-term consequences…",
-      "Imagine what it would be like to…", "From my experience…",
-      "The real question isn't whether we can afford it, but whether we can afford not to."
+      ["According to recent research…", "طبق تحقیقات اخیر..."],
+      ["If we consider the long-term consequences…", "اگه پیامدهای بلندمدتش رو در نظر بگیریم..."],
+      ["Imagine what it would be like to…", "تصور کن اگه قرار بود ... چه شکلی می‌شد"],
+      ["From my experience…", "از تجربه‌ی من..."],
+      ["The real question isn't whether we can afford it, but whether we can afford not to.", "سوال واقعی این نیست که آیا از پسش برمیایم، بلکه اینه که آیا از پس نداشتنش برمیایم."]
     ]],
     ["Negotiating & compromising", "مذاکره و مصالحه", [
-      "I'd suggest that we…", "Perhaps we could strike a balance between…",
-      "I'm prepared to meet you halfway.", "Could we find a middle ground?",
-      "So, are we agreed that…?"
+      ["I'd suggest that we…", "پیشنهاد می‌کنم که ما..."],
+      ["Perhaps we could strike a balance between…", "شاید بتونیم بین ... یه تعادل برقرار کنیم"],
+      ["I'm prepared to meet you halfway.", "حاضرم وسط راه باهات کنار بیام."],
+      ["Could we find a middle ground?", "می‌تونیم یه راه‌حل میانه پیدا کنیم؟"],
+      ["So, are we agreed that…?", "خب، توافق داریم که...؟"]
     ]],
     ["Speculating about reasons / motives", "حدس‌زدن درباره‌ی دلایل و انگیزه‌ها", [
-      "They might have become…", "It's conceivable that…",
-      "There could be several factors at play.",
-      "She must have been…", "She can't have known…",
-      "It's difficult to say without knowing the circumstances."
+      ["They might have become…", "شاید اونا ... شده باشن"],
+      ["It's conceivable that…", "قابل‌تصوره که..."],
+      ["There could be several factors at play.", "ممکنه چند عامل مختلف در کار باشه."],
+      ["She must have been…", "حتماً اون ... بوده"],
+      ["She can't have known…", "غیرممکنه که اون می‌دونسته..."],
+      ["It's difficult to say without knowing the circumstances.", "بدون دونستن شرایط، گفتنش سخته."]
     ]],
     ["Problem-solving & reaching a decision", "حل مسئله و تصمیم‌گیری", [
-      "The underlying issue appears to be…",
-      "What evidence do we have to support that?",
-      "Taking everything into consideration, I'd opt for…",
-      "Shall we settle on…?"
+      ["The underlying issue appears to be…", "به نظر می‌رسه مشکل اصلی اینه که..."],
+      ["What evidence do we have to support that?", "چه مدرکی داریم که این رو تأیید کنه؟"],
+      ["Taking everything into consideration, I'd opt for…", "با در نظرگرفتن همه‌چیز، من ... رو انتخاب می‌کنم"],
+      ["Shall we settle on…?", "بیایم روی ... توافق کنیم؟"]
     ]],
     ["Telling a story", "روایت‌کردن یک داستان", [
-      "Little did they know that…", "It wasn't until later that…",
-      "As it turned out…", "What happened next took everyone by surprise."
+      ["Little did they know that…", "اونا اصلاً نمی‌دونستن که..."],
+      ["It wasn't until later that…", "تا مدت‌ها بعد ... مشخص نشد"],
+      ["As it turned out…", "همون‌طور که مشخص شد..."],
+      ["What happened next took everyone by surprise.", "چیزی که بعدش اتفاق افتاد همه رو غافلگیر کرد."]
     ]],
     ["Everyday discourse markers", "رابط‌های گفتمانی روزمره", [
-      "Actually…", "In fact…", "Basically…", "In other words…",
-      "By the way…", "Incidentally…", "All in all…",
-      "On the one hand… on the other hand…"
+      ["Actually…", "راستش..."],
+      ["In fact…", "در واقع..."],
+      ["Basically…", "اساساً..."],
+      ["In other words…", "به عبارت دیگه..."],
+      ["By the way…", "راستی..."],
+      ["Incidentally…", "اتفاقاً، در ضمن..."],
+      ["All in all…", "روی‌هم‌رفته..."],
+      ["On the one hand… on the other hand…", "از یه طرف... از طرف دیگه..."]
     ]],
     ["Ending / summarizing a discussion", "جمع‌بندی و پایان بحث", [
-      "On the whole, this seems to be the most viable option.",
-      "I think we can agree that…", "So, to sum up…",
-      "That's a good point to end on."
+      ["On the whole, this seems to be the most viable option.", "روی‌هم‌رفته، این به‌نظر عملی‌ترین گزینه میاد."],
+      ["I think we can agree that…", "فکر کنم بتونیم روی این توافق کنیم که..."],
+      ["So, to sum up…", "خب، در جمع‌بندی..."],
+      ["That's a good point to end on.", "نکته‌ی خوبیه که باهاش جمع‌بندی کنیم."]
     ]]
   ];
 
@@ -522,7 +687,7 @@
   updateAccentLabel();
 
   var activeBtn = null;
-  function speak(text, btn){
+  function speak(text, btn, rate){
     try {
       if (!("speechSynthesis" in window)) {
         alert("Sorry, your browser doesn't support spoken pronunciation.");
@@ -532,7 +697,7 @@
       if (activeBtn) activeBtn.classList.remove("playing");
       var u = new SpeechSynthesisUtterance(text);
       u.lang = currentAccent;
-      u.rate = 0.92;
+      u.rate = rate || 0.92;
       if (btn) {
         btn.classList.add("playing");
         activeBtn = btn;
@@ -665,16 +830,21 @@
     box.appendChild(head);
 
     var texts = [];
-    items.forEach(function(phrase){
+    items.forEach(function(pair){
+      var phrase = pair[0], meaningFa = pair[1];
       var row = document.createElement("div");
       row.className = "phrase-row";
       var txt = document.createElement("div");
       txt.className = "txt";
       txt.textContent = phrase;
+      var fa = document.createElement("div");
+      fa.className = "phrase-fa fa";
+      fa.textContent = meaningFa;
+      txt.appendChild(fa);
       row.appendChild(txt);
       row.appendChild(makeSpkBtn(phrase.replace(/…/g, "..."), true));
       box.appendChild(row);
-      texts.push(phrase.toLowerCase());
+      texts.push(phrase.toLowerCase() + " " + meaningFa);
     });
 
     panelPhrases.appendChild(box);
@@ -694,8 +864,10 @@
       document.getElementById("panel-vocab").classList.toggle("active", tab === "vocab");
       document.getElementById("panel-phrases").classList.toggle("active", tab === "phrases");
       document.getElementById("panel-cards").classList.toggle("active", tab === "cards");
-      chipnav.style.display = (tab === "phrases") ? "none" : "flex";
+      document.getElementById("panel-practice").classList.toggle("active", tab === "practice");
+      chipnav.style.display = (tab === "vocab" || tab === "cards") ? "flex" : "none";
       chipnav.classList.toggle("mode-cards", tab === "cards");
+      if (tab === "practice" && typeof onPracticeTab === "function") onPracticeTab();
       applyFilter();
     });
   });
@@ -710,6 +882,10 @@
     var q = searchInput.value.trim().toLowerCase();
     var activeTab = document.querySelector("#tabSeg button.active").getAttribute("data-tab");
 
+    if (activeTab === "practice"){
+      emptyMsg.style.display = "none";
+      return;
+    }
     if (activeTab === "cards"){
       emptyMsg.style.display = "none";
       rebuildDeck();
@@ -757,7 +933,8 @@
       FLAT.push({
         ci: ci,
         catEn: titleEn.replace(/^\d+\.\s*/, ""),
-        term: row[0], meaning: row[1], example: row[2]
+        term: row[0], meaning: row[1], example: row[2],
+        key: ci + "::" + row[0]
       });
     });
   });
@@ -768,11 +945,37 @@
     var savedKnown = JSON.parse(localStorage.getItem(KNOWN_KEY) || "{}");
     if (savedKnown && typeof savedKnown === "object") knownSet = savedKnown;
   } catch (e) {}
-  function cardKey(item){ return item.ci + "::" + item.term; }
+  function cardKey(item){ return item.key; }
   function saveKnown(){ try { localStorage.setItem(KNOWN_KEY, JSON.stringify(knownSet)); } catch(e) {} }
+
+  // Spaced repetition (Leitner boxes): each card gets a box and a due date.
+  var SRS_KEY = "speakLearnSRS";
+  var INTERVALS = [0, 1, 3, 7, 14, 30, 60]; // days per box
+  var srs = {};
+  try {
+    var savedSrs = JSON.parse(localStorage.getItem(SRS_KEY) || "{}");
+    if (savedSrs && typeof savedSrs === "object") srs = savedSrs;
+  } catch (e) {}
+  function saveSrs(){ try { localStorage.setItem(SRS_KEY, JSON.stringify(srs)); } catch(e) {} }
+  function dayStr(offsetDays){
+    var d = new Date();
+    d.setDate(d.getDate() + (offsetDays || 0));
+    var m = d.getMonth() + 1, day = d.getDate();
+    return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (day < 10 ? "0" : "") + day;
+  }
+  function isDue(item){
+    var rec = srs[item.key];
+    return !rec || rec.d <= dayStr(0);
+  }
+  function countDue(){
+    var n = 0;
+    FLAT.forEach(function(item){ if (isDue(item)) n++; });
+    return n;
+  }
 
   var cardsCatFilter = "all";
   var cardsUnlearnedOnly = false;
+  var cardsDueOnly = false;
   var cardsOrder = [];
   var cardsPos = 0;
   var curTermText = "", curExampleText = "";
@@ -795,6 +998,7 @@
     FLAT.forEach(function(item, i){
       if (cardsCatFilter !== "all" && item.ci !== cardsCatFilter) return;
       if (cardsUnlearnedOnly && knownSet[cardKey(item)]) return;
+      if (cardsDueOnly && !isDue(item)) return;
       if (q && item.term.toLowerCase().indexOf(q) === -1 &&
           item.meaning.indexOf(q) === -1 &&
           item.example.toLowerCase().indexOf(q) === -1) return;
@@ -813,7 +1017,7 @@
 
   function refreshCardsStats(){
     var knownCount = Object.keys(knownSet).filter(function(k){ return knownSet[k]; }).length;
-    cardsStats.textContent = FLAT.length + " cards total · " + knownCount + " known";
+    cardsStats.textContent = FLAT.length + " cards · " + knownCount + " known · " + countDue() + " due";
   }
 
   function rebuildDeck(){
@@ -831,9 +1035,11 @@
       cardsFooterRowEl.style.display = "none";
       cardsProgress.textContent = "";
       cardsEmpty.style.display = "block";
-      cardsEmpty.textContent = cardsUnlearnedOnly
+      cardsEmpty.textContent = cardsDueOnly
+        ? "🎉 Nothing due right now — you're done for today. Come back tomorrow, or turn off \"Due today\" to keep practicing."
+        : cardsUnlearnedOnly
         ? "🎉 All matching words are marked as known! Turn off \"Unlearned only\" to review them again."
-        : "No cards match. / کارتی پیدا نشد.";
+        : "No cards match.";
       return;
     }
     cardStage.style.display = "flex";
@@ -890,8 +1096,14 @@
     var item = FLAT[cardsOrder[cardsPos]];
     knownSet[cardKey(item)] = true;
     saveKnown();
+    var rec = srs[cardKey(item)] || { b: 0, d: dayStr(0) };
+    rec.b = Math.min(rec.b + 1, INTERVALS.length - 1);
+    rec.d = dayStr(INTERVALS[rec.b]);
+    srs[cardKey(item)] = rec;
+    saveSrs();
+    noteActivity(1);
     refreshCardsStats();
-    if (cardsUnlearnedOnly){
+    if (cardsUnlearnedOnly || cardsDueOnly){
       cardsOrder.splice(cardsPos, 1);
       if (cardsPos >= cardsOrder.length) cardsPos = 0;
       showCard();
@@ -906,8 +1118,11 @@
     if (knownSet[cardKey(item)]){
       delete knownSet[cardKey(item)];
       saveKnown();
-      refreshCardsStats();
     }
+    srs[cardKey(item)] = { b: 0, d: dayStr(0) };
+    saveSrs();
+    noteActivity(1);
+    refreshCardsStats();
     cardsPos = (cardsPos + 1) % cardsOrder.length;
     showCard();
   });
@@ -918,19 +1133,624 @@
   });
   document.getElementById("resetProgress").addEventListener("click", function(){
     knownSet = {};
+    srs = {};
     saveKnown();
+    saveSrs();
     refreshCardsStats();
-    showCard();
+    rebuildDeck();
   });
+  document.getElementById("dueOnly").addEventListener("change", function(){
+    cardsDueOnly = this.checked;
+    rebuildDeck();
+  });
+  function openDueCards(){
+    var cb = document.getElementById("dueOnly");
+    cb.checked = true;
+    cardsDueOnly = true;
+    document.querySelector('#tabSeg button[data-tab="cards"]').click();
+  }
   document.getElementById("unlearnedOnly").addEventListener("change", function(){
     cardsUnlearnedOnly = this.checked;
     rebuildDeck();
   });
 
   rebuildDeck();
+
+  // ============================================================
+  // PRACTICE (daily exercises, English only)
+  // ============================================================
+  var PROG_KEY = "speakLearnProgress";
+  var DAILY_GOAL = 10;
+  var progress = { streak: 0, lastDay: "", counts: {} };
+  try {
+    var sp = JSON.parse(localStorage.getItem(PROG_KEY) || "null");
+    if (sp && typeof sp === "object") {
+      progress = { streak: sp.streak || 0, lastDay: sp.lastDay || "", counts: sp.counts || {} };
+    }
+  } catch (e) {}
+  function saveProgress(){ try { localStorage.setItem(PROG_KEY, JSON.stringify(progress)); } catch(e) {} }
+  function todayCount(){ return progress.counts[dayStr(0)] || 0; }
+  function currentStreak(){
+    if (progress.lastDay === dayStr(0) || progress.lastDay === dayStr(-1)) return progress.streak;
+    return 0;
+  }
+  function noteActivity(n){
+    var t = dayStr(0);
+    var before = progress.counts[t] || 0;
+    progress.counts[t] = before + n;
+    if (before < DAILY_GOAL && progress.counts[t] >= DAILY_GOAL && progress.lastDay !== t){
+      progress.streak = (progress.lastDay === dayStr(-1)) ? progress.streak + 1 : 1;
+      progress.lastDay = t;
+    }
+    var keys = Object.keys(progress.counts).sort();
+    while (keys.length > 14) delete progress.counts[keys.shift()];
+    saveProgress();
+  }
+
+  // ---------- helpers ----------
+  function el(tag, cls, text){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function btn(cls, text, handler){
+    var b = el("button", cls, text);
+    b.type = "button";
+    if (handler) b.addEventListener("click", handler);
+    return b;
+  }
+  function rand(n){ return Math.floor(Math.random() * n); }
+  function pick(arr){ return arr[rand(arr.length)]; }
+  function sample(arr, n){ var c = arr.slice(); shuffleArray(c); return c.slice(0, n); }
+  function wordCount(t){ return t.trim().split(/\s+/).length; }
+  function escRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+  function hasPlaceholder(t){ return /\b[XY]\b|something/.test(t); }
+
+  var practiceEl = document.getElementById("panel-practice");
+
+  var timerId = null;
+  function clearTimer(){ if (timerId){ clearInterval(timerId); timerId = null; } }
+  function runTimer(seconds, onTick, onDone){
+    clearTimer();
+    var end = Date.now() + seconds * 1000;
+    onTick(seconds);
+    timerId = setInterval(function(){
+      var left = Math.max(0, Math.ceil((end - Date.now()) / 1000));
+      onTick(left);
+      if (left <= 0){ clearTimer(); onDone(); }
+    }, 250);
+  }
+  function fmt(t){
+    var m = Math.floor(t / 60), s = t % 60;
+    return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+  }
+  function clearPractice(){
+    practiceEl.setAttribute("data-view", "other");
+    clearTimer();
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+    while (practiceEl.firstChild) practiceEl.removeChild(practiceEl.firstChild);
+  }
+  function addTopBar(title, right){
+    var bar = el("div", "pr-top");
+    bar.appendChild(btn("linklike", "← Practice", renderHome));
+    bar.appendChild(el("span", "pr-top-title", title));
+    if (right) bar.appendChild(el("span", "pr-top-right", right));
+    practiceEl.appendChild(bar);
+  }
+  function progressBar(frac){
+    var bar = el("div", "pbar");
+    var fill = el("div", "pbar-fill");
+    fill.style.width = Math.max(0, Math.min(100, frac * 100)) + "%";
+    bar.appendChild(fill);
+    return bar;
+  }
+
+  // ---------- question content ----------
+  var CURATED = [
+    { q: "If I want to convince someone that my position is reasonable, I need to ______.", a: "make a compelling case", o: ["raise an objection", "take it out of context", "have a vested interest"], n: "To convince people you make a compelling case: put forward an argument and back it up with evidence." },
+    { q: "If I make a claim but don't provide evidence for it, someone might ask me to ______.", a: "back up that claim", o: ["draw a distinction", "sway public opinion", "adopt a position"], n: "To back up a claim means to support it with evidence or reasons." },
+    { q: "If someone says something I disagree with, I can ______ rather than simply saying they are wrong.", a: "counter their argument", o: ["take it out of context", "exert influence", "gain credibility"], n: "Countering an argument (or raising an objection) is more precise and more polite than \"You're wrong.\"" },
+    { q: "If I point out a weakness in someone's reasoning, I am ______.", a: "undermining their argument", o: ["gaining credibility", "adopting a position", "defending a viewpoint"], n: "Pointing out a weakness in the reasoning weakens (undermines) the argument." },
+    { q: "If I accept part of someone's argument but still disagree overall, I can ______.", a: "acknowledge a valid point", o: ["take something out of context", "make a misleading claim", "exert influence"], n: "Acknowledging a valid point shows respect before you explain where you disagree." },
+    { q: "If a journalist deliberately gives only one side of an issue, they are not ______.", a: "presenting a balanced argument", o: ["gaining credibility", "raising an objection", "drawing a distinction"], n: "A balanced argument covers more than one side of the issue." },
+    { q: "If a company supports a law because it will make more money, it may ______.", a: "have a vested interest in it", o: ["present a balanced argument", "address a concern", "reach a convincing conclusion"], n: "A vested interest is a personal stake, often financial, in an outcome." },
+    { q: "If I publicly express my position on an issue, I ______.", a: "take a particular stance", o: ["take something out of context", "undermine an argument", "raise an objection"], n: "To take a stance (or adopt a position) is to state where you stand on an issue." },
+    { q: "If I explain why my decision was reasonable, I ______.", a: "justify my decision", o: ["challenge an assumption", "sway public opinion", "take it out of context"], n: "To justify a decision is to give reasons that show it was reasonable." },
+    { q: "If I explain the difference between two ideas that people often confuse, I ______.", a: "draw a distinction between them", o: ["win them over", "raise an objection", "appeal to emotions"], n: "Draw a distinction between X and Y = clearly explain how X and Y differ." },
+    { q: "Advertisers often ______ rather than logic, hoping to influence what people buy.", a: "appeal to emotions", o: ["draw a distinction", "address a concern", "justify a decision"], n: "Appeal to emotions vs. appeal to reason: feelings versus logic." },
+    { q: "The article quoted only the data that supported its view, which is a clear example of ______.", a: "selective use of evidence", o: ["a balanced presentation", "a valid point", "an appeal to reason"], n: "Selective use of evidence = choosing only the facts that help your side." },
+    { q: "He repeated her sentence without the surrounding explanation, so he took it ______.", a: "out of context", o: ["into consideration", "for granted", "at face value"], n: "Take something out of context = remove the surrounding information so the meaning changes." },
+    { q: "I'm not ______ that the evidence supports that conclusion.", a: "convinced", o: ["convincing", "convince", "convinces"], n: "\"I'm not convinced that…\" is a polite, academic alternative to \"That's wrong.\"" },
+    { q: "I accept the premise of your argument, but I'm not sure the conclusion necessarily ______.", a: "follows", o: ["follow up", "followed", "following"], n: "A conclusion \"follows\" when it logically comes from the premise." },
+    { q: "I don't think that argument holds ______ when we consider the long-term costs.", a: "up", o: ["out", "over", "off"], n: "An argument that \"holds up\" stays valid when it is tested." },
+    { q: "The politician accused the media of ______ framing designed to mislead voters.", a: "deliberate", o: ["deliberately", "deliberation", "deliberated"], n: "An adjective is needed before the noun \"framing\": deliberate framing." }
+  ];
+
+  var CLOZE_POOL = FLAT.filter(function(item){
+    return item.example.toLowerCase().indexOf(item.term.toLowerCase()) !== -1;
+  });
+  var COLLOC_POOL = FLAT.filter(function(item){
+    return wordCount(item.term) >= 2 && !hasPlaceholder(item.term);
+  });
+  var TARGET_EXPR = [];
+  FLAT.forEach(function(item){ if (item.ci >= 10 && wordCount(item.term) >= 2) TARGET_EXPR.push(item.term); });
+  var OPENERS = [
+    "I'd argue that…", "The way I see it…", "To some extent, I agree that…",
+    "It could be argued that…", "On balance, I'd say…", "I'd question the assumption that…"
+  ];
+  var DEBATE_TOPICS = [
+    "Universities should teach students how to use AI rather than prohibit it.",
+    "Working from home should become the default option whenever a job can be done remotely.",
+    "Social media companies should be legally responsible for harmful content published on their platforms.",
+    "People should work fewer hours, even if this means earning less money.",
+    "Governments should spend more money on public transport than on building new roads."
+  ];
+  var DRILL_STARTERS = [
+    "One assumption about modern society that I would challenge is…",
+    "I would make a compelling case for…",
+    "One argument that I find difficult to counter is…",
+    "I strongly believe that…, although…",
+    "One distinction that people often fail to make is the distinction between…",
+    "If society suddenly stopped using social media, I think…",
+    "If I had to make a difficult decision tomorrow, I would…",
+    "One decision I have made that I would still defend is…",
+    "People often appeal to emotions when…",
+    "One issue where I have a vested interest is…"
+  ];
+
+  function genCurated(used){
+    for (var t = 0; t < 30; t++){
+      var idx = rand(CURATED.length), c = CURATED[idx], id = "cur" + idx;
+      if (used[id]) continue;
+      used[id] = true;
+      var opts = c.o.concat([c.a]);
+      shuffleArray(opts);
+      return { id: id, kind: "mcq", tag: "Complete the sentence", prompt: c.q, options: opts, answer: c.a, explain: c.n, speakText: c.q.replace("______", c.a), review: c.q.replace("______", "[" + c.a + "]") };
+    }
+    return null;
+  }
+  function genCloze(used){
+    for (var t = 0; t < 40; t++){
+      var item = pick(CLOZE_POOL), id = "cl" + item.key;
+      if (used[id]) continue;
+      used[id] = true;
+      var re = new RegExp(escRe(item.term), "i");
+      var shown = item.example.replace(re, "_____");
+      var wc = wordCount(item.term);
+      var others = FLAT.filter(function(o){
+        return o.ci !== item.ci && o.term.toLowerCase() !== item.term.toLowerCase() && wordCount(o.term) === wc && !hasPlaceholder(o.term);
+      });
+      var seen = {}, dist = [];
+      shuffleArray(others);
+      others.forEach(function(o){ if (dist.length < 3 && !seen[o.term]) { seen[o.term] = true; dist.push(o.term); } });
+      var opts = dist.concat([item.term]);
+      shuffleArray(opts);
+      return { id: id, kind: "mcq", tag: "Fill the blank", prompt: shown, options: opts, answer: item.term, explain: "", speakText: item.example, review: item.example.replace(re, "[" + item.term + "]") };
+    }
+    return null;
+  }
+  function genColloc(used){
+    for (var t = 0; t < 40; t++){
+      var item = pick(COLLOC_POOL), id = "co" + item.key;
+      if (used[id]) continue;
+      used[id] = true;
+      var words = item.term.split(/\s+/);
+      var last = words[words.length - 1];
+      var lasts = {}, dist = [];
+      var others = COLLOC_POOL.filter(function(o){ return o.ci !== item.ci; });
+      shuffleArray(others);
+      others.forEach(function(o){
+        var w = o.term.split(/\s+/);
+        var l = w[w.length - 1];
+        if (dist.length < 3 && l.toLowerCase() !== last.toLowerCase() && !lasts[l]) { lasts[l] = true; dist.push(l); }
+      });
+      var opts = dist.concat([last]);
+      shuffleArray(opts);
+      var shown = words.slice(0, -1).join(" ") + " _____";
+      return { id: id, kind: "mcq", tag: "Complete the collocation", prompt: shown, options: opts, answer: last, explain: "Example: " + item.example, speakText: item.term, review: item.term };
+    }
+    return null;
+  }
+  function genDictation(used){
+    for (var t = 0; t < 40; t++){
+      var text;
+      if (Math.random() < 0.5){
+        var pr = pick(PHRASES), pair = pick(pr[2]);
+        text = pair[0];
+      } else {
+        text = pick(FLAT).example;
+      }
+      var id = "di" + text;
+      if (used[id]) continue;
+      var cleaned = text.replace(/…/g, " ").replace(/\s+/g, " ").trim();
+      if (wordCount(cleaned) < 3) continue;
+      used[id] = true;
+      return { id: id, kind: "dictation", tag: "Listen and type", prompt: "", answer: cleaned, speakText: text.replace(/…/g, ","), review: cleaned };
+    }
+    return null;
+  }
+  function genMany(gen, n, used){
+    var out = [];
+    for (var i = 0; i < n; i++){ var q = gen(used); if (q) out.push(q); }
+    return out;
+  }
+  var MODES = {
+    daily: { title: "Daily 10", build: function(){
+      var used = {};
+      var qs = genMany(genCurated, 3, used).concat(genMany(genCloze, 3, used), genMany(genColloc, 2, used), genMany(genDictation, 2, used));
+      shuffleArray(qs);
+      return qs;
+    } },
+    cloze: { title: "Fill the blank", build: function(){
+      var used = {};
+      var qs = genMany(genCurated, 4, used).concat(genMany(genCloze, 6, used));
+      shuffleArray(qs);
+      return qs;
+    } },
+    colloc: { title: "Collocation builder", build: function(){ return genMany(genColloc, 10, {}); } },
+    dict: { title: "Listen & type", build: function(){ return genMany(genDictation, 8, {}); } }
+  };
+
+  // ---------- dictation checking ----------
+  function cleanForCompare(t){
+    return t.replace(/[’‘]/g, "'").replace(/…/g, " ").replace(/-/g, " ");
+  }
+  function tokNorm(tok){ return tok.toLowerCase().replace(/[^a-z0-9']/g, ""); }
+  function alignWords(a, b){
+    var n = a.length, m = b.length, dp = [], i, j;
+    for (i = 0; i <= n; i++){ var row = []; for (j = 0; j <= m; j++) row.push(0); dp.push(row); }
+    for (i = n - 1; i >= 0; i--){
+      for (j = m - 1; j >= 0; j--){
+        dp[i][j] = (a[i] === b[j]) ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+      }
+    }
+    var matched = []; for (i = 0; i < n; i++) matched.push(false);
+    i = 0; j = 0;
+    while (i < n && j < m){
+      if (a[i] === b[j]){ matched[i] = true; i++; j++; }
+      else if (dp[i + 1][j] >= dp[i][j + 1]) i++;
+      else j++;
+    }
+    return { matched: matched, lcs: dp[0][0] };
+  }
+
+  // ---------- views ----------
+  var session = null;
+
+  function renderHome(){
+    clearPractice();
+    practiceEl.setAttribute("data-view", "home");
+    var done = todayCount();
+    var hero = el("div", "pr-hero");
+    hero.appendChild(el("div", "pr-streak", currentStreak() + "-day streak"));
+    hero.appendChild(el("div", "pr-goal-text", Math.min(done, DAILY_GOAL) + " / " + DAILY_GOAL + " done today" + (done >= DAILY_GOAL ? " — goal reached" : "")));
+    hero.appendChild(progressBar(done / DAILY_GOAL));
+    practiceEl.appendChild(hero);
+
+    var due = countDue();
+    var dueRow = el("div", "pr-due");
+    dueRow.appendChild(el("span", null, due + " flashcards due for review today"));
+    dueRow.appendChild(btn("cbtn known", "Review flashcards", openDueCards));
+    practiceEl.appendChild(dueRow);
+
+    var list = el("div", "pr-modes");
+    var defs = [
+      { id: "daily", title: "Daily 10", time: "about 5 min", desc: "A mixed set: sentence completion, collocations and listen-and-type. Do this one every day.", primary: true },
+      { id: "cloze", title: "Fill the blank", time: "about 3 min", desc: "Choose the expression that completes a sentence. Includes the sentences from your class slides." },
+      { id: "colloc", title: "Collocation builder", time: "about 2 min", desc: "Finish the collocation. This trains the word partnerships that make you sound natural." },
+      { id: "dict", title: "Listen & type", time: "about 5 min", desc: "Listen to a sentence and type it. Trains listening, spelling and chunk memory." },
+      { id: "speak", title: "Speaking drill", time: "2 to 5 min", desc: "Timed speaking with must-use expressions. Say it out loud, not in your head." }
+    ];
+    defs.forEach(function(d){
+      var card = el("div", "pr-mode" + (d.primary ? " primary" : ""));
+      var head = el("div", "pr-mode-head");
+      head.appendChild(el("span", "pr-mode-title", d.title));
+      head.appendChild(el("span", "pr-mode-time", d.time));
+      card.appendChild(head);
+      card.appendChild(el("div", "pr-mode-desc", d.desc));
+      card.appendChild(btn(d.primary ? "cbtn known" : "cbtn", d.id === "speak" ? "Open" : "Start", function(){
+        if (d.id === "speak") renderSpeakMenu(); else startSession(d.id);
+      }));
+      list.appendChild(card);
+    });
+    practiceEl.appendChild(list);
+    practiceEl.appendChild(el("div", "pr-tip", "Tip: short daily practice beats one long session. Ten minutes a day, every day."));
+  }
+
+  function startSession(mode){
+    var m = MODES[mode];
+    session = { mode: mode, title: m.title, qs: m.build(), i: 0, correct: 0, missed: [] };
+    if (!session.qs.length){ renderHome(); return; }
+    renderQuestion();
+  }
+
+  function recordAnswer(q, ok){
+    if (ok) session.correct++; else session.missed.push(q);
+    noteActivity(1);
+  }
+  function advance(){
+    session.i++;
+    if (session.i >= session.qs.length) renderResults(); else renderQuestion();
+  }
+
+  function renderQuestion(){
+    clearPractice();
+    var q = session.qs[session.i];
+    addTopBar(session.title, (session.i + 1) + " / " + session.qs.length);
+    practiceEl.appendChild(progressBar(session.i / session.qs.length));
+    var card = el("div", "pr-card");
+    card.appendChild(el("div", "pr-tag", q.tag));
+    practiceEl.appendChild(card);
+
+    var fb = el("div", "pr-feedback");
+    fb.hidden = true;
+    var nextB = btn("cbtn known", session.i + 1 >= session.qs.length ? "See results" : "Next", advance);
+    nextB.hidden = true;
+
+    if (q.kind === "mcq"){
+      card.appendChild(el("div", "pr-prompt", q.prompt));
+      var opts = el("div", "pr-opts");
+      var answered = false;
+      var buttons = [];
+      q.options.forEach(function(o){
+        var b = btn("pr-opt", o, function(){
+          if (answered) return;
+          answered = true;
+          var ok = (o === q.answer);
+          buttons.forEach(function(x){
+            x.disabled = true;
+            if (x.textContent === q.answer) x.classList.add("right");
+          });
+          if (!ok) b.classList.add("wrong");
+          recordAnswer(q, ok);
+          fb.appendChild(el("div", "pr-fb-head " + (ok ? "good" : "bad"), ok ? "Correct" : "Not quite. Answer: " + q.answer));
+          if (q.explain) fb.appendChild(el("div", "pr-fb-note", q.explain));
+          var full = el("div", "pr-fb-sentence");
+          full.appendChild(el("span", null, q.review.replace(/[\[\]]/g, "")));
+          full.appendChild(makeSpkBtn(q.speakText, true));
+          fb.appendChild(full);
+          fb.hidden = false;
+          nextB.hidden = false;
+          nextB.focus();
+        });
+        buttons.push(b);
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);
+    } else {
+      var playRow = el("div", "pr-play");
+      var playBtn = makeSpkBtn(q.speakText, false);
+      playBtn.classList.add("big-inline");
+      playBtn.addEventListener("click", function(){ speak(q.speakText, playBtn, 0.92); });
+      var slowBtn = btn("cbtn ghost", "Play slowly", function(){ speak(q.speakText, null, 0.6); });
+      playRow.appendChild(playBtn);
+      playRow.appendChild(slowBtn);
+      card.appendChild(el("div", "pr-prompt small", "Listen, then type exactly what you hear."));
+      card.appendChild(playRow);
+      var input = el("input", "pr-input");
+      input.type = "text";
+      input.id = "dictInput" + session.i;
+      input.setAttribute("autocomplete", "off");
+      input.setAttribute("autocapitalize", "off");
+      input.setAttribute("spellcheck", "false");
+      input.placeholder = "Type the sentence here";
+      card.appendChild(input);
+      var checked = false;
+      var checkB = btn("cbtn known", "Check", function(){
+        if (checked) { advance(); return; }
+        checked = true;
+        input.disabled = true;
+        var tokens = cleanForCompare(q.answer).split(/\s+/).filter(function(t){ return tokNorm(t) !== ""; });
+        var a = tokens.map(tokNorm);
+        var b = cleanForCompare(input.value).split(/\s+/).map(tokNorm).filter(Boolean);
+        var res = alignWords(a, b);
+        var acc = res.lcs / Math.max(a.length, b.length, 1);
+        var ok = acc >= 0.9;
+        recordAnswer(q, ok);
+        fb.appendChild(el("div", "pr-fb-head " + (ok ? "good" : "bad"), ok ? "Correct (" + Math.round(acc * 100) + "%)" : "Accuracy " + Math.round(acc * 100) + "%. Compare below."));
+        var line = el("div", "pr-diff");
+        tokens.forEach(function(tok, idx){
+          line.appendChild(el("span", res.matched[idx] ? "w-ok" : "w-miss", tok));
+          line.appendChild(document.createTextNode(" "));
+        });
+        fb.appendChild(line);
+        fb.appendChild(el("div", "pr-fb-note", "You typed: " + (input.value.trim() || "(nothing)")));
+        fb.hidden = false;
+        checkB.textContent = session.i + 1 >= session.qs.length ? "See results" : "Next";
+      });
+      input.addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); checkB.click(); } });
+      var ctr = el("div", "cards-controls");
+      ctr.appendChild(checkB);
+      card.appendChild(ctr);
+      setTimeout(function(){ try { speak(q.speakText, playBtn, 0.92); input.focus(); } catch (e) {} }, 300);
+    }
+    practiceEl.appendChild(fb);
+    if (q.kind === "mcq"){
+      var c2 = el("div", "cards-controls");
+      c2.appendChild(nextB);
+      practiceEl.appendChild(c2);
+    }
+  }
+
+  function renderResults(){
+    clearPractice();
+    addTopBar(session.title, "Results");
+    var n = session.qs.length, score = session.correct;
+    var card = el("div", "pr-card center");
+    card.appendChild(el("div", "pr-score", score + " / " + n));
+    var msg = score === n ? "Perfect. Come back tomorrow to keep the streak alive."
+            : score >= n * 0.7 ? "Good work. Review the ones you missed below."
+            : "Keep going. Repetition is how these expressions stick.";
+    card.appendChild(el("div", "pr-fb-note", msg));
+    var done = todayCount();
+    card.appendChild(el("div", "pr-goal-text", Math.min(done, DAILY_GOAL) + " / " + DAILY_GOAL + " done today · " + currentStreak() + "-day streak"));
+    practiceEl.appendChild(card);
+
+    if (session.missed.length){
+      var box = el("div", "pr-card");
+      box.appendChild(el("div", "pr-tag", "Review these"));
+      session.missed.forEach(function(q){
+        var row = el("div", "phrase-row");
+        row.appendChild(el("div", "txt", q.review.replace(/[\[\]]/g, "")));
+        row.appendChild(makeSpkBtn(q.speakText, true));
+        box.appendChild(row);
+      });
+      practiceEl.appendChild(box);
+    }
+    var ctr = el("div", "cards-controls");
+    ctr.appendChild(btn("cbtn known", "Another round", function(){ startSession(session.mode); }));
+    if (session.mode === "daily") ctr.appendChild(btn("cbtn", "Bonus: speaking drill", renderSpeakMenu));
+    ctr.appendChild(btn("cbtn ghost", "Back", renderHome));
+    practiceEl.appendChild(ctr);
+  }
+
+  // ---------- speaking ----------
+  function renderSpeakMenu(){
+    clearPractice();
+    addTopBar("Speaking drill", null);
+    var wrap = el("div", "pr-modes");
+    var a = el("div", "pr-mode primary");
+    var ah = el("div", "pr-mode-head");
+    ah.appendChild(el("span", "pr-mode-title", "Argue a topic"));
+    ah.appendChild(el("span", "pr-mode-time", "60 s prep + 90 s speak"));
+    a.appendChild(ah);
+    a.appendChild(el("div", "pr-mode-desc", "A debate topic plus three expressions you must use. Same format as your Putting It All Together class."));
+    a.appendChild(btn("cbtn known", "Start", topicDrill));
+    wrap.appendChild(a);
+    var b = el("div", "pr-mode");
+    var bh = el("div", "pr-mode-head");
+    bh.appendChild(el("span", "pr-mode-title", "Quick-fire starters"));
+    bh.appendChild(el("span", "pr-mode-time", "5 x 30 s"));
+    b.appendChild(bh);
+    b.appendChild(el("div", "pr-mode-desc", "Five sentence starters from class. Finish each one out loud and keep talking until the timer ends."));
+    b.appendChild(btn("cbtn", "Start", quickFire));
+    wrap.appendChild(b);
+    practiceEl.appendChild(wrap);
+  }
+
+  function topicDrill(){
+    clearPractice();
+    addTopBar("Argue a topic", null);
+    var topic = pick(DEBATE_TOPICS);
+    var targets = sample(TARGET_EXPR, 3);
+    var opener = pick(OPENERS);
+    var card = el("div", "pr-card");
+    card.appendChild(el("div", "pr-tag", "Topic"));
+    card.appendChild(el("div", "pr-topic", topic));
+    card.appendChild(el("div", "pr-tag", "Use these expressions"));
+    var list = el("div", "pr-targets");
+    targets.forEach(function(t){
+      var r = el("div", "pr-target");
+      r.appendChild(el("span", null, t));
+      r.appendChild(makeSpkBtn(t.replace(/\b[XY]\b/g, "something"), true));
+      list.appendChild(r);
+    });
+    card.appendChild(list);
+    card.appendChild(el("div", "pr-tag", "Try opening with"));
+    var op = el("div", "pr-target");
+    op.appendChild(el("span", null, opener));
+    op.appendChild(makeSpkBtn(opener.replace(/…/g, "..."), true));
+    card.appendChild(op);
+    var phase = el("div", "pr-phase", "You get 60 seconds to prepare, then speak for about 90 seconds.");
+    var clock = el("div", "pr-clock", "01:00");
+    card.appendChild(phase);
+    card.appendChild(clock);
+    var ctr = el("div", "cards-controls");
+    var startB = btn("cbtn known", "Start", startPrep);
+    var skipB = btn("cbtn", "Skip prep", startSpeak);
+    var stopB = btn("cbtn", "Finish early", finish);
+    var newB = btn("cbtn ghost", "New topic", topicDrill);
+    skipB.hidden = true; stopB.hidden = true;
+    ctr.appendChild(startB); ctr.appendChild(skipB); ctr.appendChild(stopB); ctr.appendChild(newB);
+    card.appendChild(ctr);
+    practiceEl.appendChild(card);
+
+    function startPrep(){
+      startB.hidden = true; newB.hidden = true; skipB.hidden = false;
+      phase.textContent = "Prepare your argument. Plan where each expression fits.";
+      clock.classList.remove("speaking");
+      runTimer(60, function(t){ clock.textContent = fmt(t); }, startSpeak);
+    }
+    function startSpeak(){
+      skipB.hidden = true; startB.hidden = true; newB.hidden = true; stopB.hidden = false;
+      phase.textContent = "Speak now. Out loud!";
+      clock.classList.add("speaking");
+      runTimer(90, function(t){ clock.textContent = fmt(t); }, finish);
+    }
+    function finish(){
+      clearTimer();
+      clock.classList.remove("speaking");
+      skipB.hidden = true; stopB.hidden = true; startB.hidden = true; newB.hidden = true;
+      phase.textContent = "Time. Be honest: which did you use?";
+      var checks = el("div", "pr-checks");
+      var items = targets.concat([opener]);
+      items.forEach(function(t, i){
+        var lab = el("label", "pr-check");
+        var cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.id = "usedChk" + i;
+        lab.appendChild(cb);
+        lab.appendChild(el("span", null, t));
+        checks.appendChild(lab);
+      });
+      card.appendChild(checks);
+      var ctr2 = el("div", "cards-controls");
+      ctr2.appendChild(btn("cbtn known", "Done", function(){ noteActivity(5); renderHome(); }));
+      ctr2.appendChild(btn("cbtn", "Another topic", function(){ noteActivity(5); topicDrill(); }));
+      card.appendChild(ctr2);
+    }
+  }
+
+  function quickFire(){
+    clearPractice();
+    addTopBar("Quick-fire starters", null);
+    var items = sample(DRILL_STARTERS, 5), idx = 0;
+    var card = el("div", "pr-card center");
+    var tag = el("div", "pr-tag", "");
+    var starter = el("div", "pr-topic", "");
+    var phase = el("div", "pr-phase", "");
+    var clock = el("div", "pr-clock", "");
+    var ctr = el("div", "cards-controls");
+    var skipB = btn("cbtn", "Next starter", function(){ idx++; next(); });
+    ctr.appendChild(skipB);
+    card.appendChild(tag); card.appendChild(starter); card.appendChild(phase); card.appendChild(clock); card.appendChild(ctr);
+    practiceEl.appendChild(card);
+    next();
+
+    function next(){
+      clearTimer();
+      if (idx >= items.length){
+        tag.textContent = "Finished";
+        starter.textContent = "Nice work. Five starters done.";
+        phase.textContent = "";
+        clock.textContent = "";
+        clock.classList.remove("speaking");
+        ctr.removeChild(skipB);
+        noteActivity(5);
+        ctr.appendChild(btn("cbtn known", "Again", quickFire));
+        ctr.appendChild(btn("cbtn ghost", "Back", renderHome));
+        return;
+      }
+      tag.textContent = "Starter " + (idx + 1) + " / " + items.length;
+      starter.textContent = items[idx];
+      phase.textContent = "Get ready";
+      clock.classList.remove("speaking");
+      runTimer(5, function(t){ clock.textContent = fmt(t); }, function(){
+        phase.textContent = "Finish the sentence out loud and keep talking";
+        clock.classList.add("speaking");
+        runTimer(25, function(t){ clock.textContent = fmt(t); }, function(){ idx++; next(); });
+      });
+    }
+  }
+
+  function onPracticeTab(){
+    if (practiceEl.getAttribute("data-view") !== "other") renderHome();
+  }
+
+  renderHome();
 })();
 </script>
-
 
 <script>
 if ('serviceWorker' in navigator) {

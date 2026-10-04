@@ -1,6 +1,6 @@
 // Minimal offline cache for the Speak & Learn web app.
 // Caches the app shell on first visit so it opens instantly (and works offline) afterwards.
-const CACHE_NAME = "speak-and-learn-v1";
+const CACHE_NAME = "speak-and-learn-v2";
 const ASSETS = [
   "./",
   "./index.html",
