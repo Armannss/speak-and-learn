@@ -1,7 +1,7 @@
 // Offline cache for the Speak & Learn web app.
 // Pages (index.html) are fetched NETWORK-FIRST so updates show up right away;
 // the cached copy is only used when you're offline.
-const CACHE_NAME = "speak-and-learn-v4";
+const CACHE_NAME = "parley-v7";
 const ASSETS = [
   "./",
   "./index.html",

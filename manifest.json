@@ -1,13 +1,13 @@
 {
-  "name": "Speak & Learn",
-  "short_name": "Speak & Learn",
-  "description": "Interactive English vocabulary, collocations, and conversation phrases with click-to-hear pronunciation and Persian meanings.",
+  "name": "Parley",
+  "short_name": "Parley",
+  "description": "Words, phrases, grammar and daily practice from our English speaking class.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#FFF8EE",
-  "theme_color": "#0E9E90",
+  "background_color": "#F3F5FB",
+  "theme_color": "#3B5BFF",
   "icons": [
     {
       "src": "icon-192.png",
