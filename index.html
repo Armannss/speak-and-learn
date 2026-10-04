@@ -2,310 +2,601 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0E9594">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0E9E90">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Speak & Learn">
 <title>Speak & Learn</title>
 <meta name="description" content="Interactive English vocabulary and collocations glossary with click-to-hear pronunciation and Persian meanings.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F5F6F4; --surface:#FFFFFF; --surface-alt:#ECF1EF;
-    --ink:#16233A; --ink-soft:#4B5768;
-    --accent:#0E9594; --accent-ink:#FFFFFF;
-    --accent-2:#C98A2E; --border:#DCE3E0;
-    --shadow: 0 1px 2px rgba(22,35,58,.06), 0 6px 20px rgba(22,35,58,.06);
-    --good:#1E8E5A; --bad:#C0443A;
+    --bg:#FFF8EE; --surface:#FFFFFF; --surface-alt:#FFF0D9;
+    --ink:#2B2340; --ink-soft:#6B6385;
+    --accent:#0E9E90; --accent-dark:#097A6F; --accent-ink:#FFFFFF;
+    --accent-2:#F5A300; --accent-2-dark:#C98200;
+    --coral:#F0584A; --coral-dark:#C23F33;
+    --violet:#7C5CFF; --sky:#2584E8; --pink:#DB3F8F;
+    --border:#EADFCB; --edge:#E2D3B6;
+    --shadow: 0 2px 0 rgba(43,35,64,.04), 0 10px 24px rgba(43,35,64,.07);
+    --good:#1F9D63; --bad:#E5484D;
+    --cc:#0E9E90;
     padding-top:env(safe-area-inset-top,0px);
-    padding-bottom:env(safe-area-inset-bottom,0px);
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#0F1720; --surface:#17212C; --surface-alt:#1C2833;
-      --ink:#EDF2F4; --ink-soft:#A9B6C2;
-      --accent:#33D6CF; --accent-ink:#06231F;
-      --accent-2:#E7B75B; --border:#2A3644;
-      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
-      --good:#4CCB8D; --bad:#F0786C;
+      --bg:#17132A; --surface:#231D3D; --surface-alt:#2D2650;
+      --ink:#F4F0FF; --ink-soft:#B3A9D1;
+      --accent:#2DD4BF; --accent-dark:#14958A; --accent-ink:#062B27;
+      --accent-2:#FFC53D; --accent-2-dark:#C99410;
+      --coral:#FF7A6B; --coral-dark:#C2493D;
+      --violet:#9B84FF; --sky:#5BB0FF; --pink:#FF74B4;
+      --border:#3A3166; --edge:#120F22;
+      --shadow: 0 2px 0 rgba(0,0,0,.2), 0 10px 24px rgba(0,0,0,.4);
+      --good:#4CCB8D; --bad:#FF7A80;
     }
   }
   :root[data-theme="dark"]{
-    --bg:#0F1720; --surface:#17212C; --surface-alt:#1C2833;
-    --ink:#EDF2F4; --ink-soft:#A9B6C2;
-    --accent:#33D6CF; --accent-ink:#06231F;
-    --accent-2:#E7B75B; --border:#2A3644;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
-    --good:#4CCB8D; --bad:#F0786C;
+    --bg:#17132A; --surface:#231D3D; --surface-alt:#2D2650;
+    --ink:#F4F0FF; --ink-soft:#B3A9D1;
+    --accent:#2DD4BF; --accent-dark:#14958A; --accent-ink:#062B27;
+    --accent-2:#FFC53D; --accent-2-dark:#C99410;
+    --coral:#FF7A6B; --coral-dark:#C2493D;
+    --violet:#9B84FF; --sky:#5BB0FF; --pink:#FF74B4;
+    --border:#3A3166; --edge:#120F22;
+    --shadow: 0 2px 0 rgba(0,0,0,.2), 0 10px 24px rgba(0,0,0,.4);
+    --good:#4CCB8D; --bad:#FF7A80;
   }
 
-  *{box-sizing:border-box;}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{ background:var(--bg); }
   body{
     margin:0; background:var(--bg); color:var(--ink);
-    font-family:"Inter",-apple-system,sans-serif;
+    font-family:"Nunito","Inter",-apple-system,sans-serif; font-weight:600;
     padding-inline:16px;
+    background-image:
+      radial-gradient(circle at 12% -10%, color-mix(in srgb, var(--accent) 16%, transparent) 0, transparent 38%),
+      radial-gradient(circle at 98% 4%, color-mix(in srgb, var(--accent-2) 18%, transparent) 0, transparent 34%);
+    background-repeat:no-repeat;
   }
   .wrap{ max-width:900px; margin:0 auto; }
-  .fa{ font-family:"Vazirmatn","Inter",sans-serif; direction:rtl; unicode-bidi:isolate; }
+  .fa{ font-family:"Vazirmatn","Nunito",sans-serif; direction:rtl; unicode-bidi:isolate; }
+  button{ font-family:inherit; }
 
   /* ---------- Header ---------- */
   header.top{
     position:sticky; top:env(safe-area-inset-top,0px);
-    background:var(--bg);
-    padding-block:14px 10px;
+    background:color-mix(in srgb, var(--bg) 90%, transparent);
+    -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    padding-block:12px 8px; margin-inline:-16px; padding-inline:16px;
     z-index:20;
-    border-bottom:1px solid var(--border);
   }
-  .title-row{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .title-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .brand{ display:flex; align-items:center; gap:10px; min-width:0; }
+  .logo{
+    width:44px; height:44px; border-radius:14px; flex:none;
+    display:flex; align-items:center; justify-content:center; font-size:26px;
+    background:linear-gradient(145deg,var(--accent),var(--violet));
+    box-shadow:0 4px 0 var(--accent-dark); transform:rotate(-6deg);
+  }
   h1{
-    font-family:"Fraunces",serif; font-weight:600; font-size:clamp(22px,4.5vw,30px);
-    margin:0; letter-spacing:-0.01em;
+    font-family:"Nunito",sans-serif; font-weight:900; font-size:clamp(20px,5vw,26px);
+    margin:0; letter-spacing:-0.02em; line-height:1.05;
   }
-  .sub{ color:var(--ink-soft); font-size:13.5px; margin:4px 0 0 0; }
-  .controls{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+  h1 em{ font-style:normal; color:var(--accent); }
+  .sub{ color:var(--ink-soft); font-size:12.5px; margin:2px 0 0 0; font-weight:700; }
+  .tools{ display:flex; gap:6px; align-items:center; flex:none; }
+  .tool-btn, .accent-toggle{
+    border:2px solid var(--border); border-bottom-width:4px; background:var(--surface); color:var(--ink);
+    border-radius:12px; height:38px; min-width:38px; padding:0 10px; font-size:16px; font-weight:800; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:4px;
+    transition:transform .1s ease, border-color .15s;
+  }
+  .accent-toggle{ font-size:13px; }
+  .tool-btn:hover, .accent-toggle:hover{ border-color:var(--accent); }
+  .tool-btn:active, .accent-toggle:active{ transform:translateY(2px); border-bottom-width:2px; }
+
+  .controls{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:10px; }
   .search{
     flex:1 1 220px; min-width:0;
-    background:var(--surface); border:1px solid var(--border); border-radius:10px;
-    padding:9px 12px; font-size:14px; color:var(--ink);
+    background:var(--surface); border:2px solid var(--border); border-radius:16px;
+    padding:11px 16px; font-size:15px; color:var(--ink); font-weight:700;
     font-family:inherit;
   }
-  .search:focus{ outline:2px solid var(--accent); outline-offset:1px; }
-  .seg{ display:flex; background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
-  .seg button{
-    border:none; background:transparent; color:var(--ink-soft); font:inherit; font-weight:600;
-    font-size:13px; padding:9px 14px; cursor:pointer;
-  }
-  .seg button.active{ background:var(--accent); color:var(--accent-ink); }
-  .accent-toggle{
-    border:1px solid var(--border); background:var(--surface); color:var(--ink-soft);
-    border-radius:10px; padding:9px 12px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;
-  }
-  .accent-toggle:hover{ border-color:var(--accent); color:var(--accent); }
+  .search::placeholder{ color:var(--ink-soft); opacity:.8; }
+  .search:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent); }
 
   /* ---------- Category chip nav ---------- */
   .chipnav{
-    display:flex; gap:6px; overflow-x:auto; padding:10px 0 2px 0; margin-bottom:2px;
-    scrollbar-width:thin;
+    display:flex; gap:8px; overflow-x:auto; padding:10px 2px 6px 2px;
+    scrollbar-width:none;
   }
-  .chipnav::-webkit-scrollbar{ height:5px; }
+  .chipnav::-webkit-scrollbar{ display:none; }
   .chip{
-    flex:none; font-size:12.5px; font-weight:600; color:var(--ink-soft);
-    background:var(--surface); border:1px solid var(--border); border-radius:999px;
-    padding:6px 12px; cursor:pointer; white-space:nowrap; font-family:inherit;
+    flex:none; font-size:13px; font-weight:800; color:var(--ink);
+    background:var(--surface); border:2px solid var(--border); border-bottom-width:4px; border-radius:999px;
+    padding:6px 14px; cursor:pointer; white-space:nowrap;
+    transition:transform .1s ease;
   }
-  .chip:hover{ border-color:var(--accent); color:var(--accent); }
+  .chip[style*="--cc"]::before{ content:""; display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--cc); margin-right:7px; }
+  .chip:hover{ border-color:var(--cc, var(--accent)); }
+  .chip:active{ transform:translateY(2px); border-bottom-width:2px; }
+  .chip.active, #chipnav.mode-cards .chip.active{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent-dark); }
+  .chip.active::before{ background:var(--accent-ink) !important; }
 
-  main{ padding-bottom:60px; }
+  main{ padding-bottom:120px; }
+
+  /* ---------- Hero stats ---------- */
+  .hero{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:10px 0 6px; }
+  .hstat{
+    background:var(--surface); border:2px solid var(--border); border-bottom-width:5px; border-radius:20px;
+    padding:10px 6px 9px; display:flex; flex-direction:column; align-items:center; gap:1px;
+    cursor:pointer; color:var(--ink); min-width:0;
+    transition:transform .1s ease, border-color .15s;
+  }
+  .hstat:hover{ border-color:var(--accent); }
+  .hstat:active{ transform:translateY(3px); border-bottom-width:2px; }
+  .hstat b{ font-weight:900; font-size:16px; line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+  .hstat small{ font-size:11px; color:var(--ink-soft); font-weight:800; }
+  .hstat .hico{ font-size:30px; line-height:44px; height:44px; display:block; }
+  .hstat.streak b{ font-size:20px; }
+  .hstat.streak.on{ border-color:#FFB86B; }
+  .hstat.streak.on .hico{ animation:flame 1.6s ease-in-out infinite; transform-origin:50% 90%; }
+  .hstat.daily.done{ border-color:var(--accent-2); }
+  .ring{ width:44px; height:44px; display:block; }
+  .ring circle{ fill:none; stroke-width:5; }
+  .ring .bg{ stroke:var(--surface-alt); }
+  .ring .fg{ stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1); }
+  .ring.gold .fg{ stroke:var(--accent-2); }
+  .ring.violet .fg{ stroke:var(--violet); }
+  .ring text{ font-weight:900; font-size:14px; fill:var(--ink); font-family:"Nunito",sans-serif; }
+  @keyframes flame{ 0%,100%{ transform:scale(1) rotate(-3deg);} 50%{ transform:scale(1.12) rotate(3deg);} }
 
   /* ---------- Section band ---------- */
   .band{
-    display:flex; justify-content:space-between; align-items:baseline; gap:10px;
-    background:var(--ink); color:var(--bg);
-    border-radius:10px; padding:10px 14px; margin:26px 0 12px 0;
-    scroll-margin-top:150px;
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    background:var(--cc); color:#fff;
+    border-radius:18px; padding:11px 16px; margin:26px 0 12px 0;
+    box-shadow:0 4px 0 color-mix(in srgb, var(--cc) 65%, #000);
+    scroll-margin-top:170px;
   }
-  :root[data-theme="dark"] .band, @media (prefers-color-scheme:dark){ }
-  .band .en{ font-family:"Fraunces",serif; font-weight:600; font-size:16px; }
-  .band .fa{ color:var(--accent-2); font-size:13.5px; }
+  .band .en{ font-weight:900; font-size:16px; display:flex; align-items:center; gap:8px; }
+  .band .bico{ font-size:20px; }
+  .band .fa{ color:rgba(255,255,255,.92); font-size:13px; font-weight:700; }
+
+  /* ---------- Word of the day ---------- */
+  .wotd{
+    margin-top:14px; padding:16px 18px; border-radius:24px; position:relative; color:#fff; overflow:hidden;
+    background:linear-gradient(140deg, color-mix(in srgb, var(--cc) 82%, #000), color-mix(in srgb, var(--cc) 48%, var(--violet)));
+    box-shadow:0 5px 0 color-mix(in srgb, var(--cc) 55%, #000);
+  }
+  .wotd::after{ content:"✨"; position:absolute; right:68px; top:8px; font-size:22px; opacity:.55; animation:twinkle 2.4s ease-in-out infinite; }
+  .wotd-tag{ font-size:12px; text-transform:uppercase; letter-spacing:.08em; font-weight:900; opacity:.9; }
+  .wotd-term{ font-weight:900; font-size:clamp(22px,6vw,30px); margin:4px 0 2px; padding-right:48px; }
+  .wotd-fa{ font-size:15px; font-weight:700; opacity:.95; }
+  .wotd-ex{ margin-top:8px; font-size:13.5px; font-style:italic; opacity:.95; display:flex; gap:8px; align-items:flex-start; }
+  .wotd-ex span{ flex:1; }
+  .wotd .spk{ background:rgba(255,255,255,.22); color:#fff; border-color:rgba(255,255,255,.45); }
+  .wotd .spk.big{ position:absolute; top:12px; right:12px; }
+  @keyframes twinkle{ 0%,100%{ transform:scale(.8) rotate(0); opacity:.3;} 50%{ transform:scale(1.15) rotate(15deg); opacity:.8;} }
 
   /* ---------- Vocab cards ---------- */
   .grid{
-    display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px;
   }
   .card{
-    background:var(--surface); border:1px solid var(--border); border-radius:12px;
-    padding:12px 14px; box-shadow:var(--shadow);
-    display:flex; flex-direction:column; gap:6px;
+    background:var(--surface); border:2px solid var(--border); border-bottom-width:5px; border-radius:20px;
+    padding:13px 15px 14px; cursor:pointer;
+    display:flex; flex-direction:column; gap:8px;
+    position:relative; transition:transform .12s ease, border-color .15s;
   }
+  .card::before{ content:""; position:absolute; left:14px; top:-2px; width:34px; height:5px; border-radius:0 0 6px 6px; background:var(--cc); }
+  .card:hover{ transform:translateY(-2px); border-color:var(--cc); }
+  .card:active{ transform:translateY(2px); border-bottom-width:3px; }
   .card.hide{ display:none; }
-  .term-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
-  .term{ font-weight:700; font-size:15px; color:var(--ink); }
-  .meaning{ color:var(--ink-soft); font-size:14px; }
-  .example{ font-style:italic; color:var(--ink-soft); font-size:13px; line-height:1.45; display:flex; gap:6px; align-items:flex-start; }
+  .card.bump{ animation:bump .35s ease; }
+  @keyframes bump{ 0%{transform:scale(1);} 40%{transform:scale(1.035) rotate(-.6deg);} 100%{transform:scale(1);} }
+  .term-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:2px; }
+  .term{ font-weight:900; font-size:17px; color:var(--ink); line-height:1.25; }
+  .meaning{
+    color:var(--ink); font-size:14.5px; font-weight:700;
+    background:color-mix(in srgb, var(--cc) 12%, var(--surface)); border-radius:12px; padding:7px 11px;
+  }
+  .example{ font-style:italic; color:var(--ink-soft); font-size:13px; line-height:1.5; display:flex; gap:6px; align-items:flex-start; font-weight:600; }
   .example .ex-text{ flex:1; }
 
   .spk{
-    flex:none; width:30px; height:30px; border-radius:999px; border:1px solid var(--border);
-    background:var(--surface-alt); color:var(--accent); cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    transition:transform .12s ease;
+    flex:none; width:34px; height:34px; border-radius:999px; border:2px solid var(--border); border-bottom-width:4px;
+    background:var(--surface); color:var(--cc, var(--accent)); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; padding:0;
+    transition:transform .1s ease, background .15s;
   }
-  .spk:hover{ border-color:var(--accent); }
-  .spk:active{ transform:scale(0.92); }
-  .spk.small{ width:22px; height:22px; }
-  .spk.playing{ background:var(--accent); color:var(--accent-ink); }
-  .spk svg{ width:14px; height:14px; }
-  .spk.small svg{ width:11px; height:11px; }
+  .spk:hover{ border-color:var(--cc, var(--accent)); }
+  .spk:active{ transform:translateY(2px); border-bottom-width:2px; }
+  .spk.small{ width:26px; height:26px; border-bottom-width:3px; }
+  .spk.playing{ background:var(--cc, var(--accent)); color:#fff; animation:pulse 0.9s ease-in-out infinite; }
+  .spk svg{ width:15px; height:15px; }
+  .spk.small svg{ width:12px; height:12px; }
+  @keyframes pulse{ 0%,100%{ box-shadow:0 0 0 0 color-mix(in srgb, var(--cc, var(--accent)) 50%, transparent);} 50%{ box-shadow:0 0 0 7px transparent;} }
 
-  /* ---------- Phrase list (Part 2) ---------- */
+  /* ---------- Phrase list ---------- */
   .phrase-box{
-    background:var(--surface); border:1px solid var(--border); border-radius:12px;
-    padding:10px 14px; margin-bottom:10px; box-shadow:var(--shadow);
+    background:var(--surface); border:2px solid var(--border); border-bottom-width:5px; border-radius:22px;
+    padding:12px 14px 6px; margin-bottom:14px;
   }
+  .phrase-box .band{ margin:0 0 6px 0; padding:9px 14px; }
   .phrase-box.hide{ display:none; }
   .phrase-row{
-    display:flex; align-items:flex-start; gap:8px; padding:7px 0;
-    border-bottom:1px solid var(--border);
+    display:flex; align-items:flex-start; gap:10px; padding:10px 0;
+    border-bottom:2px dashed var(--border);
   }
   .phrase-row:last-child{ border-bottom:none; }
-  .phrase-row .txt{ flex:1; font-size:13.6px; color:var(--ink); line-height:1.45; }
+  .phrase-row .txt{ flex:1; font-size:15px; color:var(--ink); line-height:1.45; font-weight:800; }
+  .phrase-fa{ font-size:13px; color:var(--ink-soft); margin-top:3px; font-weight:600; }
 
   .tabpanel{ display:none; }
-  .tabpanel.active{ display:block; }
+  .tabpanel.active{ display:block; animation:rise .35s ease both; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:none;} }
 
-  .empty{ color:var(--ink-soft); font-size:14px; padding:30px 4px; text-align:center; }
+  .empty{ color:var(--ink-soft); font-size:15px; padding:30px 4px; text-align:center; font-weight:700; line-height:1.6; }
+
+  /* ---------- Buttons ---------- */
+  .cbtn{
+    border:2px solid var(--border); border-bottom-width:5px; background:var(--surface); color:var(--ink);
+    font-weight:900; font-size:14.5px; padding:11px 20px; border-radius:16px; cursor:pointer;
+    transition:transform .1s ease, filter .15s;
+  }
+  .cbtn:hover{ filter:brightness(1.04); }
+  .cbtn:active{ transform:translateY(3px); border-bottom-width:2px; }
+  .cbtn:disabled{ opacity:.5; cursor:default; }
+  .cbtn.ghost{ background:transparent; border-color:transparent; border-bottom-width:2px; color:var(--ink-soft); padding:10px 14px; }
+  .cbtn.ghost:hover{ color:var(--accent); }
+  .cbtn.known{ background:var(--accent); border-color:var(--accent-dark); color:var(--accent-ink); }
+  .cbtn.learning{ background:var(--coral); border-color:var(--coral-dark); color:#fff; }
+  .cbtn.sun{ background:var(--accent-2); border-color:var(--accent-2-dark); color:#3a2700; }
+  .cbtn.block{ width:100%; font-size:16px; padding:14px 20px; }
+  .linklike{ border:none; background:none; color:var(--ink-soft); font-size:13px; font-weight:800; text-decoration:underline; cursor:pointer; padding:6px; }
+  .linklike:hover{ color:var(--accent); }
+  .xbtn{
+    width:38px; height:38px; flex:none; border-radius:12px; border:2px solid var(--border); border-bottom-width:4px;
+    background:var(--surface); color:var(--ink-soft); font-size:16px; font-weight:900; cursor:pointer;
+  }
+  .xbtn:hover{ color:var(--coral); border-color:var(--coral); }
+  .xbtn:active{ transform:translateY(2px); border-bottom-width:2px; }
 
   /* ---------- Flashcards ---------- */
-  #chipnav.mode-cards .chip.active{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
-
-  .phrase-fa{ font-size:12.5px; color:var(--ink-soft); margin-top:2px; }
   .cards-toolbar{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
-    margin:16px 0 4px; flex-wrap:wrap; font-size:13px; color:var(--ink-soft);
+    margin:12px 0 2px; flex-wrap:wrap; font-size:13px; color:var(--ink-soft); font-weight:800;
   }
-  .toggles{ display:flex; gap:16px; flex-wrap:wrap; }
-  .unlearned-toggle{ display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none; }
-  .unlearned-toggle input{ accent-color:var(--accent); width:15px; height:15px; }
+  .toggles{ display:flex; gap:8px; flex-wrap:wrap; }
+  .unlearned-toggle{
+    display:flex; align-items:center; gap:7px; cursor:pointer; user-select:none; font-weight:800; color:var(--ink);
+    background:var(--surface); border:2px solid var(--border); border-bottom-width:4px; border-radius:999px; padding:5px 13px 5px 10px;
+  }
+  .unlearned-toggle:has(input:checked){ background:var(--accent); border-color:var(--accent-dark); color:var(--accent-ink); }
+  .unlearned-toggle input{ accent-color:var(--accent-dark); width:16px; height:16px; margin:0; }
   .cards-stats{ font-variant-numeric:tabular-nums; }
 
-  .stage{ perspective:1400px; display:flex; justify-content:center; padding:14px 0 8px; }
-  .flashcard{
-    width:100%; max-width:420px; min-height:250px; position:relative;
-    cursor:pointer; outline:none;
+  .stage{ display:flex; justify-content:center; padding:20px 0 6px; }
+  .deck{ position:relative; width:100%; max-width:380px; height:clamp(240px, 38vh, 310px); }
+  .deck::before, .deck::after{
+    content:""; position:absolute; inset:0; border-radius:28px; background:var(--surface);
+    border:2px solid var(--border); border-bottom-width:5px;
   }
+  .deck::before{ transform:translateY(14px) scale(.9); opacity:.55; }
+  .deck::after{ transform:translateY(7px) scale(.95); opacity:.85; }
+  .flashcard{
+    position:absolute; inset:0; z-index:2; perspective:1400px; cursor:grab; outline:none;
+    touch-action:pan-y; user-select:none; -webkit-user-select:none; will-change:transform;
+  }
+  .flashcard.dragging{ cursor:grabbing; }
+  .flashcard.fly{ transition:transform .28s cubic-bezier(.5,0,.8,.4), opacity .28s ease; opacity:.0; }
+  .flashcard.spring{ transition:transform .35s cubic-bezier(.3,1.6,.5,1); }
+  .flashcard.enter{ animation:cardIn .4s cubic-bezier(.3,1.4,.5,1) backwards; }
+  @keyframes cardIn{ from{ transform:translateY(24px) scale(.9); opacity:0;} to{ transform:none; opacity:1;} }
+  .flashcard:focus-visible .face{ outline:3px solid var(--accent-2); outline-offset:3px; }
+  .fc-inner{
+    position:absolute; inset:0; transform-style:preserve-3d;
+    transition:transform .6s cubic-bezier(.3,1.25,.5,1);
+  }
+  .flashcard.flipped .fc-inner{ transform:rotateY(180deg); }
   .flashcard .face{
     position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
-    border-radius:18px; border:1px solid var(--border); background:var(--surface);
-    box-shadow:var(--shadow); display:flex; flex-direction:column; align-items:center;
-    justify-content:center; gap:10px; padding:26px 22px; text-align:center;
-    transition:transform .5s cubic-bezier(.4,.2,.2,1); transform:rotateY(0deg);
+    border-radius:28px; border:2px solid var(--border); border-bottom-width:6px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:28px 24px; text-align:center;
   }
-  .flashcard .back{ transform:rotateY(180deg); }
-  .flashcard.flipped .front{ transform:rotateY(-180deg); }
-  .flashcard.flipped .back{ transform:rotateY(0deg); }
-  .flashcard.is-known .face{ border-color:var(--accent); }
-  .fc-cat{ font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; }
-  .fc-term{ font-family:"Fraunces",serif; font-weight:600; font-size:clamp(20px,5vw,28px); }
-  .fc-hint{ font-size:12px; color:var(--ink-soft); opacity:.75; position:absolute; bottom:14px; }
-  .fc-meaning{ font-size:19px; font-weight:600; }
+  .flashcard .front{
+    color:#fff; border-color:color-mix(in srgb, var(--cc) 60%, #000);
+    background:linear-gradient(155deg, color-mix(in srgb, var(--cc) 84%, #000), color-mix(in srgb, var(--cc) 55%, var(--violet)));
+  }
+  .flashcard .back{ transform:rotateY(180deg); background:var(--surface); color:var(--ink); border-color:var(--cc); }
+  .fc-cat{ font-size:12px; letter-spacing:.09em; text-transform:uppercase; font-weight:900; opacity:.9; }
+  .flashcard.is-known .fc-cat::after{ content:"  ✓ known"; }
+  .fc-term{ font-weight:900; font-size:clamp(24px,7vw,34px); line-height:1.2; }
+  .fc-hint{ font-size:12px; opacity:.85; position:absolute; bottom:16px; font-weight:800; }
+  .fc-meaning{ font-size:24px; font-weight:800; line-height:1.5; }
   .fc-example{
-    font-style:italic; color:var(--ink-soft); font-size:13.5px; line-height:1.5;
-    display:flex; align-items:flex-start; gap:8px;
+    font-style:italic; color:var(--ink-soft); font-size:14px; line-height:1.5;
+    display:flex; align-items:flex-start; gap:8px; font-weight:600;
   }
-  .spk.big{ position:absolute; top:14px; right:14px; width:36px; height:36px; }
-  .spk.big svg{ width:16px; height:16px; }
+  .flashcard .back .spk{ color:var(--cc); }
+  .flashcard .spk.big{
+    position:absolute; top:14px; right:14px; width:42px; height:42px;
+    background:rgba(255,255,255,.22); color:#fff; border-color:rgba(255,255,255,.5);
+  }
+  .flashcard .spk.big svg{ width:18px; height:18px; }
+  .swipe-label{
+    position:absolute; top:22px; z-index:6; padding:5px 12px; border:3px solid; border-radius:12px;
+    font-weight:900; font-size:15px; letter-spacing:.05em; background:var(--surface); opacity:0; pointer-events:none;
+  }
+  .swipe-label.yes{ left:18px; color:var(--good); border-color:var(--good); transform:rotate(-12deg); }
+  .swipe-label.no{ right:18px; color:var(--coral); border-color:var(--coral); transform:rotate(12deg); }
 
+  .cards-bar{ max-width:380px; margin:16px auto 0; }
   .cards-progress{
-    text-align:center; font-size:12.5px; color:var(--ink-soft); margin-top:10px;
+    text-align:center; font-size:13px; color:var(--ink-soft); margin-top:8px; font-weight:800;
     font-variant-numeric:tabular-nums;
   }
-  .cards-controls{ display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; flex-wrap:wrap; }
-  .cbtn{
-    border:1px solid var(--border); background:var(--surface); color:var(--ink);
-    font:inherit; font-weight:600; font-size:13px; padding:9px 16px; border-radius:999px; cursor:pointer;
+  .cards-controls{ display:flex; align-items:flex-start; justify-content:center; gap:22px; margin-top:12px; flex-wrap:wrap; }
+  .rbtn{
+    display:flex; flex-direction:column; align-items:center; gap:6px; border:none; background:none; cursor:pointer; color:var(--ink-soft);
+    font-size:12px; font-weight:900;
   }
-  .cbtn.ghost{ padding:9px 14px; color:var(--ink-soft); }
-  .cbtn.ghost:hover{ border-color:var(--accent); color:var(--accent); }
-  .cbtn.learning{ border-color:var(--accent-2); color:var(--accent-2); }
-  .cbtn.learning:hover{ background:var(--accent-2); color:var(--accent-ink); }
-  .cbtn.known{ border-color:var(--accent); color:var(--accent); }
-  .cbtn.known:hover{ background:var(--accent); color:var(--accent-ink); }
-  .cards-footer-row{ display:flex; justify-content:center; gap:18px; margin-top:12px; }
-  .linklike{ border:none; background:none; color:var(--ink-soft); font:inherit; font-size:12.5px; text-decoration:underline; cursor:pointer; padding:4px; }
-  .linklike:hover{ color:var(--accent); }
+  .rbtn .ri{
+    width:62px; height:62px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:26px; font-weight:900; border:2px solid; border-bottom-width:6px; background:var(--surface);
+    transition:transform .1s ease, border-bottom-width .1s;
+  }
+  .rbtn:active .ri{ transform:translateY(4px); border-bottom-width:2px; }
+  .rbtn.no .ri{ color:var(--coral); border-color:var(--coral); }
+  .rbtn.yes .ri{ color:var(--good); border-color:var(--good); }
+  .rbtn.flip .ri{ color:var(--sky); border-color:var(--sky); width:50px; height:50px; font-size:20px; margin-top:6px; }
+  .rbtn:hover .ri{ background:color-mix(in srgb, currentColor 10%, var(--surface)); }
+  .cards-nav{ display:flex; align-items:center; justify-content:center; gap:6px; margin-top:6px; }
+  .cards-footer-row{ display:flex; justify-content:center; gap:18px; margin-top:6px; }
+  .swipe-tip{ text-align:center; font-size:12px; color:var(--ink-soft); margin-top:12px; font-weight:700; }
 
+  /* ---------- Bottom tab bar ---------- */
+  .bottombar{
+    position:fixed; left:0; right:0; bottom:0; z-index:40;
+    display:flex; justify-content:center; gap:4px;
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+    background:color-mix(in srgb, var(--surface) 94%, transparent);
+    -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+    border-top:2px solid var(--border);
+  }
+  .bottombar button{
+    flex:1 1 0; max-width:150px; border:2px solid transparent; background:transparent; color:var(--ink-soft);
+    border-radius:18px; padding:6px 4px 5px; cursor:pointer; position:relative;
+    display:flex; flex-direction:column; align-items:center; gap:1px; font-weight:900;
+    transition:background .2s, transform .12s;
+  }
+  .bottombar .ti{ font-size:24px; line-height:1.15; filter:grayscale(.85); opacity:.75; transition:transform .25s cubic-bezier(.3,1.8,.5,1), filter .2s; }
+  .bottombar .tl{ font-size:11.5px; }
+  .bottombar button:active{ transform:scale(.94); }
+  .bottombar button.active{ color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, var(--surface)); border-color:color-mix(in srgb, var(--accent) 45%, transparent); }
+  .bottombar button.active .ti{ filter:none; opacity:1; transform:translateY(-2px) scale(1.18); }
+  .tbadge{
+    position:absolute; top:1px; left:calc(50% + 6px); min-width:18px; height:18px; padding:0 5px; border-radius:9px;
+    background:var(--coral); color:#fff; font-size:11px; line-height:18px; font-weight:900; text-align:center;
+  }
+  .tbadge[hidden]{ display:none; }
 
   /* ---------- Practice ---------- */
+  .mascot-row{ display:flex; align-items:flex-end; gap:12px; margin:16px 0 4px; }
+  .mascot{ font-size:56px; line-height:1; flex:none; animation:hop 2.8s ease-in-out infinite; transform-origin:50% 100%; }
+  @keyframes hop{ 0%,70%,100%{ transform:translateY(0) rotate(0);} 78%{ transform:translateY(-12px) rotate(-6deg);} 88%{ transform:translateY(0) rotate(4deg);} }
+  .bubble{
+    position:relative; background:var(--surface); border:2px solid var(--border); border-bottom-width:5px;
+    border-radius:20px 20px 20px 6px; padding:11px 15px; font-weight:800; font-size:14.5px; line-height:1.45; flex:1;
+  }
   .pr-hero{
-    background:var(--surface); border:1px solid var(--border); border-radius:14px;
-    padding:16px 18px; margin-top:16px; box-shadow:var(--shadow);
+    background:var(--surface); border:2px solid var(--border); border-bottom-width:5px; border-radius:24px;
+    padding:16px 18px; margin-top:14px;
   }
-  .pr-streak{ font-family:"Fraunces",serif; font-weight:600; font-size:22px; }
-  .pr-goal-text{ color:var(--ink-soft); font-size:13px; margin:4px 0 10px; font-variant-numeric:tabular-nums; }
-  .pbar{ height:8px; background:var(--surface-alt); border-radius:999px; overflow:hidden; border:1px solid var(--border); }
-  .pbar-fill{ height:100%; background:var(--accent); border-radius:999px; transition:width .3s ease; }
-  .pr-due{
-    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
-    margin-top:10px; padding:10px 14px; font-size:13px; color:var(--ink-soft);
-    background:var(--surface-alt); border-radius:12px;
+  .pr-hero-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+  .pr-streak{ font-weight:900; font-size:19px; }
+  .lvl-chip{ display:flex; align-items:center; gap:6px; font-weight:900; font-size:13px; background:color-mix(in srgb, var(--violet) 16%, var(--surface)); color:var(--violet); border-radius:999px; padding:5px 12px; border:2px solid color-mix(in srgb, var(--violet) 40%, transparent); }
+  .pr-goal-text{ color:var(--ink-soft); font-size:13px; margin:2px 0 10px; font-variant-numeric:tabular-nums; font-weight:800; }
+  .pbar{ height:14px; background:var(--surface-alt); border-radius:999px; overflow:hidden; position:relative; }
+  .pbar-fill{
+    height:100%; background:linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--sky)));
+    border-radius:999px; transition:width .5s cubic-bezier(.2,.9,.3,1); position:relative; min-width:14px;
   }
-  .pr-modes{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px; margin-top:14px; }
+  .pbar-fill::after{ content:""; position:absolute; left:8px; right:8px; top:3px; height:4px; border-radius:4px; background:rgba(255,255,255,.35); }
+  .pbar.gold .pbar-fill{ background:linear-gradient(90deg, var(--accent-2), #FFD76A); }
+  .mission{ display:flex; align-items:center; gap:12px; padding:11px 0; border-top:2px dashed var(--border); }
+  .mission:first-child{ border-top:none; }
+  .m-ico{
+    width:42px; height:42px; border-radius:14px; flex:none; display:flex; align-items:center; justify-content:center; font-size:22px;
+    background:var(--surface-alt);
+  }
+  .mission.done .m-ico{ background:var(--good); color:#fff; font-weight:900; }
+  .m-body{ flex:1; min-width:0; }
+  .m-title{ font-weight:900; font-size:14.5px; }
+  .mission.done .m-title{ text-decoration:line-through; opacity:.6; }
+  .m-sub{ font-size:12px; color:var(--ink-soft); font-weight:800; }
+  .m-xp{ font-size:12px; font-weight:900; color:var(--accent-2-dark); background:color-mix(in srgb, var(--accent-2) 22%, var(--surface)); padding:3px 8px; border-radius:999px; flex:none; }
+  .mission .cbtn{ padding:7px 14px; font-size:13px; border-bottom-width:4px; }
+  .pr-due{ display:none; }
+  .pr-sect{ margin:22px 2px 8px; font-weight:900; font-size:15px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; font-size:12.5px; }
+  .pr-modes{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
   .pr-mode{
-    background:var(--surface); border:1px solid var(--border); border-radius:12px;
-    padding:14px; display:flex; flex-direction:column; gap:8px; align-items:flex-start;
+    background:var(--surface); border:2px solid var(--border); border-bottom-width:5px; border-radius:22px;
+    padding:14px; display:flex; flex-direction:column; gap:8px; align-items:stretch; position:relative;
+    transition:transform .12s ease, border-color .15s; cursor:pointer;
   }
-  .pr-mode.primary{ border-color:var(--accent); box-shadow:var(--shadow); }
-  .pr-mode-head{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; width:100%; flex-wrap:wrap; }
-  .pr-mode-title{ font-weight:700; font-size:15px; }
-  .pr-mode-time{ font-size:12px; color:var(--ink-soft); }
-  .pr-mode-desc{ font-size:13px; color:var(--ink-soft); line-height:1.45; flex:1; }
-  .pr-tip{ margin-top:16px; font-size:12.5px; color:var(--ink-soft); text-align:center; }
+  .pr-mode:hover{ transform:translateY(-2px); border-color:var(--cc, var(--accent)); }
+  .pr-mode:active{ transform:translateY(2px); border-bottom-width:3px; }
+  .pr-mode.primary{ border-color:var(--cc, var(--accent)); background:color-mix(in srgb, var(--cc, var(--accent)) 8%, var(--surface)); }
+  .pr-mode-head{ display:flex; align-items:center; gap:12px; width:100%; }
+  .pr-mode-ico{
+    width:46px; height:46px; border-radius:15px; flex:none; display:flex; align-items:center; justify-content:center; font-size:24px;
+    background:var(--cc, var(--accent)); box-shadow:0 3px 0 color-mix(in srgb, var(--cc, var(--accent)) 60%, #000);
+  }
+  .pr-mode-text{ flex:1; min-width:0; }
+  .pr-mode-title{ font-weight:900; font-size:16px; display:block; }
+  .pr-mode-time{ font-size:12px; color:var(--ink-soft); font-weight:800; }
+  .pr-mode-desc{ font-size:13px; color:var(--ink-soft); line-height:1.5; flex:1; font-weight:600; }
+  .pr-tip{ margin-top:18px; font-size:12.5px; color:var(--ink-soft); text-align:center; font-weight:700; }
 
-  .pr-top{ display:flex; align-items:center; gap:12px; margin:14px 0 10px; }
-  .pr-top-title{ font-weight:700; font-size:14px; flex:1; }
-  .pr-top-right{ font-size:12.5px; color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+  .pr-top{ display:flex; align-items:center; gap:12px; margin:14px 0 12px; }
+  .pr-top .pbar{ flex:1; }
+  .pr-top-title{ font-weight:900; font-size:15px; flex:1; }
+  .pr-top-right{ font-size:13px; color:var(--ink-soft); font-variant-numeric:tabular-nums; font-weight:900; }
+  .combo{ font-weight:900; font-size:13px; color:#fff; background:linear-gradient(90deg,var(--coral),var(--accent-2)); padding:3px 10px; border-radius:999px; animation:pop .35s ease; }
+  .combo[hidden]{ display:none; }
+  @keyframes pop{ 0%{ transform:scale(.6);} 60%{ transform:scale(1.2);} 100%{ transform:scale(1);} }
   .pr-card{
-    background:var(--surface); border:1px solid var(--border); border-radius:14px;
-    padding:18px; margin-top:12px; box-shadow:var(--shadow);
+    background:var(--surface); border:2px solid var(--border); border-bottom-width:5px; border-radius:24px;
+    padding:20px; margin-top:12px; animation:rise .3s ease both;
   }
   .pr-card.center{ text-align:center; }
-  .pr-tag{ font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; margin:12px 0 6px; }
+  .pr-tag{ font-size:12px; color:var(--violet); text-transform:uppercase; letter-spacing:.08em; margin:12px 0 6px; font-weight:900; }
   .pr-tag:first-child{ margin-top:0; }
-  .pr-prompt{ font-size:18px; line-height:1.5; font-weight:600; margin-bottom:14px; }
-  .pr-prompt.small{ font-size:14px; font-weight:500; color:var(--ink-soft); }
-  .pr-opts{ display:grid; gap:8px; }
+  .pr-prompt{ font-size:19px; line-height:1.5; font-weight:800; margin-bottom:16px; }
+  .pr-prompt.small{ font-size:14.5px; font-weight:700; color:var(--ink-soft); }
+  .pr-opts{ display:grid; gap:10px; counter-reset:o; }
   .pr-opt{
-    text-align:left; font:inherit; font-size:14.5px; padding:12px 14px; border-radius:10px; cursor:pointer;
-    background:var(--surface); color:var(--ink); border:1px solid var(--border);
+    text-align:left; font-size:15.5px; font-weight:800; padding:12px 14px; border-radius:16px; cursor:pointer;
+    background:var(--surface); color:var(--ink); border:2px solid var(--border); border-bottom-width:5px;
+    display:flex; align-items:center; gap:12px; transition:transform .1s ease, border-color .15s, background .15s;
   }
-  .pr-opt:hover:not(:disabled){ border-color:var(--accent); }
-  .pr-opt:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
-  .pr-opt.right{ border-color:var(--good); background:color-mix(in srgb, var(--good) 14%, var(--surface)); }
-  .pr-opt.wrong{ border-color:var(--bad); background:color-mix(in srgb, var(--bad) 14%, var(--surface)); }
-  .pr-opt:disabled{ cursor:default; }
+  .pr-opt::before{
+    counter-increment:o; content:counter(o, upper-alpha); flex:none; width:28px; height:28px; border-radius:9px;
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900;
+    border:2px solid var(--border); color:var(--ink-soft);
+  }
+  .pr-opt:hover:not(:disabled){ border-color:var(--sky); background:color-mix(in srgb, var(--sky) 8%, var(--surface)); }
+  .pr-opt:active:not(:disabled){ transform:translateY(3px); border-bottom-width:2px; }
+  .pr-opt:focus-visible{ outline:3px solid var(--accent-2); outline-offset:2px; }
+  .pr-opt.right{ border-color:var(--good); background:color-mix(in srgb, var(--good) 16%, var(--surface)); animation:pop .4s ease; }
+  .pr-opt.right::before{ content:"✓"; background:var(--good); border-color:var(--good); color:#fff; }
+  .pr-opt.wrong{ border-color:var(--bad); background:color-mix(in srgb, var(--bad) 14%, var(--surface)); animation:shake .4s ease; }
+  .pr-opt.wrong::before{ content:"✗"; background:var(--bad); border-color:var(--bad); color:#fff; }
+  .pr-opt:disabled{ cursor:default; color:var(--ink); opacity:1; }
+  .pr-opt:disabled:not(.right):not(.wrong){ opacity:.55; }
+  @keyframes shake{ 0%,100%{ transform:translateX(0);} 20%{ transform:translateX(-7px);} 40%{ transform:translateX(7px);} 60%{ transform:translateX(-5px);} 80%{ transform:translateX(5px);} }
   .pr-feedback{
-    margin-top:12px; padding:14px; border-radius:12px; background:var(--surface-alt);
-    border:1px solid var(--border);
+    margin-top:14px; padding:14px 16px; border-radius:20px; background:var(--surface-alt);
+    border:2px solid var(--border); animation:rise .3s ease both;
   }
-  .pr-fb-head{ font-weight:700; font-size:14.5px; }
+  .pr-feedback.good{ background:color-mix(in srgb, var(--good) 14%, var(--surface)); border-color:var(--good); }
+  .pr-feedback.bad{ background:color-mix(in srgb, var(--bad) 12%, var(--surface)); border-color:var(--bad); }
+  .pr-fb-head{ font-weight:900; font-size:16px; }
   .pr-fb-head.good{ color:var(--good); }
   .pr-fb-head.bad{ color:var(--bad); }
-  .pr-fb-note{ font-size:13px; color:var(--ink-soft); margin-top:6px; line-height:1.45; }
-  .pr-fb-sentence{ display:flex; align-items:flex-start; gap:8px; margin-top:8px; font-style:italic; font-size:13.5px; }
+  .pr-fb-note{ font-size:13.5px; color:var(--ink-soft); margin-top:6px; line-height:1.5; font-weight:700; }
+  .pr-fb-sentence{ display:flex; align-items:flex-start; gap:8px; margin-top:8px; font-style:italic; font-size:14px; font-weight:700; }
   .pr-fb-sentence span{ flex:1; }
-  .pr-play{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
-  .spk.big-inline{ width:44px; height:44px; }
-  .spk.big-inline svg{ width:20px; height:20px; }
+  .pr-play{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .spk.big-inline{ width:54px; height:54px; }
+  .spk.big-inline svg{ width:24px; height:24px; }
   .pr-input{
-    width:100%; font:inherit; font-size:15px; padding:12px 14px; border-radius:10px;
-    background:var(--surface); color:var(--ink); border:1px solid var(--border);
+    width:100%; font-size:16px; padding:13px 16px; border-radius:16px; font-weight:700; font-family:inherit;
+    background:var(--surface); color:var(--ink); border:2px solid var(--border);
   }
-  .pr-input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
-  .pr-diff{ margin-top:8px; font-size:15px; line-height:1.7; }
+  .pr-input:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent); }
+  .pr-diff{ margin-top:8px; font-size:16px; line-height:1.8; font-weight:700; }
   .w-ok{ color:var(--good); }
-  .w-miss{ color:var(--bad); text-decoration:underline; }
-  .pr-score{ font-family:"Fraunces",serif; font-weight:600; font-size:44px; }
-  .pr-topic{ font-size:17px; line-height:1.5; font-weight:600; }
+  .w-miss{ color:var(--bad); text-decoration:underline wavy; }
+  .pr-score{ font-weight:900; font-size:56px; line-height:1.1; }
+  .pr-xp{ display:inline-block; margin-top:8px; font-weight:900; font-size:16px; color:#3a2700; background:var(--accent-2); padding:5px 16px; border-radius:999px; box-shadow:0 3px 0 var(--accent-2-dark); animation:pop .5s ease .2s both; }
+  .pr-topic{ font-size:18px; line-height:1.5; font-weight:800; }
   .pr-targets{ display:grid; gap:6px; }
-  .pr-target{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:14px; padding:6px 0; border-bottom:1px solid var(--border); }
+  .pr-target{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:15px; font-weight:800; padding:8px 0; border-bottom:2px dashed var(--border); }
   .pr-target:last-child{ border-bottom:none; }
-  .pr-phase{ margin-top:14px; font-size:13.5px; color:var(--ink-soft); text-align:center; }
-  .pr-clock{ font-family:"Fraunces",serif; font-weight:600; font-size:48px; text-align:center; font-variant-numeric:tabular-nums; }
-  .pr-clock.speaking{ color:var(--accent); }
+  .pr-phase{ margin-top:14px; font-size:14px; color:var(--ink-soft); text-align:center; font-weight:800; }
+  .pr-clock{ font-weight:900; font-size:56px; text-align:center; font-variant-numeric:tabular-nums; line-height:1.2; }
+  .pr-clock.speaking{ color:var(--coral); animation:beat 1s ease-in-out infinite; }
+  @keyframes beat{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.06);} }
   .pr-checks{ display:grid; gap:8px; margin-top:12px; }
-  .pr-check{ display:flex; align-items:center; gap:8px; font-size:14px; cursor:pointer; }
-  .pr-check input{ accent-color:var(--accent); width:16px; height:16px; }
+  .pr-check{ display:flex; align-items:center; gap:10px; font-size:15px; cursor:pointer; font-weight:800; }
+  .pr-check input{ accent-color:var(--accent); width:20px; height:20px; }
+
+  /* ---------- Effects: toast, xp float, modal, confetti ---------- */
+  #fx{ position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:300; }
+  .toast-wrap{ position:fixed; top:calc(10px + env(safe-area-inset-top,0px)); left:0; right:0; z-index:250; display:grid; justify-items:center; gap:8px; pointer-events:none; padding:0 12px; }
+  .toast{
+    display:flex; align-items:center; gap:12px; background:var(--ink); color:var(--bg); border-radius:20px; padding:10px 18px 10px 12px;
+    box-shadow:0 8px 30px rgba(0,0,0,.28); max-width:420px; animation:toastIn .45s cubic-bezier(.3,1.5,.5,1) both;
+  }
+  .toast.out{ animation:toastOut .3s ease forwards; }
+  .toast .t-ico{ font-size:30px; line-height:1; }
+  .toast .t-title{ font-weight:900; font-size:14.5px; }
+  .toast .t-sub{ font-weight:700; font-size:12.5px; opacity:.8; }
+  @keyframes toastIn{ from{ transform:translateY(-40px) scale(.9); opacity:0;} to{ transform:none; opacity:1;} }
+  @keyframes toastOut{ to{ transform:translateY(-30px); opacity:0;} }
+  .xp-float{
+    position:fixed; z-index:260; pointer-events:none; font-weight:900; font-size:20px; color:var(--accent-2);
+    text-shadow:0 2px 0 rgba(0,0,0,.35); animation:floatUp 1.1s ease-out forwards; transform:translate(-50%,-50%);
+  }
+  @keyframes floatUp{ 0%{ opacity:0; transform:translate(-50%,-10%) scale(.7);} 15%{ opacity:1; transform:translate(-50%,-50%) scale(1.15);} 100%{ opacity:0; transform:translate(-50%,-190%) scale(1);} }
+  .modal{
+    position:fixed; inset:0; z-index:200; background:rgba(24,12,46,.55); display:flex; align-items:flex-end; justify-content:center;
+    animation:fade .2s ease both; padding:0;
+  }
+  @keyframes fade{ from{ opacity:0;} to{ opacity:1;} }
+  .sheet{
+    background:var(--bg); width:100%; max-width:560px; max-height:88vh; overflow:auto; border-radius:28px 28px 0 0;
+    padding:20px 18px calc(24px + env(safe-area-inset-bottom,0px)); animation:sheetUp .35s cubic-bezier(.2,.9,.3,1) both;
+    border:2px solid var(--border); border-bottom:none;
+  }
+  @keyframes sheetUp{ from{ transform:translateY(60px); opacity:0;} to{ transform:none; opacity:1;} }
+  @media (min-width:640px){
+    .modal{ align-items:center; }
+    .sheet{ border-radius:28px; border-bottom:2px solid var(--border); }
+  }
+  .sheet-head{ display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+  .sheet-head .ring{ width:72px; height:72px; }
+  .sheet-head .ring text{ font-size:15px; }
+  .sheet-title{ font-weight:900; font-size:22px; line-height:1.15; }
+  .sheet-sub{ color:var(--ink-soft); font-size:13px; font-weight:800; }
+  .sheet h3{ margin:18px 0 8px; font-size:13px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-soft); font-weight:900; }
+  .stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .stat-cell{ background:var(--surface); border:2px solid var(--border); border-bottom-width:4px; border-radius:16px; padding:10px 6px; text-align:center; }
+  .stat-cell b{ display:block; font-size:20px; font-weight:900; }
+  .stat-cell small{ color:var(--ink-soft); font-size:11px; font-weight:800; }
+  .badge-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px; }
+  .badge{
+    background:var(--surface); border:2px solid var(--border); border-bottom-width:5px; border-radius:18px; padding:12px 8px; text-align:center;
+  }
+  .badge .b-ico{ font-size:34px; display:block; line-height:1.2; }
+  .badge .b-t{ font-weight:900; font-size:13px; margin-top:4px; }
+  .badge .b-d{ font-weight:700; font-size:11.5px; color:var(--ink-soft); margin-top:2px; line-height:1.35; }
+  .badge.locked{ opacity:.55; }
+  .badge.locked .b-ico{ filter:grayscale(1); }
+  .badge.got{ border-color:var(--accent-2); background:color-mix(in srgb, var(--accent-2) 12%, var(--surface)); }
+  .celebrate{
+    background:var(--surface); border:2px solid var(--border); border-bottom-width:6px; border-radius:30px;
+    padding:28px 26px 22px; text-align:center; max-width:340px; margin:auto; animation:pop .5s cubic-bezier(.3,1.5,.5,1) both;
+  }
+  .modal.center{ align-items:center; padding:20px; }
+  .celebrate .c-emoji{ font-size:72px; line-height:1.1; animation:hop 2s ease-in-out infinite; display:block; }
+  .celebrate .c-title{ font-weight:900; font-size:26px; margin:8px 0 4px; }
+  .celebrate .c-sub{ color:var(--ink-soft); font-weight:700; font-size:14.5px; margin-bottom:16px; line-height:1.5; }
 
   footer{
-    text-align:center; color:var(--ink-soft); font-size:12px; padding:18px 0 30px 0;
+    text-align:center; color:var(--ink-soft); font-size:12px; padding:18px 0 10px 0; font-weight:700;
   }
   a.credit{ color:var(--accent); text-decoration:none; }
+
+  @media (max-width:480px){
+    .sub{ display:none; }
+    .hstat b{ font-size:14.5px; }
+    .rbtn .ri{ width:58px; height:58px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation:none !important; transition-duration:.01ms !important; }
+  }
 </style>
 </head>
 <body>
@@ -314,23 +605,26 @@
 <div class="wrap">
   <header class="top">
     <div class="title-row">
-      <div>
-        <h1>Speak &amp; Learn</h1>
-        <p class="sub">Vocabulary &amp; collocations from your 12 sessions — click <span style="color:var(--accent)">▶</span> to hear it spoken</p>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🦜</div>
+        <div>
+          <h1>Speak <em>&amp;</em> Learn</h1>
+          <p class="sub">Tap anything to hear it. Learn a little every day.</p>
+        </div>
+      </div>
+      <div class="tools">
+        <button class="tool-btn" id="soundToggle" type="button" aria-label="Toggle sound effects" title="Sound effects">🔔</button>
+        <button class="tool-btn" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Dark / light">🌙</button>
+        <button class="accent-toggle" id="accentToggle" type="button" title="Toggle pronunciation accent">🇺🇸 US</button>
       </div>
     </div>
     <div class="controls">
       <input class="search" id="search" type="text" placeholder="Search a word, meaning, or phrase… / جستجو…" />
-      <div class="seg" id="tabSeg">
-        <button data-tab="vocab" class="active">Vocabulary</button>
-        <button data-tab="phrases">Conversation Toolkit</button>
-        <button data-tab="cards">Flashcards</button>
-        <button data-tab="practice">Practice</button>
-      </div>
-      <button class="accent-toggle" id="accentToggle" title="Toggle pronunciation accent">🔊 US English</button>
     </div>
     <div class="chipnav" id="chipnav"></div>
   </header>
+
+  <section class="hero" id="hero" aria-label="Your progress"></section>
 
   <main>
     <div class="tabpanel active" id="panel-vocab"></div>
@@ -351,35 +645,48 @@
       </div>
 
       <div class="stage" id="cardStage">
-        <div class="flashcard" id="flashcard">
-          <div class="face front">
-            <button class="spk big" id="cardSpkFront" type="button" aria-label="Play pronunciation"></button>
-            <div class="fc-cat" id="fcCatFront"></div>
-            <div class="fc-term" id="fcTerm"></div>
-            <div class="fc-hint">Tap to flip / لمس کن</div>
-          </div>
-          <div class="face back">
-            <div class="fc-meaning fa" id="fcMeaning"></div>
-            <div class="fc-example" id="fcExampleRow">
-              <span id="fcExampleText"></span>
-              <button class="spk small" id="cardSpkBack" type="button" aria-label="Play example"></button>
+        <div class="deck">
+          <div class="flashcard" id="flashcard">
+            <div class="swipe-label yes">GOT IT</div>
+            <div class="swipe-label no">AGAIN</div>
+            <div class="fc-inner">
+              <div class="face front">
+                <button class="spk big" id="cardSpkFront" type="button" aria-label="Play pronunciation"></button>
+                <div class="fc-cat" id="fcCatFront"></div>
+                <div class="fc-term" id="fcTerm"></div>
+                <div class="fc-hint">Tap to flip · swipe to answer</div>
+              </div>
+              <div class="face back">
+                <div class="fc-meaning fa" id="fcMeaning"></div>
+                <div class="fc-example" id="fcExampleRow">
+                  <span id="fcExampleText"></span>
+                  <button class="spk small" id="cardSpkBack" type="button" aria-label="Play example"></button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="cards-progress" id="cardsProgress"></div>
+      <div class="cards-bar" id="cardsBar">
+        <div class="pbar"><div class="pbar-fill" id="cardsBarFill" style="width:0%"></div></div>
+        <div class="cards-progress" id="cardsProgress"></div>
+      </div>
 
       <div class="cards-controls">
-        <button class="cbtn ghost" id="prevCard" aria-label="Previous card">◀ Prev</button>
-        <button class="cbtn learning" id="markLearning">Still learning</button>
-        <button class="cbtn known" id="markKnown">Got it ✓</button>
-        <button class="cbtn ghost" id="nextCard" aria-label="Next card">Next ▶</button>
+        <button class="rbtn no" id="markLearning" type="button" aria-label="Still learning (swipe left)"><span class="ri">✗</span><span>Still learning</span></button>
+        <button class="rbtn flip" id="flipCard" type="button" aria-label="Flip card"><span class="ri">↻</span><span>Flip</span></button>
+        <button class="rbtn yes" id="markKnown" type="button" aria-label="Got it (swipe right)"><span class="ri">✓</span><span>Got it</span></button>
+      </div>
+      <div class="cards-nav" id="cardsNav">
+        <button class="cbtn ghost" id="prevCard" type="button" aria-label="Previous card">◀ Prev</button>
+        <button class="cbtn ghost" id="nextCard" type="button" aria-label="Next card">Next ▶</button>
       </div>
       <div class="cards-footer-row">
-        <button class="linklike" id="shuffleDeck">🔀 Shuffle deck</button>
-        <button class="linklike" id="resetProgress">Reset progress</button>
+        <button class="linklike" id="shuffleDeck" type="button">🔀 Shuffle deck</button>
+        <button class="linklike" id="resetProgress" type="button">Reset progress</button>
       </div>
+      <div class="swipe-tip">Tip: swipe right if you know it, left if you don't. On a computer use the arrow keys.</div>
 
       <div class="empty" id="cardsEmpty" style="display:none;"></div>
     </div>
@@ -388,9 +695,17 @@
   </main>
 
   <footer>
-    Tap the speaker icon on any word, sentence or phrase to hear it. Uses your browser's built-in voice — works offline, no audio files.
+    Uses your device's built-in voice, so it works offline.
   </footer>
 </div>
+
+<nav class="bottombar" id="tabSeg" aria-label="Sections">
+  <button data-tab="vocab" class="active" type="button"><span class="ti">📖</span><span class="tl">Learn</span></button>
+  <button data-tab="phrases" type="button"><span class="ti">💬</span><span class="tl">Talk</span></button>
+  <button data-tab="cards" type="button"><span class="ti">🃏</span><span class="tl">Cards</span><span class="tbadge" id="dueBadge" hidden></span></button>
+  <button data-tab="practice" type="button"><span class="ti">🎯</span><span class="tl">Practice</span></button>
+</nav>
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
 
 <script>
 (function(){
@@ -668,6 +983,9 @@
   // ============================================================
   // SPEECH
   // ============================================================
+  var CAT_COLORS = ["#0E9E90", "#F0584A", "#7C5CFF", "#2584E8", "#D97706", "#DB3F8F"];
+  var CAT_ICONS = ["🗣️", "🏙️", "🕊️", "⚠️", "🏛️", "🤝", "🧠", "💭", "❤️", "📜", "🧱", "🥊", "🎭"];
+  var PHRASE_ICONS = ["🚀", "🤔", "👍", "🙅", "🎯", "🤝", "🔍", "🧩", "📖", "🔗", "🏁"];
   var currentAccent = "en-US";
   try {
     var savedAccent = localStorage.getItem("speakLearnAccent");
@@ -676,7 +994,7 @@
 
   function updateAccentLabel(){
     var btn = document.getElementById("accentToggle");
-    btn.textContent = "🔊 " + (currentAccent === "en-US" ? "US English" : "UK English");
+    btn.textContent = currentAccent === "en-US" ? "🇺🇸 US" : "🇬🇧 UK";
   }
 
   document.getElementById("accentToggle").addEventListener("click", function(){
@@ -690,7 +1008,7 @@
   function speak(text, btn, rate){
     try {
       if (!("speechSynthesis" in window)) {
-        alert("Sorry, your browser doesn't support spoken pronunciation.");
+        toast("🔇", "No voice available", "Your browser doesn't support spoken pronunciation.", 3500);
         return;
       }
       window.speechSynthesis.cancel();
@@ -716,7 +1034,7 @@
     b.type = "button";
     b.setAttribute("aria-label", "Play pronunciation");
     b.innerHTML = SPK_ICON;
-    b.addEventListener("click", function(){ speak(text, b); });
+    b.addEventListener("click", function(e){ e.stopPropagation(); speak(text, b); });
     return b;
   }
 
@@ -756,11 +1074,13 @@
     var band = document.createElement("div");
     band.className = "band";
     band.id = secId;
-    band.innerHTML = '<div class="en">' + titleEn + '</div><div class="fa">' + titleFa + '</div>';
+    band.style.setProperty("--cc", CAT_COLORS[ci % CAT_COLORS.length]);
+    band.innerHTML = '<div class="en"><span class="bico">' + CAT_ICONS[ci % CAT_ICONS.length] + '</span>' + titleEn.replace(/^\d+\.\s*/, "") + '</div><div class="fa">' + titleFa + '</div>';
     panelVocab.appendChild(band);
 
     var grid = document.createElement("div");
     grid.className = "grid";
+    grid.style.setProperty("--cc", CAT_COLORS[ci % CAT_COLORS.length]);
     panelVocab.appendChild(grid);
 
     rows.forEach(function(row){
@@ -791,6 +1111,10 @@
       exDiv.appendChild(makeSpkBtn(example, true));
       card.appendChild(exDiv);
 
+      card.addEventListener("click", function(){
+        speak(term, null);
+        card.classList.remove("bump"); void card.offsetWidth; card.classList.add("bump");
+      });
       grid.appendChild(card);
       allCards.push({ el: card, term: term.toLowerCase(), meaning: meaning, example: example.toLowerCase() });
     });
@@ -800,6 +1124,7 @@
     var chip = document.createElement("button");
     chip.className = "chip";
     chip.textContent = titleEn.replace(/^\d+\.\s*/, "");
+    chip.style.setProperty("--cc", CAT_COLORS[ci % CAT_COLORS.length]);
     chip.addEventListener("click", function(){
       if (currentMode === "cards"){
         cardsCatFilter = ci;
@@ -818,15 +1143,15 @@
   var panelPhrases = document.getElementById("panel-phrases");
   var allPhraseBoxes = []; // {el, text[]}
 
-  PHRASES.forEach(function(cat){
+  PHRASES.forEach(function(cat, pi){
     var titleEn = cat[0], titleFa = cat[1], items = cat[2];
     var box = document.createElement("div");
     box.className = "phrase-box";
+    box.style.setProperty("--cc", CAT_COLORS[(pi + 1) % CAT_COLORS.length]);
 
     var head = document.createElement("div");
     head.className = "band";
-    head.style.margin = "0 0 8px 0";
-    head.innerHTML = '<div class="en" style="font-size:14px;">' + titleEn + '</div><div class="fa" style="font-size:12.5px;">' + titleFa + '</div>';
+    head.innerHTML = '<div class="en" style="font-size:14.5px;"><span class="bico">' + PHRASE_ICONS[pi % PHRASE_ICONS.length] + '</span>' + titleEn + '</div><div class="fa" style="font-size:12.5px;">' + titleFa + '</div>';
     box.appendChild(head);
 
     var texts = [];
@@ -861,6 +1186,10 @@
       btn.classList.add("active");
       var tab = btn.getAttribute("data-tab");
       currentMode = tab;
+      sfx("tap");
+      document.querySelector(".controls").style.display = (tab === "practice" || tab === "cards") ? "none" : "";
+      document.getElementById("hero").style.display = (tab === "vocab" || tab === "phrases") ? "" : "none";
+      window.scrollTo({ top: 0 });
       document.getElementById("panel-vocab").classList.toggle("active", tab === "vocab");
       document.getElementById("panel-phrases").classList.toggle("active", tab === "phrases");
       document.getElementById("panel-cards").classList.toggle("active", tab === "cards");
@@ -881,6 +1210,8 @@
   function applyFilter(){
     var q = searchInput.value.trim().toLowerCase();
     var activeTab = document.querySelector("#tabSeg button.active").getAttribute("data-tab");
+    var wd = document.getElementById("wotd");
+    if (wd) wd.style.display = q ? "none" : "";
 
     if (activeTab === "practice"){
       emptyMsg.style.display = "none";
@@ -939,6 +1270,22 @@
     });
   });
 
+  (function buildWotd(){
+    var it = FLAT[Math.floor(Date.now() / 86400000) % FLAT.length];
+    var w = document.createElement("div");
+    w.className = "wotd"; w.id = "wotd";
+    w.style.setProperty("--cc", CAT_COLORS[it.ci % CAT_COLORS.length]);
+    var tag = document.createElement("div"); tag.className = "wotd-tag"; tag.textContent = "Word of the day";
+    var t = document.createElement("div"); t.className = "wotd-term"; t.textContent = it.term;
+    var fa = document.createElement("div"); fa.className = "wotd-fa fa"; fa.textContent = it.meaning;
+    var ex = document.createElement("div"); ex.className = "wotd-ex";
+    var exs = document.createElement("span"); exs.textContent = it.example;
+    ex.appendChild(exs); ex.appendChild(makeSpkBtn(it.example, true));
+    var big = makeSpkBtn(it.term, false); big.classList.add("big");
+    w.appendChild(tag); w.appendChild(t); w.appendChild(fa); w.appendChild(ex); w.appendChild(big);
+    panelVocab.insertBefore(w, panelVocab.firstChild);
+  })();
+
   var KNOWN_KEY = "speakLearnKnown";
   var knownSet = {};
   try {
@@ -993,7 +1340,7 @@
   var cardsFooterRowEl = document.querySelector(".cards-footer-row");
 
   function buildCardsDeck(){
-    var q = searchInput.value.trim().toLowerCase();
+    var q = "";
     var idxs = [];
     FLAT.forEach(function(item, i){
       if (cardsCatFilter !== "all" && item.ci !== cardsCatFilter) return;
@@ -1027,29 +1374,49 @@
     showCard();
   }
 
+  var cardsNavEl = document.getElementById("cardsNav");
+  var cardsBarEl = document.getElementById("cardsBar");
+  var cardsBarFill = document.getElementById("cardsBarFill");
+  var swipeYes = flashcardEl.querySelector(".swipe-label.yes");
+  var swipeNo = flashcardEl.querySelector(".swipe-label.no");
+  var swipeTipEl = document.querySelector(".swipe-tip");
+  var flying = false;
+  var THRESH = 90;
+
+  function setCardsVisible(v){
+    cardStage.style.display = v ? "flex" : "none";
+    cardsControlsEl.style.display = v ? "flex" : "none";
+    cardsNavEl.style.display = v ? "flex" : "none";
+    cardsFooterRowEl.style.display = v ? "flex" : "none";
+    cardsBarEl.style.display = v ? "" : "none";
+    swipeTipEl.style.display = v ? "" : "none";
+  }
+
   function showCard(){
-    flashcardEl.classList.remove("flipped");
+    flashcardEl.classList.remove("flipped", "fly", "spring", "dragging");
+    flashcardEl.style.transform = "";
+    flashcardEl.style.opacity = "";
+    swipeYes.style.opacity = 0;
+    swipeNo.style.opacity = 0;
+    flying = false;
     if (cardsOrder.length === 0){
-      cardStage.style.display = "none";
-      cardsControlsEl.style.display = "none";
-      cardsFooterRowEl.style.display = "none";
+      setCardsVisible(false);
       cardsProgress.textContent = "";
       cardsEmpty.style.display = "block";
       cardsEmpty.textContent = cardsDueOnly
-        ? "🎉 Nothing due right now — you're done for today. Come back tomorrow, or turn off \"Due today\" to keep practicing."
+        ? "🎉 Nothing due right now. You're done for today! Come back tomorrow, or turn off \"Due today\" to keep practicing."
         : cardsUnlearnedOnly
         ? "🎉 All matching words are marked as known! Turn off \"Unlearned only\" to review them again."
         : "No cards match.";
       return;
     }
-    cardStage.style.display = "flex";
-    cardsControlsEl.style.display = "flex";
-    cardsFooterRowEl.style.display = "flex";
+    setCardsVisible(true);
     cardsEmpty.style.display = "none";
 
     var item = FLAT[cardsOrder[cardsPos]];
     curTermText = item.term;
     curExampleText = item.example;
+    flashcardEl.style.setProperty("--cc", CAT_COLORS[item.ci % CAT_COLORS.length]);
     fcTerm.textContent = item.term;
     fcCatFront.textContent = item.catEn;
     fcMeaning.textContent = item.meaning;
@@ -1058,18 +1425,74 @@
     var known = !!knownSet[cardKey(item)];
     flashcardEl.classList.toggle("is-known", known);
     cardsProgress.textContent = "Card " + (cardsPos + 1) + " of " + cardsOrder.length + (known ? " · ✓ known" : "");
+    cardsBarFill.style.width = ((cardsPos + 1) / cardsOrder.length * 100) + "%";
+
+    flashcardEl.classList.remove("enter");
+    void flashcardEl.offsetWidth;
+    flashcardEl.classList.add("enter");
+    setTimeout(function(){ flashcardEl.classList.remove("enter"); }, 450);
   }
 
-  flashcardEl.addEventListener("click", function(){
+  function flipCardNow(){
     flashcardEl.classList.toggle("flipped");
-  });
+    sfx("flip");
+  }
+
+  // ---- drag / swipe ----
+  var drag = null;
   flashcardEl.setAttribute("tabindex", "0");
   flashcardEl.setAttribute("role", "button");
+  flashcardEl.setAttribute("aria-label", "Flashcard. Press Enter to flip, left arrow if still learning, right arrow if you got it.");
+  flashcardEl.addEventListener("pointerdown", function(e){
+    if (flying || (e.target.closest && e.target.closest(".spk"))) return;
+    drag = { x: e.clientX, y: e.clientY, dx: 0, moved: false, id: e.pointerId };
+    flashcardEl.classList.remove("spring");
+    flashcardEl.classList.add("dragging");
+    try { flashcardEl.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+  flashcardEl.addEventListener("pointermove", function(e){
+    if (!drag || e.pointerId !== drag.id) return;
+    drag.dx = e.clientX - drag.x;
+    var dy = e.clientY - drag.y;
+    if (Math.abs(drag.dx) > 6 || Math.abs(dy) > 6) drag.moved = true;
+    if (!drag.moved) return;
+    flashcardEl.style.transform = "translate(" + drag.dx + "px," + (dy * 0.25) + "px) rotate(" + (drag.dx * 0.06) + "deg)";
+    var p = Math.min(1, Math.abs(drag.dx) / THRESH);
+    swipeYes.style.opacity = drag.dx > 0 ? p : 0;
+    swipeNo.style.opacity = drag.dx < 0 ? p : 0;
+  });
+  function endDrag(e, cancelled){
+    if (!drag || (e && e.pointerId !== drag.id)) return;
+    var d = drag;
+    drag = null;
+    flashcardEl.classList.remove("dragging");
+    if (!d.moved){
+      if (!cancelled) flipCardNow();
+      return;
+    }
+    if (!cancelled && Math.abs(d.dx) > THRESH){
+      flyOut(d.dx > 0);
+    } else {
+      flashcardEl.classList.add("spring");
+      flashcardEl.style.transform = "";
+      swipeYes.style.opacity = 0;
+      swipeNo.style.opacity = 0;
+    }
+  }
+  flashcardEl.addEventListener("pointerup", function(e){ endDrag(e, false); });
+  flashcardEl.addEventListener("pointercancel", function(e){ endDrag(e, true); });
   flashcardEl.addEventListener("keydown", function(e){
     if (e.key === "Enter" || e.key === " "){
       e.preventDefault();
-      flashcardEl.classList.toggle("flipped");
+      flipCardNow();
     }
+  });
+  document.addEventListener("keydown", function(e){
+    if (!document.getElementById("panel-cards").classList.contains("active")) return;
+    var tg = e.target && e.target.tagName;
+    if (tg === "INPUT" || tg === "TEXTAREA") return;
+    if (e.key === "ArrowRight"){ e.preventDefault(); flyOut(true); }
+    else if (e.key === "ArrowLeft"){ e.preventDefault(); flyOut(false); }
   });
 
   document.getElementById("cardSpkFront").innerHTML = SPK_ICON;
@@ -1080,52 +1503,71 @@
   document.getElementById("cardSpkBack").addEventListener("click", function(e){
     e.stopPropagation(); speak(curExampleText, this);
   });
+  document.getElementById("flipCard").addEventListener("click", flipCardNow);
+
+  // ---- answering ----
+  function commitCard(known){
+    var item = FLAT[cardsOrder[cardsPos]], key = cardKey(item);
+    var r = dayRec();
+    if (known){
+      knownSet[key] = true;
+      saveKnown();
+      var rec = srs[key] || { b: 0, d: dayStr(0) };
+      rec.b = Math.min(rec.b + 1, INTERVALS.length - 1);
+      rec.d = dayStr(INTERVALS[rec.b]);
+      srs[key] = rec;
+    } else {
+      if (knownSet[key]){ delete knownSet[key]; saveKnown(); }
+      srs[key] = { b: 0, d: dayStr(0) };
+    }
+    saveSrs();
+    game.stats.cards++;
+    r.cards++;
+    noteActivity(1);
+    award(known ? 5 : 2, flashcardEl);
+    if (r.cards === 10) completeMission("cards");
+    refreshCardsStats();
+    renderHero();
+  }
+  function flyOut(known){
+    if (flying || cardsOrder.length === 0) return;
+    flying = true;
+    var w = Math.max(window.innerWidth, 500);
+    var rect = flashcardEl.getBoundingClientRect();
+    flashcardEl.classList.remove("dragging", "spring", "enter");
+    flashcardEl.classList.add("fly");
+    flashcardEl.style.transform = "translate(" + (known ? w : -w) + "px,-30px) rotate(" + (known ? 28 : -28) + "deg)";
+    (known ? swipeYes : swipeNo).style.opacity = 1;
+    sfx(known ? "yes" : "no");
+    buzz(known ? 12 : [10, 30, 10]);
+    if (known) confetti(rect.left + rect.width / 2, rect.top + rect.height / 2, 18, 2.2);
+    commitCard(known);
+    setTimeout(function(){
+      if (known && (cardsUnlearnedOnly || cardsDueOnly)){
+        cardsOrder.splice(cardsPos, 1);
+        if (cardsPos >= cardsOrder.length) cardsPos = 0;
+      } else {
+        cardsPos = (cardsPos + 1) % Math.max(cardsOrder.length, 1);
+      }
+      showCard();
+    }, 290);
+  }
 
   document.getElementById("nextCard").addEventListener("click", function(){
-    if (cardsOrder.length === 0) return;
+    if (cardsOrder.length === 0 || flying) return;
     cardsPos = (cardsPos + 1) % cardsOrder.length;
+    sfx("tap");
     showCard();
   });
   document.getElementById("prevCard").addEventListener("click", function(){
-    if (cardsOrder.length === 0) return;
+    if (cardsOrder.length === 0 || flying) return;
     cardsPos = (cardsPos - 1 + cardsOrder.length) % cardsOrder.length;
+    sfx("tap");
     showCard();
   });
-  document.getElementById("markKnown").addEventListener("click", function(){
-    if (cardsOrder.length === 0) return;
-    var item = FLAT[cardsOrder[cardsPos]];
-    knownSet[cardKey(item)] = true;
-    saveKnown();
-    var rec = srs[cardKey(item)] || { b: 0, d: dayStr(0) };
-    rec.b = Math.min(rec.b + 1, INTERVALS.length - 1);
-    rec.d = dayStr(INTERVALS[rec.b]);
-    srs[cardKey(item)] = rec;
-    saveSrs();
-    noteActivity(1);
-    refreshCardsStats();
-    if (cardsUnlearnedOnly || cardsDueOnly){
-      cardsOrder.splice(cardsPos, 1);
-      if (cardsPos >= cardsOrder.length) cardsPos = 0;
-      showCard();
-    } else {
-      cardsPos = (cardsPos + 1) % cardsOrder.length;
-      showCard();
-    }
-  });
-  document.getElementById("markLearning").addEventListener("click", function(){
-    if (cardsOrder.length === 0) return;
-    var item = FLAT[cardsOrder[cardsPos]];
-    if (knownSet[cardKey(item)]){
-      delete knownSet[cardKey(item)];
-      saveKnown();
-    }
-    srs[cardKey(item)] = { b: 0, d: dayStr(0) };
-    saveSrs();
-    noteActivity(1);
-    refreshCardsStats();
-    cardsPos = (cardsPos + 1) % cardsOrder.length;
-    showCard();
-  });
+  document.getElementById("markKnown").addEventListener("click", function(){ flyOut(true); });
+  document.getElementById("markLearning").addEventListener("click", function(){ flyOut(false); });
+
   document.getElementById("shuffleDeck").addEventListener("click", function(){
     shuffleArray(cardsOrder);
     cardsPos = 0;
@@ -1178,14 +1620,356 @@
     var t = dayStr(0);
     var before = progress.counts[t] || 0;
     progress.counts[t] = before + n;
+    var reached = false;
     if (before < DAILY_GOAL && progress.counts[t] >= DAILY_GOAL && progress.lastDay !== t){
       progress.streak = (progress.lastDay === dayStr(-1)) ? progress.streak + 1 : 1;
       progress.lastDay = t;
+      reached = true;
     }
     var keys = Object.keys(progress.counts).sort();
     while (keys.length > 14) delete progress.counts[keys.shift()];
     saveProgress();
+    if (reached){
+      game.stats.goals++;
+      sfx("goal");
+      bigConfetti();
+      toast("🎯", "Daily goal reached!", progress.streak + "-day streak · +30 XP", 3800);
+      award(30);
+    }
+    renderHero();
   }
+
+  // ============================================================
+  // GAME LAYER: XP, levels, badges, missions, sounds, confetti
+  // ============================================================
+  var GAME_KEY = "speakLearnGame";
+  var game = { xp: 0, badges: {}, stats: { cards: 0, correct: 0, dict: 0, perfect: 0, speak: 0, goals: 0, allMissions: 0, sessions: 0 }, days: {} };
+  try {
+    var sg = JSON.parse(localStorage.getItem(GAME_KEY) || "null");
+    if (sg && typeof sg === "object") {
+      game.xp = sg.xp || 0;
+      game.badges = sg.badges || {};
+      game.days = sg.days || {};
+      Object.keys(game.stats).forEach(function(k){
+        if (sg.stats && typeof sg.stats[k] === "number") game.stats[k] = sg.stats[k];
+      });
+    }
+  } catch (e) {}
+  function saveGame(){
+    var keys = Object.keys(game.days).sort();
+    while (keys.length > 14) delete game.days[keys.shift()];
+    try { localStorage.setItem(GAME_KEY, JSON.stringify(game)); } catch (e) {}
+  }
+
+  var LEVEL_NAMES = ["Newcomer", "Chatterbox", "Speaker", "Storyteller", "Debater", "Persuader", "Orator", "Maestro", "Legend"];
+  function xpFloor(lv){ return 40 * (lv - 1) * (lv - 1); }
+  function levelFor(xp){ return Math.floor(Math.sqrt(xp / 40)) + 1; }
+  function levelName(lv){ return LEVEL_NAMES[Math.min(lv - 1, LEVEL_NAMES.length - 1)]; }
+  function knownCount(){ var n = 0; for (var k in knownSet) if (knownSet[k]) n++; return n; }
+  function countReview(){ var n = 0, t = dayStr(0); for (var k in srs) if (srs[k] && srs[k].d <= t) n++; return n; }
+  function dayRec(){
+    var d = dayStr(0);
+    if (!game.days[d]) game.days[d] = { cards: 0, daily: 0, speak: 0, bonus: 0 };
+    return game.days[d];
+  }
+
+  // ---------- sound effects (tiny WebAudio synth, no files) ----------
+  var reduceMotion = false;
+  try { reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (e) {}
+  var soundOn = true;
+  try { if (localStorage.getItem("speakLearnSound") === "off") soundOn = false; } catch (e) {}
+  var audioCtx = null;
+  function tone(f, s, d, type, v){
+    var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, s);
+    g.gain.exponentialRampToValueAtTime(v, s + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, s + d);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(s); o.stop(s + d + 0.03);
+  }
+  function sfx(name){
+    if (!soundOn) return;
+    try {
+      if (!audioCtx){
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        audioCtx = new AC();
+      }
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      var t = audioCtx.currentTime;
+      if (name === "correct"){ tone(660, t, 0.12, "triangle", 0.2); tone(990, t + 0.1, 0.2, "triangle", 0.2); }
+      else if (name === "wrong"){ tone(230, t, 0.18, "sawtooth", 0.09); tone(170, t + 0.14, 0.28, "sawtooth", 0.09); }
+      else if (name === "flip"){ tone(540, t, 0.06, "square", 0.05); tone(720, t + 0.05, 0.06, "square", 0.04); }
+      else if (name === "yes"){ tone(520, t, 0.08, "triangle", 0.18); tone(780, t + 0.07, 0.14, "triangle", 0.18); }
+      else if (name === "no"){ tone(320, t, 0.1, "triangle", 0.14); tone(250, t + 0.08, 0.14, "triangle", 0.14); }
+      else if (name === "tap"){ tone(820, t, 0.04, "sine", 0.07); }
+      else if (name === "goal" || name === "badge" || name === "level"){
+        [523, 659, 784, 1047, 1319].forEach(function(f, i){ tone(f, t + i * 0.09, 0.22, "triangle", 0.17); });
+      }
+    } catch (e) {}
+  }
+  function buzz(p){ try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
+
+  // ---------- confetti ----------
+  var fxCanvas = null, fxCtx = null, parts = [], fxRaf = 0;
+  var CONF_COLORS = ["#0E9E90", "#F5A300", "#F0584A", "#7C5CFF", "#2584E8", "#DB3F8F", "#FFD76A"];
+  function fxResize(){
+    var dpr = window.devicePixelRatio || 1;
+    fxCanvas.width = window.innerWidth * dpr;
+    fxCanvas.height = window.innerHeight * dpr;
+    fxCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function confetti(x, y, n, spread){
+    if (reduceMotion) return;
+    try {
+      if (!fxCanvas){
+        fxCanvas = document.createElement("canvas");
+        fxCanvas.id = "fx";
+        document.body.appendChild(fxCanvas);
+        fxCtx = fxCanvas.getContext("2d");
+      }
+      fxResize();
+      n = n || 60;
+      for (var i = 0; i < n; i++){
+        var a = -Math.PI / 2 + (Math.random() - 0.5) * (spread || 2.4);
+        var sp = 5 + Math.random() * 9;
+        parts.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, g: 0.28 + Math.random() * 0.12,
+          r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.4, w: 6 + Math.random() * 6, h: 4 + Math.random() * 5,
+          c: CONF_COLORS[i % CONF_COLORS.length], life: 90 + Math.random() * 50 });
+      }
+      if (!fxRaf) fxRaf = requestAnimationFrame(fxStep);
+    } catch (e) {}
+  }
+  function fxStep(){
+    fxCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    parts = parts.filter(function(p){ return p.life > 0 && p.y < window.innerHeight + 30; });
+    parts.forEach(function(p){
+      p.vy += p.g; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life--;
+      fxCtx.save();
+      fxCtx.translate(p.x, p.y); fxCtx.rotate(p.r);
+      fxCtx.globalAlpha = Math.min(1, p.life / 30);
+      fxCtx.fillStyle = p.c;
+      fxCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      fxCtx.restore();
+    });
+    if (parts.length) fxRaf = requestAnimationFrame(fxStep);
+    else { fxRaf = 0; fxCtx.clearRect(0, 0, window.innerWidth, window.innerHeight); }
+  }
+  function bigConfetti(){ confetti(window.innerWidth / 2, window.innerHeight * 0.62, 130, 3.2); }
+
+  // ---------- toast, floating XP, celebration ----------
+  function toast(icon, title, sub, ms){
+    var wrap = document.getElementById("toastWrap");
+    if (!wrap) return;
+    var t = el("div", "toast");
+    t.appendChild(el("span", "t-ico", icon));
+    var b = el("div");
+    b.appendChild(el("div", "t-title", title));
+    if (sub) b.appendChild(el("div", "t-sub", sub));
+    t.appendChild(b);
+    wrap.appendChild(t);
+    setTimeout(function(){
+      t.classList.add("out");
+      setTimeout(function(){ if (t.parentNode) t.parentNode.removeChild(t); }, 320);
+    }, ms || 2600);
+  }
+  function floatXP(text, x, y){
+    var f = el("div", "xp-float", text);
+    f.style.left = x + "px"; f.style.top = y + "px";
+    document.body.appendChild(f);
+    setTimeout(function(){ if (f.parentNode) f.parentNode.removeChild(f); }, 1200);
+  }
+  function celebrate(c){
+    var m = el("div", "modal center");
+    var box = el("div", "celebrate");
+    box.appendChild(el("span", "c-emoji", c.emoji));
+    box.appendChild(el("div", "c-title", c.title));
+    box.appendChild(el("div", "c-sub", c.sub));
+    box.appendChild(btn("cbtn known block", c.btn || "Nice!", function(){ if (m.parentNode) m.parentNode.removeChild(m); }));
+    m.appendChild(box);
+    document.body.appendChild(m);
+  }
+
+  // ---------- XP + badges ----------
+  var BADGES = [
+    { id: "first",    icon: "🌱", title: "First Step",        desc: "Review your first flashcard",     test: function(){ return game.stats.cards >= 1; } },
+    { id: "cards25",  icon: "🃏", title: "Card Shark",        desc: "Review 25 flashcards",            test: function(){ return game.stats.cards >= 25; } },
+    { id: "known25",  icon: "📚", title: "Word Collector",    desc: "Know 25 words",                   test: function(){ return knownCount() >= 25; } },
+    { id: "known100", icon: "🧠", title: "Walking Dictionary", desc: "Know 100 words",                 test: function(){ return knownCount() >= 100; } },
+    { id: "ears",     icon: "👂", title: "Sharp Ears",        desc: "Get 5 dictations right",          test: function(){ return game.stats.dict >= 5; } },
+    { id: "flawless", icon: "💎", title: "Flawless",          desc: "Perfect score in a session",      test: function(){ return game.stats.perfect >= 1; } },
+    { id: "goal",     icon: "🎯", title: "Goal Getter",       desc: "Hit your daily goal",             test: function(){ return game.stats.goals >= 1; } },
+    { id: "streak3",  icon: "🔥", title: "On Fire",           desc: "3-day streak",                    test: function(){ return currentStreak() >= 3; } },
+    { id: "streak7",  icon: "🏆", title: "Week Warrior",      desc: "7-day streak",                    test: function(){ return currentStreak() >= 7; } },
+    { id: "speak1",   icon: "🎤", title: "Brave Voice",       desc: "Finish a speaking drill",         test: function(){ return game.stats.speak >= 1; } },
+    { id: "speak5",   icon: "🎭", title: "Stage Presence",    desc: "Finish 5 speaking drills",        test: function(){ return game.stats.speak >= 5; } },
+    { id: "missions", icon: "🌟", title: "Triple Threat",     desc: "Finish all 3 daily missions",     test: function(){ return game.stats.allMissions >= 1; } },
+    { id: "lvl5",     icon: "🚀", title: "Rising Star",       desc: "Reach level 5",                   test: function(){ return levelFor(game.xp) >= 5; } },
+    { id: "xp1000",   icon: "⚡", title: "XP Hunter",         desc: "Earn 1000 XP",                    test: function(){ return game.xp >= 1000; } }
+  ];
+  function checkBadges(){
+    BADGES.forEach(function(b){
+      if (game.badges[b.id]) return;
+      var ok = false;
+      try { ok = b.test(); } catch (e) {}
+      if (ok){
+        game.badges[b.id] = dayStr(0);
+        saveGame();
+        sfx("badge");
+        confetti(window.innerWidth / 2, window.innerHeight * 0.3, 50, 2.6);
+        toast(b.icon, "Badge unlocked: " + b.title, b.desc, 3800);
+      }
+    });
+  }
+  function award(n, originEl){
+    if (!n) return;
+    var before = levelFor(game.xp);
+    game.xp += n;
+    var after = levelFor(game.xp);
+    var x = window.innerWidth / 2, y = window.innerHeight / 2;
+    if (originEl && originEl.getBoundingClientRect){
+      var r = originEl.getBoundingClientRect();
+      x = r.left + r.width / 2; y = r.top + r.height / 2;
+    }
+    floatXP("+" + n + " XP", x, y);
+    saveGame();
+    renderHero();
+    if (after > before){
+      sfx("level"); bigConfetti();
+      toast("🚀", "Level " + after + "!", "You're now a " + levelName(after), 3800);
+    }
+    checkBadges();
+  }
+
+  // ---------- daily missions ----------
+  var MISSION_XP = { daily: 30, cards: 20, speak: 25 };
+  var MISSION_TITLE = { daily: "Daily 10", cards: "10 flashcards", speak: "Speaking drill" };
+  function completeMission(id){
+    var r = dayRec();
+    sfx("goal");
+    toast("✅", "Mission complete!", MISSION_TITLE[id] + " · +" + MISSION_XP[id] + " XP", 3000);
+    award(MISSION_XP[id]);
+    if (r.daily > 0 && r.cards >= 10 && r.speak > 0 && !r.bonus){
+      r.bonus = 1;
+      game.stats.allMissions++;
+      saveGame();
+      setTimeout(function(){
+        bigConfetti();
+        toast("🌟", "All missions done!", "Bonus +25 XP", 3800);
+        award(25);
+      }, 800);
+    }
+    saveGame();
+  }
+
+  // ---------- header stats + progress sheet ----------
+  function ringSvg(frac, label, cls){
+    var C = 2 * Math.PI * 18;
+    var off = C * (1 - Math.max(0, Math.min(1, frac)));
+    return '<svg class="ring ' + (cls || "") + '" viewBox="0 0 44 44" aria-hidden="true">' +
+      '<circle class="bg" cx="22" cy="22" r="18"/>' +
+      '<circle class="fg" cx="22" cy="22" r="18" transform="rotate(-90 22 22)" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/>' +
+      '<text x="22" y="26.5" text-anchor="middle">' + label + '</text></svg>';
+  }
+  function renderHero(){
+    var h = document.getElementById("hero");
+    if (!h) return;
+    var st = currentStreak(), lv = levelFor(game.xp), lo = xpFloor(lv), hi = xpFloor(lv + 1);
+    var done = todayCount(), reached = done >= DAILY_GOAL;
+    h.innerHTML =
+      '<button class="hstat streak' + (st > 0 ? " on" : "") + '" type="button"><span class="hico">🔥</span><b>' + st + '</b><small>day streak</small></button>' +
+      '<button class="hstat level" type="button">' + ringSvg((game.xp - lo) / (hi - lo), "L" + lv, "violet") + '<b>' + levelName(lv) + '</b><small>' + game.xp + ' XP</small></button>' +
+      '<button class="hstat daily' + (reached ? " done" : "") + '" type="button">' + ringSvg(done / DAILY_GOAL, reached ? "✓" : Math.min(done, DAILY_GOAL), reached ? "gold" : "") + '<b>Daily goal</b><small>' + Math.min(done, DAILY_GOAL) + ' / ' + DAILY_GOAL + '</small></button>';
+    var badge = document.getElementById("dueBadge");
+    if (badge){
+      var n = countReview();
+      badge.hidden = n < 1;
+      badge.textContent = n > 99 ? "99+" : String(n);
+    }
+  }
+  function closeProgress(){
+    var m = document.getElementById("progressModal");
+    if (m && m.parentNode) m.parentNode.removeChild(m);
+  }
+  function openProgress(){
+    if (document.getElementById("progressModal")) return;
+    var lv = levelFor(game.xp), lo = xpFloor(lv), hi = xpFloor(lv + 1);
+    var m = el("div", "modal");
+    m.id = "progressModal";
+    m.addEventListener("click", function(e){ if (e.target === m) closeProgress(); });
+    var s = el("div", "sheet");
+    var head = el("div", "sheet-head");
+    var ringWrap = el("div");
+    ringWrap.innerHTML = ringSvg((game.xp - lo) / (hi - lo), "L" + lv, "violet");
+    head.appendChild(ringWrap);
+    var ht = el("div");
+    ht.appendChild(el("div", "sheet-title", levelName(lv)));
+    ht.appendChild(el("div", "sheet-sub", game.xp + " XP · " + (hi - game.xp) + " XP to level " + (lv + 1)));
+    head.appendChild(ht);
+    s.appendChild(head);
+    var grid = el("div", "stat-grid");
+    [
+      [currentStreak(), "day streak"], [knownCount() + "/" + FLAT.length, "words known"], [game.stats.cards, "cards reviewed"],
+      [game.stats.correct, "correct answers"], [game.stats.speak, "speaking drills"], [Object.keys(game.badges).length + "/" + BADGES.length, "badges"]
+    ].forEach(function(c){
+      var cell = el("div", "stat-cell");
+      cell.appendChild(el("b", null, String(c[0])));
+      cell.appendChild(el("small", null, c[1]));
+      grid.appendChild(cell);
+    });
+    s.appendChild(grid);
+    s.appendChild(el("h3", null, "Badges"));
+    var bg = el("div", "badge-grid");
+    BADGES.forEach(function(b){
+      var got = !!game.badges[b.id];
+      var card = el("div", "badge " + (got ? "got" : "locked"));
+      card.appendChild(el("span", "b-ico", got ? b.icon : "🔒"));
+      card.appendChild(el("div", "b-t", b.title));
+      card.appendChild(el("div", "b-d", b.desc));
+      bg.appendChild(card);
+    });
+    s.appendChild(bg);
+    var close = btn("cbtn block", "Close", closeProgress);
+    close.style.marginTop = "18px";
+    s.appendChild(close);
+    m.appendChild(s);
+    document.body.appendChild(m);
+  }
+  document.getElementById("hero").addEventListener("click", function(){ sfx("tap"); openProgress(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeProgress(); });
+
+  // ---------- header tools: sound + theme ----------
+  var soundBtn = document.getElementById("soundToggle");
+  function updateSoundBtn(){ soundBtn.textContent = soundOn ? "🔔" : "🔕"; soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false"); }
+  soundBtn.addEventListener("click", function(){
+    soundOn = !soundOn;
+    try { localStorage.setItem("speakLearnSound", soundOn ? "on" : "off"); } catch (e) {}
+    updateSoundBtn();
+    sfx("tap");
+  });
+  updateSoundBtn();
+
+  var themeBtn = document.getElementById("themeToggle");
+  function isDarkNow(){
+    var a = document.documentElement.getAttribute("data-theme");
+    if (a) return a === "dark";
+    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }
+  function updateThemeBtn(){ themeBtn.textContent = isDarkNow() ? "☀️" : "🌙"; }
+  try {
+    var savedTheme = localStorage.getItem("speakLearnTheme");
+    if (savedTheme === "dark" || savedTheme === "light") document.documentElement.setAttribute("data-theme", savedTheme);
+  } catch (e) {}
+  themeBtn.addEventListener("click", function(){
+    var next = isDarkNow() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("speakLearnTheme", next); } catch (e) {}
+    updateThemeBtn();
+    sfx("tap");
+  });
+  updateThemeBtn();
+
 
   // ---------- helpers ----------
   function el(tag, cls, text){
@@ -1230,13 +2014,6 @@
     clearTimer();
     try { window.speechSynthesis.cancel(); } catch (e) {}
     while (practiceEl.firstChild) practiceEl.removeChild(practiceEl.firstChild);
-  }
-  function addTopBar(title, right){
-    var bar = el("div", "pr-top");
-    bar.appendChild(btn("linklike", "← Practice", renderHome));
-    bar.appendChild(el("span", "pr-top-title", title));
-    if (right) bar.appendChild(el("span", "pr-top-right", right));
-    practiceEl.appendChild(bar);
   }
   function progressBar(frac){
     var bar = el("div", "pbar");
@@ -1417,57 +2194,128 @@
 
   // ---------- views ----------
   var session = null;
+  var PRAISE = ["Correct!", "Nice one!", "Spot on!", "Great!", "Perfect!", "You got it!"];
+
+  function mascotLine(){
+    var done = todayCount(), st = currentStreak(), r = dayRec();
+    if (r.daily > 0 && r.cards >= 10 && r.speak > 0) return "All three missions done. You're unstoppable today!";
+    if (done >= DAILY_GOAL) return "Daily goal smashed! Anything extra is bonus XP.";
+    if (st >= 3) return "You're on a " + st + "-day streak. Let's not break it!";
+    if (done > 0) return (DAILY_GOAL - done) + " more answers to hit today's goal. Keep going!";
+    return pick(["Ready to practise? Let's warm up your English!", "Say it out loud. Your future self will thank you.", "Small steps every day beat one big session.", "Pick a mission and let's go!"]);
+  }
+
+  function goToCards(){
+    var due = countReview();
+    var cb = document.getElementById("dueOnly");
+    cb.checked = due > 0;
+    cardsDueOnly = due > 0;
+    document.querySelector('#tabSeg button[data-tab="cards"]').click();
+  }
 
   function renderHome(){
     clearPractice();
     practiceEl.setAttribute("data-view", "home");
-    var done = todayCount();
+    var done = todayCount(), r = dayRec();
+
+    var mr = el("div", "mascot-row");
+    mr.appendChild(el("div", "mascot", "🦜"));
+    mr.appendChild(el("div", "bubble", mascotLine()));
+    practiceEl.appendChild(mr);
+
     var hero = el("div", "pr-hero");
-    hero.appendChild(el("div", "pr-streak", currentStreak() + "-day streak"));
-    hero.appendChild(el("div", "pr-goal-text", Math.min(done, DAILY_GOAL) + " / " + DAILY_GOAL + " done today" + (done >= DAILY_GOAL ? " — goal reached" : "")));
-    hero.appendChild(progressBar(done / DAILY_GOAL));
+    var head = el("div", "pr-hero-head");
+    var hl = el("div");
+    hl.appendChild(el("div", "pr-streak", currentStreak() + "-day streak"));
+    hl.appendChild(el("div", "pr-goal-text", Math.min(done, DAILY_GOAL) + " / " + DAILY_GOAL + " done today" + (done >= DAILY_GOAL ? " — goal reached" : "")));
+    head.appendChild(hl);
+    var lvl = levelFor(game.xp);
+    head.appendChild(el("div", "lvl-chip", "⭐ L" + lvl + " " + levelName(lvl) + " · " + game.xp + " XP"));
+    hero.appendChild(head);
+    var pb = progressBar(done / DAILY_GOAL);
+    if (done >= DAILY_GOAL) pb.classList.add("gold");
+    hero.appendChild(pb);
+
+    hero.appendChild(el("div", "pr-sect", "Today's missions"));
+    var ml = el("div", "missions");
+    var rev = countReview();
+    var missions = [
+      { icon: "🎯", title: "Finish the Daily 10", sub: "A mixed set of 10 questions", xp: MISSION_XP.daily, done: r.daily > 0, label: "Start", go: function(){ startSession("daily"); } },
+      { icon: "🃏", title: "Review 10 flashcards", sub: Math.min(r.cards, 10) + " / 10 today" + (rev ? " · " + rev + " to review" : ""), xp: MISSION_XP.cards, done: r.cards >= 10, label: "Open", go: goToCards },
+      { icon: "🎤", title: "Do one speaking drill", sub: "Say it out loud!", xp: MISSION_XP.speak, done: r.speak > 0, label: "Speak", go: renderSpeakMenu }
+    ];
+    missions.forEach(function(m){
+      var row = el("div", "mission" + (m.done ? " done" : ""));
+      row.appendChild(el("div", "m-ico", m.done ? "✓" : m.icon));
+      var body = el("div", "m-body");
+      body.appendChild(el("div", "m-title", m.title));
+      body.appendChild(el("div", "m-sub", m.sub));
+      row.appendChild(body);
+      row.appendChild(el("span", "m-xp", "+" + m.xp + " XP"));
+      if (!m.done) row.appendChild(btn("cbtn known", m.label, m.go));
+      ml.appendChild(row);
+    });
+    hero.appendChild(ml);
     practiceEl.appendChild(hero);
 
-    var due = countDue();
-    var dueRow = el("div", "pr-due");
-    dueRow.appendChild(el("span", null, due + " flashcards due for review today"));
-    dueRow.appendChild(btn("cbtn known", "Review flashcards", openDueCards));
-    practiceEl.appendChild(dueRow);
-
+    practiceEl.appendChild(el("div", "pr-sect", "Practice"));
     var list = el("div", "pr-modes");
     var defs = [
-      { id: "daily", title: "Daily 10", time: "about 5 min", desc: "A mixed set: sentence completion, collocations and listen-and-type. Do this one every day.", primary: true },
-      { id: "cloze", title: "Fill the blank", time: "about 3 min", desc: "Choose the expression that completes a sentence. Includes the sentences from your class slides." },
-      { id: "colloc", title: "Collocation builder", time: "about 2 min", desc: "Finish the collocation. This trains the word partnerships that make you sound natural." },
-      { id: "dict", title: "Listen & type", time: "about 5 min", desc: "Listen to a sentence and type it. Trains listening, spelling and chunk memory." },
-      { id: "speak", title: "Speaking drill", time: "2 to 5 min", desc: "Timed speaking with must-use expressions. Say it out loud, not in your head." }
+      { id: "daily", icon: "🎯", color: "#0E9E90", title: "Daily 10", time: "about 5 min", desc: "A mixed set: sentence completion, collocations and listen-and-type. Do this one every day.", primary: true },
+      { id: "cloze", icon: "✏️", color: "#7C5CFF", title: "Fill the blank", time: "about 3 min", desc: "Choose the expression that completes a sentence. Includes the sentences from your class slides." },
+      { id: "colloc", icon: "🧩", color: "#2584E8", title: "Collocation builder", time: "about 2 min", desc: "Finish the collocation. This trains the word partnerships that make you sound natural." },
+      { id: "dict", icon: "🎧", color: "#DB3F8F", title: "Listen & type", time: "about 5 min", desc: "Listen to a sentence and type it. Trains listening, spelling and chunk memory." },
+      { id: "speak", icon: "🎤", color: "#F0584A", title: "Speaking drill", time: "2 to 5 min", desc: "Timed speaking with must-use expressions. Say it out loud, not in your head." }
     ];
     defs.forEach(function(d){
       var card = el("div", "pr-mode" + (d.primary ? " primary" : ""));
-      var head = el("div", "pr-mode-head");
-      head.appendChild(el("span", "pr-mode-title", d.title));
-      head.appendChild(el("span", "pr-mode-time", d.time));
-      card.appendChild(head);
+      card.style.setProperty("--cc", d.color);
+      var go = function(){ sfx("tap"); if (d.id === "speak") renderSpeakMenu(); else startSession(d.id); };
+      var head2 = el("div", "pr-mode-head");
+      head2.appendChild(el("div", "pr-mode-ico", d.icon));
+      var tx = el("div", "pr-mode-text");
+      tx.appendChild(el("span", "pr-mode-title", d.title));
+      tx.appendChild(el("span", "pr-mode-time", d.time));
+      head2.appendChild(tx);
+      card.appendChild(head2);
       card.appendChild(el("div", "pr-mode-desc", d.desc));
-      card.appendChild(btn(d.primary ? "cbtn known" : "cbtn", d.id === "speak" ? "Open" : "Start", function(){
-        if (d.id === "speak") renderSpeakMenu(); else startSession(d.id);
-      }));
+      var b = btn(d.primary ? "cbtn known" : "cbtn", d.id === "speak" ? "Open" : "Start", function(e){ e.stopPropagation(); go(); });
+      card.appendChild(b);
+      card.addEventListener("click", go);
       list.appendChild(card);
     });
     practiceEl.appendChild(list);
     practiceEl.appendChild(el("div", "pr-tip", "Tip: short daily practice beats one long session. Ten minutes a day, every day."));
+    renderHero();
   }
 
   function startSession(mode){
     var m = MODES[mode];
-    session = { mode: mode, title: m.title, qs: m.build(), i: 0, correct: 0, missed: [] };
+    session = { mode: mode, title: m.title, qs: m.build(), i: 0, correct: 0, missed: [], combo: 0, xp: 0, lvl0: levelFor(game.xp) };
     if (!session.qs.length){ renderHome(); return; }
     renderQuestion();
   }
 
-  function recordAnswer(q, ok){
-    if (ok) session.correct++; else session.missed.push(q);
+  function recordAnswer(q, ok, originEl){
+    var gained;
+    if (ok){
+      session.correct++;
+      session.combo++;
+      gained = (q.kind === "mcq" ? 10 : 15) + Math.min(5, Math.max(0, session.combo - 2));
+      game.stats.correct++;
+      if (q.kind !== "mcq") game.stats.dict++;
+      sfx("correct");
+      buzz(15);
+    } else {
+      session.missed.push(q);
+      session.combo = 0;
+      gained = 3;
+      sfx("wrong");
+      buzz([30, 40, 30]);
+    }
+    session.xp += gained;
     noteActivity(1);
+    award(gained, originEl);
   }
   function advance(){
     session.i++;
@@ -1477,15 +2325,32 @@
   function renderQuestion(){
     clearPractice();
     var q = session.qs[session.i];
-    addTopBar(session.title, (session.i + 1) + " / " + session.qs.length);
-    practiceEl.appendChild(progressBar(session.i / session.qs.length));
+    var top = el("div", "pr-top");
+    var x = btn("xbtn", "✕", renderHome);
+    x.setAttribute("aria-label", "Quit practice");
+    top.appendChild(x);
+    var bar = progressBar(session.i / session.qs.length);
+    top.appendChild(bar);
+    var comboEl = el("span", "combo", "🔥 ×" + session.combo);
+    comboEl.hidden = session.combo < 2;
+    top.appendChild(comboEl);
+    top.appendChild(el("span", "pr-top-right", (session.i + 1) + " / " + session.qs.length));
+    practiceEl.appendChild(top);
+    function afterAnswer(ok){
+      bar.firstChild.style.width = ((session.i + 1) / session.qs.length * 100) + "%";
+      comboEl.textContent = "🔥 ×" + session.combo;
+      comboEl.hidden = session.combo < 2;
+      if (session.combo >= 2){ comboEl.style.animation = "none"; void comboEl.offsetWidth; comboEl.style.animation = ""; }
+      if (ok && session.combo >= 5 && session.combo % 5 === 0) confetti(window.innerWidth / 2, window.innerHeight * 0.5, 40, 2.6);
+    }
+
     var card = el("div", "pr-card");
     card.appendChild(el("div", "pr-tag", q.tag));
     practiceEl.appendChild(card);
 
     var fb = el("div", "pr-feedback");
     fb.hidden = true;
-    var nextB = btn("cbtn known", session.i + 1 >= session.qs.length ? "See results" : "Next", advance);
+    var nextB = btn("cbtn known block", session.i + 1 >= session.qs.length ? "See results" : "Continue", advance);
     nextB.hidden = true;
 
     if (q.kind === "mcq"){
@@ -1498,13 +2363,15 @@
           if (answered) return;
           answered = true;
           var ok = (o === q.answer);
-          buttons.forEach(function(x){
-            x.disabled = true;
-            if (x.textContent === q.answer) x.classList.add("right");
+          buttons.forEach(function(xb){
+            xb.disabled = true;
+            if (xb.textContent === q.answer) xb.classList.add("right");
           });
           if (!ok) b.classList.add("wrong");
-          recordAnswer(q, ok);
-          fb.appendChild(el("div", "pr-fb-head " + (ok ? "good" : "bad"), ok ? "Correct" : "Not quite. Answer: " + q.answer));
+          recordAnswer(q, ok, b);
+          afterAnswer(ok);
+          fb.className = "pr-feedback " + (ok ? "good" : "bad");
+          fb.appendChild(el("div", "pr-fb-head " + (ok ? "good" : "bad"), ok ? pick(PRAISE) : "Not quite. Answer: " + q.answer));
           if (q.explain) fb.appendChild(el("div", "pr-fb-note", q.explain));
           var full = el("div", "pr-fb-sentence");
           full.appendChild(el("span", null, q.review.replace(/[\[\]]/g, "")));
@@ -1523,7 +2390,7 @@
       var playBtn = makeSpkBtn(q.speakText, false);
       playBtn.classList.add("big-inline");
       playBtn.addEventListener("click", function(){ speak(q.speakText, playBtn, 0.92); });
-      var slowBtn = btn("cbtn ghost", "Play slowly", function(){ speak(q.speakText, null, 0.6); });
+      var slowBtn = btn("cbtn", "🐢 Slow", function(){ speak(q.speakText, null, 0.6); });
       playRow.appendChild(playBtn);
       playRow.appendChild(slowBtn);
       card.appendChild(el("div", "pr-prompt small", "Listen, then type exactly what you hear."));
@@ -1537,7 +2404,7 @@
       input.placeholder = "Type the sentence here";
       card.appendChild(input);
       var checked = false;
-      var checkB = btn("cbtn known", "Check", function(){
+      var checkB = btn("cbtn known block", "Check", function(){
         if (checked) { advance(); return; }
         checked = true;
         input.disabled = true;
@@ -1547,8 +2414,10 @@
         var res = alignWords(a, b);
         var acc = res.lcs / Math.max(a.length, b.length, 1);
         var ok = acc >= 0.9;
-        recordAnswer(q, ok);
-        fb.appendChild(el("div", "pr-fb-head " + (ok ? "good" : "bad"), ok ? "Correct (" + Math.round(acc * 100) + "%)" : "Accuracy " + Math.round(acc * 100) + "%. Compare below."));
+        recordAnswer(q, ok, checkB);
+        afterAnswer(ok);
+        fb.className = "pr-feedback " + (ok ? "good" : "bad");
+        fb.appendChild(el("div", "pr-fb-head " + (ok ? "good" : "bad"), ok ? pick(PRAISE) + " (" + Math.round(acc * 100) + "%)" : "Accuracy " + Math.round(acc * 100) + "%. Compare below."));
         var line = el("div", "pr-diff");
         tokens.forEach(function(tok, idx){
           line.appendChild(el("span", res.matched[idx] ? "w-ok" : "w-miss", tok));
@@ -1557,17 +2426,20 @@
         fb.appendChild(line);
         fb.appendChild(el("div", "pr-fb-note", "You typed: " + (input.value.trim() || "(nothing)")));
         fb.hidden = false;
-        checkB.textContent = session.i + 1 >= session.qs.length ? "See results" : "Next";
+        checkB.textContent = session.i + 1 >= session.qs.length ? "See results" : "Continue";
       });
       input.addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); checkB.click(); } });
       var ctr = el("div", "cards-controls");
+      ctr.style.marginTop = "14px";
       ctr.appendChild(checkB);
+      checkB.style.width = "100%";
       card.appendChild(ctr);
       setTimeout(function(){ try { speak(q.speakText, playBtn, 0.92); input.focus(); } catch (e) {} }, 300);
     }
     practiceEl.appendChild(fb);
     if (q.kind === "mcq"){
       var c2 = el("div", "cards-controls");
+      c2.style.marginTop = "14px";
       c2.appendChild(nextB);
       practiceEl.appendChild(c2);
     }
@@ -1575,17 +2447,37 @@
 
   function renderResults(){
     clearPractice();
-    addTopBar(session.title, "Results");
+    game.stats.sessions++;
     var n = session.qs.length, score = session.correct;
+    var perfect = (score === n && n >= 5);
+    var r = dayRec();
+    var firstDaily = false;
+    if (session.mode === "daily"){ r.daily++; firstDaily = (r.daily === 1); }
+    saveGame();
+    if (perfect){ game.stats.perfect++; session.xp += 20; award(20); }
+
+    var top = el("div", "pr-top");
+    var x = btn("xbtn", "✕", renderHome);
+    x.setAttribute("aria-label", "Back to practice");
+    top.appendChild(x);
+    top.appendChild(el("span", "pr-top-title", session.title + " · Results"));
+    practiceEl.appendChild(top);
+
     var card = el("div", "pr-card center");
+    card.appendChild(el("div", "mascot", score === n ? "🏆" : score >= n * 0.7 ? "🎉" : "💪"));
     card.appendChild(el("div", "pr-score", score + " / " + n));
+    card.appendChild(el("div", "pr-xp", "+" + session.xp + " XP" + (perfect ? " (perfect bonus!)" : "")));
     var msg = score === n ? "Perfect. Come back tomorrow to keep the streak alive."
             : score >= n * 0.7 ? "Good work. Review the ones you missed below."
             : "Keep going. Repetition is how these expressions stick.";
-    card.appendChild(el("div", "pr-fb-note", msg));
+    var mm = el("div", "pr-fb-note", msg);
+    mm.style.marginTop = "12px";
+    card.appendChild(mm);
     var done = todayCount();
     card.appendChild(el("div", "pr-goal-text", Math.min(done, DAILY_GOAL) + " / " + DAILY_GOAL + " done today · " + currentStreak() + "-day streak"));
     practiceEl.appendChild(card);
+
+    if (score >= n * 0.7){ sfx("goal"); bigConfetti(); }
 
     if (session.missed.length){
       var box = el("div", "pr-card");
@@ -1599,33 +2491,66 @@
       practiceEl.appendChild(box);
     }
     var ctr = el("div", "cards-controls");
+    ctr.style.marginTop = "16px";
+    ctr.style.gap = "10px";
     ctr.appendChild(btn("cbtn known", "Another round", function(){ startSession(session.mode); }));
-    if (session.mode === "daily") ctr.appendChild(btn("cbtn", "Bonus: speaking drill", renderSpeakMenu));
+    if (session.mode === "daily") ctr.appendChild(btn("cbtn sun", "Bonus: speaking drill", renderSpeakMenu));
     ctr.appendChild(btn("cbtn ghost", "Back", renderHome));
     practiceEl.appendChild(ctr);
+
+    if (firstDaily) setTimeout(function(){ completeMission("daily"); }, 600);
+    var lvNow = levelFor(game.xp);
+    if (lvNow > session.lvl0){
+      setTimeout(function(){
+        celebrate({ emoji: "🚀", title: "Level " + lvNow + "!", sub: "You're now a " + levelName(lvNow) + ". Great work today!", btn: "Awesome" });
+      }, firstDaily ? 1800 : 900);
+    }
   }
 
   // ---------- speaking ----------
+  function speakDone(originEl){
+    noteActivity(5);
+    game.stats.speak++;
+    var r = dayRec();
+    r.speak++;
+    saveGame();
+    sfx("goal");
+    confetti(window.innerWidth / 2, window.innerHeight * 0.55, 70, 2.8);
+    award(25, originEl);
+    if (r.speak === 1) completeMission("speak");
+  }
+
+  function addTopBar(title, right){
+    var bar = el("div", "pr-top");
+    var back = btn("xbtn", "←", renderHome);
+    back.setAttribute("aria-label", "Back to practice");
+    bar.appendChild(back);
+    bar.appendChild(el("span", "pr-top-title", title));
+    if (right) bar.appendChild(el("span", "pr-top-right", right));
+    practiceEl.appendChild(bar);
+  }
+
   function renderSpeakMenu(){
     clearPractice();
     addTopBar("Speaking drill", null);
     var wrap = el("div", "pr-modes");
-    var a = el("div", "pr-mode primary");
-    var ah = el("div", "pr-mode-head");
-    ah.appendChild(el("span", "pr-mode-title", "Argue a topic"));
-    ah.appendChild(el("span", "pr-mode-time", "60 s prep + 90 s speak"));
-    a.appendChild(ah);
-    a.appendChild(el("div", "pr-mode-desc", "A debate topic plus three expressions you must use. Same format as your Putting It All Together class."));
-    a.appendChild(btn("cbtn known", "Start", topicDrill));
-    wrap.appendChild(a);
-    var b = el("div", "pr-mode");
-    var bh = el("div", "pr-mode-head");
-    bh.appendChild(el("span", "pr-mode-title", "Quick-fire starters"));
-    bh.appendChild(el("span", "pr-mode-time", "5 x 30 s"));
-    b.appendChild(bh);
-    b.appendChild(el("div", "pr-mode-desc", "Five sentence starters from class. Finish each one out loud and keep talking until the timer ends."));
-    b.appendChild(btn("cbtn", "Start", quickFire));
-    wrap.appendChild(b);
+    function modeCard(icon, color, title, time, desc, label, primary, fn){
+      var c = el("div", "pr-mode" + (primary ? " primary" : ""));
+      c.style.setProperty("--cc", color);
+      var h = el("div", "pr-mode-head");
+      h.appendChild(el("div", "pr-mode-ico", icon));
+      var tx = el("div", "pr-mode-text");
+      tx.appendChild(el("span", "pr-mode-title", title));
+      tx.appendChild(el("span", "pr-mode-time", time));
+      h.appendChild(tx);
+      c.appendChild(h);
+      c.appendChild(el("div", "pr-mode-desc", desc));
+      c.appendChild(btn(primary ? "cbtn known" : "cbtn", label, function(e){ e.stopPropagation(); fn(); }));
+      c.addEventListener("click", fn);
+      return c;
+    }
+    wrap.appendChild(modeCard("🗣️", "#F0584A", "Argue a topic", "60 s prep + 90 s speak", "A debate topic plus three expressions you must use. Same format as your Putting It All Together class.", "Start", true, topicDrill));
+    wrap.appendChild(modeCard("⚡", "#F5A300", "Quick-fire starters", "5 x 30 s", "Five sentence starters from class. Finish each one out loud and keep talking until the timer ends.", "Start", false, quickFire));
     practiceEl.appendChild(wrap);
   }
 
@@ -1657,6 +2582,7 @@
     card.appendChild(phase);
     card.appendChild(clock);
     var ctr = el("div", "cards-controls");
+    ctr.style.gap = "10px"; ctr.style.marginTop = "14px";
     var startB = btn("cbtn known", "Start", startPrep);
     var skipB = btn("cbtn", "Skip prep", startSpeak);
     var stopB = btn("cbtn", "Finish early", finish);
@@ -1696,8 +2622,9 @@
       });
       card.appendChild(checks);
       var ctr2 = el("div", "cards-controls");
-      ctr2.appendChild(btn("cbtn known", "Done", function(){ noteActivity(5); renderHome(); }));
-      ctr2.appendChild(btn("cbtn", "Another topic", function(){ noteActivity(5); topicDrill(); }));
+      ctr2.style.gap = "10px"; ctr2.style.marginTop = "14px";
+      ctr2.appendChild(btn("cbtn known", "Done", function(e){ speakDone(e.currentTarget); setTimeout(renderHome, 700); }));
+      ctr2.appendChild(btn("cbtn", "Another topic", function(e){ speakDone(e.currentTarget); topicDrill(); }));
       card.appendChild(ctr2);
     }
   }
@@ -1712,6 +2639,7 @@
     var phase = el("div", "pr-phase", "");
     var clock = el("div", "pr-clock", "");
     var ctr = el("div", "cards-controls");
+    ctr.style.gap = "10px"; ctr.style.marginTop = "14px";
     var skipB = btn("cbtn", "Next starter", function(){ idx++; next(); });
     ctr.appendChild(skipB);
     card.appendChild(tag); card.appendChild(starter); card.appendChild(phase); card.appendChild(clock); card.appendChild(ctr);
@@ -1724,10 +2652,10 @@
         tag.textContent = "Finished";
         starter.textContent = "Nice work. Five starters done.";
         phase.textContent = "";
-        clock.textContent = "";
+        clock.textContent = "🎉";
         clock.classList.remove("speaking");
         ctr.removeChild(skipB);
-        noteActivity(5);
+        speakDone(null);
         ctr.appendChild(btn("cbtn known", "Again", quickFire));
         ctr.appendChild(btn("cbtn ghost", "Back", renderHome));
         return;
@@ -1748,6 +2676,7 @@
     if (practiceEl.getAttribute("data-view") !== "other") renderHome();
   }
 
+  renderHero();
   renderHome();
 })();
 </script>

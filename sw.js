@@ -1,6 +1,7 @@
-// Minimal offline cache for the Speak & Learn web app.
-// Caches the app shell on first visit so it opens instantly (and works offline) afterwards.
-const CACHE_NAME = "speak-and-learn-v2";
+// Offline cache for the Speak & Learn web app.
+// Pages (index.html) are fetched NETWORK-FIRST so updates show up right away;
+// the cached copy is only used when you're offline.
+const CACHE_NAME = "speak-and-learn-v4";
 const ASSETS = [
   "./",
   "./index.html",
@@ -13,7 +14,7 @@ const ASSETS = [
 self.addEventListener("install", function(event){
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache){
-      return cache.addAll(ASSETS);
+      return cache.addAll(ASSETS.map(function(u){ return new Request(u, {cache: "reload"}); }));
     })
   );
   self.skipWaiting();
@@ -32,14 +33,19 @@ self.addEventListener("activate", function(event){
 });
 
 self.addEventListener("fetch", function(event){
+  var req = event.request;
+  if (req.method !== "GET") return;
+  var url = new URL(req.url);
+  if (url.origin !== location.origin) return; // fonts etc. go straight to network
+
+  // Network-first: always try to get the newest version, fall back to cache offline.
   event.respondWith(
-    caches.match(event.request).then(function(cached){
-      return cached || fetch(event.request).then(function(response){
-        // Don't try to cache cross-origin requests (e.g. Google Fonts) here — keep it simple.
-        return response;
-      }).catch(function(){
-        return cached;
-      });
+    fetch(req).then(function(response){
+      var copy = response.clone();
+      caches.open(CACHE_NAME).then(function(cache){ cache.put(req, copy); });
+      return response;
+    }).catch(function(){
+      return caches.match(req).then(function(c){ return c || caches.match("./index.html"); });
     })
   );
 });
