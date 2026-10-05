@@ -10,8 +10,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Parley">
-<title>Parley</title>
+<meta name="apple-mobile-web-app-title" content="Armanly">
+<title>Armanly</title>
 <meta name="description" content="Vocabulary, phrases, grammar and daily practice from our English speaking class, with pronunciation and Persian meanings.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -626,7 +626,7 @@
     <div class="title-row">
       <div class="brand">
         <div class="logo" aria-hidden="true">&ldquo;</div>
-        <h1>Parley</h1>
+        <h1>Armanly</h1>
       </div>
       <div class="tools">
         <button class="tool-btn" id="soundToggle" type="button" aria-label="Toggle sound effects" title="Sound effects"></button>
@@ -2310,7 +2310,7 @@
     var blob = new Blob([JSON.stringify(out)], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "parley-backup-" + dayStr(0) + ".json";
+    a.download = "armanly-backup-" + dayStr(0) + ".json";
     document.body.appendChild(a);
     a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); if (a.parentNode) a.parentNode.removeChild(a); }, 500);
@@ -2324,7 +2324,7 @@
         if (!obj || obj.app !== "speak-and-learn" || !obj.data) throw new Error("bad");
         DATA_KEYS.forEach(function(k){ if (typeof obj.data[k] === "string") localStorage.setItem(k, obj.data[k]); });
         location.reload();
-      } catch (e) { onError("That file is not a Parley backup. Choose the .json file you saved earlier."); }
+      } catch (e) { onError("That file is not an Armanly backup. Choose the .json file you saved earlier."); }
     };
     rd.onerror = function(){ onError("The file could not be read. Try again."); };
     rd.readAsText(file);
