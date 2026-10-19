@@ -13,6 +13,10 @@
 <meta name="apple-mobile-web-app-title" content="Armanly">
 <title>Armanly</title>
 <meta name="description" content="Vocabulary, phrases, grammar and daily practice from our English speaking class, with pronunciation and Persian meanings.">
+<script>
+  // Apply the saved theme before the first paint, so dark mode never flashes light.
+  (function(){ try { var t = localStorage.getItem("speakLearnTheme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {} })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,6 +32,8 @@
     --good:#159A66; --good-edge:#0F7A50; --good-soft:#DFF5EA;
     --bad:#E0434A; --bad-edge:#B62F36; --bad-soft:#FDE9EA;
     --cc:#3B5BFF;
+    /* Category palette: one hue per topic, also used for practice modes. Set as --cc on a container. */
+    --cat-1:#3B5BFF; --cat-2:#0E9AA0; --cat-3:#8B5CF6; --cat-4:#E8590C; --cat-5:#D48A00; --cat-6:#D6457F;
     --f-display:"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --f-body:"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --f-fa:"Vazirmatn", -apple-system, "Segoe UI", Tahoma, sans-serif;
@@ -168,6 +174,7 @@
   }
   .card:hover{ border-color:var(--cc); }
   .card:active{ transform:scale(.985); }
+  .card.bump{ animation:pop .3s ease; }
   .card.hide{ display:none; }
   .term-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
   .term{ font-family:var(--f-display); font-weight:700; font-size:19.5px; line-height:1.2; letter-spacing:-.01em; color:var(--ink); padding-top:3px; }
@@ -542,6 +549,26 @@
   .pg-head p{ margin:5px 0 0; color:var(--ink-2); font-size:14.5px; max-width:56ch; }
 
   /* ---------- Home ---------- */
+  .hello{ margin:16px 0 0; }
+  .hello h2{ font-family:var(--f-display); font-weight:800; font-size:25px; line-height:1.1; letter-spacing:-.02em; margin:0; overflow-wrap:anywhere; }
+  .hello p{ margin:4px 0 0; color:var(--ink-2); font-size:13.5px; display:flex; align-items:center; gap:6px; }
+  .hello p .ic{ width:15px; height:15px; color:var(--good); }
+  .notice{ margin-top:14px; padding:13px 14px; border-radius:var(--r); border:2px solid var(--line); background:var(--surface); display:flex; gap:12px; align-items:flex-start; }
+  .notice > .ic{ width:22px; height:22px; color:var(--accent); margin-top:1px; }
+  .notice.warn{ background:var(--bad-soft); border-color:transparent; }
+  .notice.warn > .ic{ color:var(--bad); }
+  .notice-body{ flex:1; min-width:0; }
+  .notice-body .m-sub{ margin-top:2px; line-height:1.45; }
+  .notice-body .cbtn{ margin-top:10px; }
+  .continue .pbar{ background:rgba(255,255,255,.22); margin:12px 0 14px; }
+  .continue .pbar-fill{ background:#fff; }
+  .continue .pbar-fill::after{ display:none; }
+  .data-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:2px solid var(--surface-2); font-size:14px; }
+  .data-row:last-of-type{ border-bottom:none; }
+  .data-row span:first-child{ color:var(--ink-2); font-weight:600; }
+  .data-row span:last-child{ font-weight:800; text-align:right; }
+  .data-row .ok{ color:var(--good); }
+  .data-row .warn{ color:var(--bad); }
   .continue{ margin-top:14px; padding:18px 18px 16px; border-radius:22px; background:var(--accent); color:#fff; box-shadow:0 4px 0 var(--accent-edge); position:relative; overflow:hidden; }
   .continue::before{ content:""; position:absolute; right:-50px; top:-50px; width:170px; height:170px; border-radius:50%; background:rgba(255,255,255,.09); }
   .continue::after{ content:""; position:absolute; right:30px; top:54px; width:70px; height:70px; border-radius:50%; background:rgba(255,255,255,.08); }
@@ -1001,8 +1028,9 @@
   // ============================================================
   // SPEECH
   // ============================================================
-  var CAT_COLORS = ["#3B5BFF", "#0E9AA0", "#8B5CF6", "#E8590C", "#D48A00", "#D6457F"];
-  function catColor(i){ return CAT_COLORS[i % CAT_COLORS.length]; }
+  // The palette itself lives in CSS (--cat-1 to --cat-6), so every hue is defined once.
+  var CAT_COUNT = 6;
+  function catColor(i){ return "var(--cat-" + (i % CAT_COUNT + 1) + ")"; }
 
   // ---------- line icons ----------
   var ICONS = {
@@ -1033,7 +1061,9 @@
     shuffle: "M3 7h3.500c2 0 3.200 1 4.300 2.500l2.400 5c1.100 1.500 2.300 2.500 4.300 2.500H21 M18 14.500l3 2.500-3 2.500 M14.600 8c.800-.600 1.700-1 2.900-1H21 M18 4.500L21 7l-3 2.500 M3 17h3.500c1.200 0 2.100-.400 2.900-1",
     award: "M12 14a5.500 5.500 0 1 0 0-11 5.500 5.500 0 0 0 0 11z M8.500 13L7 21l5-2.500 5 2.500-1.500-8",
     search: "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z M20 20l-4-4",
-    chevron: "M6 9l6 6 6-6"
+    chevron: "M6 9l6 6 6-6",
+    shield: "M12 3l8 3v6c0 4.500-3.400 8-8 9-4.600-1-8-4.500-8-9V6z M8.500 12l2.500 2.500 4.500-5",
+    phone: "M7 2h10a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z M11 18h2"
   };
   function ic(n){ return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="' + ICONS[n] + '"/></svg>'; }
   Array.prototype.forEach.call(document.querySelectorAll("[data-ic]"), function(node){
@@ -1041,6 +1071,42 @@
     tmp.innerHTML = ic(node.getAttribute("data-ic"));
     node.parentNode.replaceChild(tmp.firstChild, node);
   });
+
+  // ============================================================
+  // SAVED STATE: everything stays in this browser (localStorage), so each learner's
+  // progress lives on their own device and the app reopens where they left off.
+  // ============================================================
+  var storageOk = (function(){
+    try { localStorage.setItem("speakLearnTest", "1"); localStorage.removeItem("speakLearnTest"); return true; } catch (e) { return false; }
+  })();
+  function loadObj(key){
+    try {
+      var o = JSON.parse(localStorage.getItem(key) || "null");
+      return (o && typeof o === "object" && !Array.isArray(o)) ? o : null;
+    } catch (e) { return null; }
+  }
+  function saveJSON(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch (e) { return false; } }
+  function forget(key){ try { localStorage.removeItem(key); } catch (e) {} }
+  // Ask the browser not to clear our data when space runs low. Called after a tap, because Firefox asks the user.
+  function askPersistence(){
+    try {
+      if (navigator.storage && navigator.storage.persisted) navigator.storage.persisted().then(function(p){ if (!p) return navigator.storage.persist(); }).catch(function(){});
+    } catch (e) {}
+  }
+  function isInstalled(){
+    try { return window.navigator.standalone === true || window.matchMedia("(display-mode: standalone)").matches; } catch (e) { return false; }
+  }
+
+  // Who is learning here: a name for the greeting and when they last saved a backup.
+  var PROFILE_KEY = "speakLearnProfile";
+  var profile = loadObj(PROFILE_KEY) || {};
+  function saveProfile(){ saveJSON(PROFILE_KEY, profile); }
+
+  // Where the learner was: tab, scroll positions, open grammar topic, flashcard deck and card.
+  var UI_KEY = "speakLearnUI";
+  var ui = loadObj(UI_KEY) || {};
+  if (!ui.scroll || typeof ui.scroll !== "object") ui.scroll = {};
+  var uiReady = false; // nothing is written until the saved place has been restored
 
   // ---------- the learner's own words (saved on this device) ----------
   var CUSTOM_KEY = "speakLearnCustom";
@@ -1136,6 +1202,7 @@
     el.classList.add("active");
   }
 
+  var catChips = []; // category chip per VOCAB index
   var chipAll = document.createElement("button");
   chipAll.className = "chip chip-all active";
   chipAll.textContent = "All";
@@ -1247,6 +1314,7 @@
         document.getElementById(secId).scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
+    catChips[ci] = chip;
     if (isCustom) chipnav.insertBefore(chip, chipAll.nextSibling); else chipnav.appendChild(chip);
   });
 
@@ -1297,11 +1365,14 @@
   // ============================================================
   var VIEWS = ["home", "learn", "cards", "practice", "vocab", "phrases", "grammar"];
   var LIB = { vocab: 1, phrases: 1, grammar: 1 };
-  var lastLib = "vocab";
+  var lastLib = LIB[ui.lib] ? ui.lib : "vocab";
   var tabButtons = document.querySelectorAll("#tabSeg button");
   var libButtons = document.querySelectorAll("#libSeg button");
-  function openView(view){
+  // restoring: true when reopening the app, so the saved scroll position is used even for the same view
+  function openView(view, restoring){
     if (view === "lib") view = lastLib;
+    var prev = currentMode;
+    if (uiReady && prev !== view) ui.scroll[prev] = Math.round(window.scrollY);
     currentMode = view;
     if (LIB[view]) lastLib = view;
     VIEWS.forEach(function(v){ document.getElementById("panel-" + v).classList.toggle("active", v === view); });
@@ -1312,13 +1383,37 @@
     document.querySelector(".controls").style.display = (view === "vocab" || view === "phrases") ? "" : "none";
     chipnav.style.display = (view === "vocab" || view === "cards") ? "flex" : "none";
     chipnav.classList.toggle("mode-cards", view === "cards");
-    window.scrollTo({ top: 0 });
     if (view === "practice") onPracticeTab();
     if (view === "grammar") renderGrammar();
     if (view === "home") renderHomeView();
     if (view === "learn") renderLearn();
     applyFilter();
+    // Each tab keeps its own scroll position; tapping the tab you are on goes back to the top.
+    var keepsPlace = view !== "practice" && view !== "cards" && (restoring || view !== prev);
+    window.scrollTo(0, keepsPlace ? (ui.scroll[view] || 0) : 0);
+    saveUI();
   }
+
+  function saveUI(){
+    if (!uiReady) return;
+    ui.view = currentMode;
+    ui.lib = lastLib;
+    ui.grammarOpen = grammarOpen;
+    ui.cards = {
+      cat: cardsCatFilter, due: cardsDueOnly, unl: cardsUnlearnedOnly, pos: cardsPos,
+      order: cardsOrder.map(function(i){ return FLAT[i].key; })
+    };
+    saveJSON(UI_KEY, ui);
+  }
+  var scrollSaveT = 0;
+  window.addEventListener("scroll", function(){
+    if (!uiReady) return;
+    clearTimeout(scrollSaveT);
+    scrollSaveT = setTimeout(function(){ ui.scroll[currentMode] = Math.round(window.scrollY); saveUI(); }, 300);
+  }, { passive: true });
+  function saveNow(){ if (uiReady){ ui.scroll[currentMode] = Math.round(window.scrollY); saveUI(); } }
+  window.addEventListener("pagehide", saveNow);
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "hidden") saveNow(); });
   Array.prototype.forEach.call(tabButtons, function(btn){
     btn.addEventListener("click", function(){ sfx("tap"); openView(btn.getAttribute("data-tab")); });
   });
@@ -1342,7 +1437,7 @@
     }
     if (activeTab === "cards"){
       emptyMsg.style.display = "none";
-      rebuildDeck();
+      rebuildDeck(true);
       return;
     }
 
@@ -1490,9 +1585,27 @@
     cardsStats.textContent = FLAT.length + " cards, " + knownCount + " known, " + countDue() + " due";
   }
 
-  function rebuildDeck(){
-    cardsOrder = buildCardsDeck();
-    cardsPos = 0;
+  // keepPlace: refresh which cards belong in the deck but stay on the same card, in the same
+  // (possibly shuffled) order. Without it the deck starts again from card 1, as after a filter change.
+  function rebuildDeck(keepPlace){
+    var fresh = buildCardsDeck();
+    if (keepPlace && cardsOrder.length){
+      var cur = cardsOrder[Math.min(cardsPos, cardsOrder.length - 1)];
+      var inFresh = {}, kept = {};
+      fresh.forEach(function(i){ inFresh[i] = true; });
+      var ordered = cardsOrder.filter(function(i){
+        if (!inFresh[i] || kept[i]) return false;
+        kept[i] = true;
+        return true;
+      });
+      fresh.forEach(function(i){ if (!kept[i]) ordered.push(i); });
+      var at = ordered.indexOf(cur);
+      cardsPos = at >= 0 ? at : Math.max(0, Math.min(cardsPos, ordered.length - 1));
+      cardsOrder = ordered;
+    } else {
+      cardsOrder = fresh;
+      cardsPos = 0;
+    }
     refreshCardsStats();
     showCard();
   }
@@ -1531,6 +1644,7 @@
         : cardsUnlearnedOnly
         ? "Every word here is marked as known. Turn off \"Unlearned only\" to review them again."
         : "No cards in this category yet.";
+      saveUI();
       return;
     }
     setCardsVisible(true);
@@ -1554,6 +1668,7 @@
     void flashcardEl.offsetWidth;
     flashcardEl.classList.add("enter");
     setTimeout(function(){ flashcardEl.classList.remove("enter"); }, 450);
+    saveUI();
   }
 
   function flipCardNow(){
@@ -1696,6 +1811,16 @@
     showCard();
   });
   document.getElementById("resetProgress").addEventListener("click", function(){
+    // Erasing every card's progress takes two taps, like removing a word.
+    var b = this;
+    if (!b.getAttribute("data-armed")){
+      b.setAttribute("data-armed", "1");
+      b.textContent = "Tap again to erase card progress";
+      setTimeout(function(){ b.removeAttribute("data-armed"); b.textContent = "Reset card progress"; }, 3000);
+      return;
+    }
+    b.removeAttribute("data-armed");
+    b.textContent = "Reset card progress";
     knownSet = {};
     srs = {};
     saveKnown();
@@ -1718,7 +1843,21 @@
     rebuildDeck();
   });
 
-  rebuildDeck();
+  // Pick the deck up where the learner left it: same filters, same order, same card.
+  (function restoreDeck(){
+    var c = ui.cards;
+    if (!c || typeof c !== "object") return;
+    if (typeof c.cat === "number" && catChips[c.cat]){ cardsCatFilter = c.cat; setActiveChip(catChips[c.cat]); }
+    cardsDueOnly = document.getElementById("dueOnly").checked = !!c.due;
+    cardsUnlearnedOnly = document.getElementById("unlearnedOnly").checked = !!c.unl;
+    if (Array.isArray(c.order)){
+      var idxByKey = {};
+      FLAT.forEach(function(f, i){ idxByKey[f.key] = i; });
+      c.order.forEach(function(k){ if (idxByKey[k] !== undefined) cardsOrder.push(idxByKey[k]); });
+      cardsPos = Math.max(0, Math.min(cardsOrder.length - 1, c.pos | 0));
+    }
+  })();
+  rebuildDeck(true);
 
   // ============================================================
   // PRACTICE (daily exercises, English only)
@@ -1838,7 +1977,7 @@
 
   // ---------- confetti ----------
   var fxCanvas = null, fxCtx = null, parts = [], fxRaf = 0;
-  var CONF_COLORS = ["#2338C9", "#FFE566", "#12161F", "#93A1FF", "#FFD21F", "#C9CEDB"];
+  var CONF_COLORS = ["#3B5BFF", "#FFE566", "#0E9AA0", "#8B5CF6", "#F5A800", "#D6457F"]; // canvas needs literal colours: --cat-1, --mark, --cat-2, --cat-3, --sun, --cat-6
   function fxResize(){
     var dpr = window.devicePixelRatio || 1;
     fxCanvas.width = window.innerWidth * dpr;
@@ -2303,8 +2442,10 @@
       badge.textContent = n > 99 ? "99+" : String(n);
     }
   }
-  var DATA_KEYS = ["speakLearnGame", "speakLearnProgress", "speakLearnKnown", "speakLearnSRS", "speakLearnCustom", "speakLearnAccent", "speakLearnSound", "speakLearnTheme"];
+  var DATA_KEYS = ["speakLearnGame", "speakLearnProgress", "speakLearnKnown", "speakLearnSRS", "speakLearnCustom", "speakLearnAccent", "speakLearnSound", "speakLearnTheme", "speakLearnProfile"];
   function exportData(){
+    profile.lastBackup = dayStr(0);
+    saveProfile();
     var out = { app: "speak-and-learn", v: 1, date: dayStr(0), data: {} };
     DATA_KEYS.forEach(function(k){ try { var v = localStorage.getItem(k); if (v !== null) out.data[k] = v; } catch (e) {} });
     var blob = new Blob([JSON.stringify(out)], { type: "application/json" });
@@ -2364,7 +2505,40 @@
       s.appendChild(bg);
 
       s.appendChild(el("h3", null, "Your data"));
-      s.appendChild(el("div", "sheet-note", "Everything you do here (progress, streak, your own words) is saved in this browser on this device. To move it to another phone or computer, save a backup file and restore it there."));
+      s.appendChild(el("div", "sheet-note", "Everything you do here (progress, streak, your own words, where you stopped) is saved in this browser on this device. Nobody else can see it. To move it to another phone or computer, save a backup file and restore it there."));
+      var nameF = el("div", "field");
+      var nameL = el("label", null, "Your name ");
+      nameL.setAttribute("for", "profileName");
+      nameL.appendChild(el("small", null, "(for the greeting)"));
+      var nameI = document.createElement("input");
+      nameI.type = "text"; nameI.id = "profileName"; nameI.maxLength = 30; nameI.autocomplete = "given-name";
+      nameI.value = profile.name || "";
+      nameI.placeholder = "e.g. Sara";
+      nameI.addEventListener("input", function(){ profile.name = nameI.value.trim().replace(/\s+/g, " ").slice(0, 30); saveProfile(); });
+      nameF.appendChild(nameL); nameF.appendChild(nameI);
+      s.appendChild(nameF);
+      var rows = el("div");
+      rows.style.marginTop = "8px";
+      function dataRow(label, value, cls){
+        var r = el("div", "data-row");
+        r.appendChild(el("span", null, label));
+        var v = el("span", cls || null, value);
+        r.appendChild(v);
+        rows.appendChild(r);
+        return v;
+      }
+      dataRow("Saving in this browser", storageOk ? "On" : "Blocked", storageOk ? "ok" : "warn");
+      var keepV = dataRow("Protected from clean-up", isInstalled() ? "Yes, installed app" : "Checking…");
+      if (!isInstalled()){
+        try {
+          navigator.storage.persisted().then(function(p){
+            keepV.textContent = p ? "Yes" : "Not yet";
+            keepV.className = p ? "ok" : "";
+          }).catch(function(){ keepV.textContent = "Unknown"; });
+        } catch (x) { keepV.textContent = "Unknown"; }
+      }
+      dataRow("Last backup file", profile.lastBackup || "Never", profile.lastBackup ? "" : "warn");
+      s.appendChild(rows);
       var err = el("div", "field-err");
       err.hidden = true;
       var fi = document.createElement("input");
@@ -2379,7 +2553,7 @@
       s.appendChild(fi);
       s.appendChild(err);
 
-      var c = btn("cbtn known block", "Done", close);
+      var c = btn("cbtn known block", "Done", function(){ close(); if (currentMode === "home") renderHomeView(); });
       c.style.marginTop = "22px";
       s.appendChild(c);
     });
@@ -2513,6 +2687,7 @@
     clearTimer();
     try { window.speechSynthesis.cancel(); } catch (e) {}
     while (practiceEl.firstChild) practiceEl.removeChild(practiceEl.firstChild);
+    forgetSession(); // renderQuestion saves it again; anything else on this panel means it was left
   }
   function progressBar(frac){
     var bar = el("div", "pbar");
@@ -2769,15 +2944,21 @@
     shuffleArray(quiz);
     return study.concat(quiz);
   }
+  function lessonDef(L){
+    return { title: unitName(L.ci) + ", lesson " + L.n, lessonId: L.id, build: function(){ return buildLesson(L); } };
+  }
   function startLesson(L){
     openView("practice");
-    startSession("lesson", { title: unitName(L.ci) + ", lesson " + L.n, lessonId: L.id, build: function(){ return buildLesson(L); } });
+    startSession("lesson", lessonDef(L));
+  }
+  function mistakesDef(){
+    return { title: "Review mistakes", build: function(){
+      return sample(missItems(), 10).map(function(it){ return anyQuestionFor(it, FLAT); });
+    } };
   }
   function startMistakes(){
     openView("practice");
-    startSession("mistakes", { title: "Review mistakes", build: function(){
-      return sample(missItems(), 10).map(function(it){ return anyQuestionFor(it, FLAT); });
-    } });
+    startSession("mistakes", mistakesDef());
   }
 
   // ---------- learn tab: the path ----------
@@ -2829,7 +3010,7 @@
     });
 
     var gu = el("section", "unit");
-    gu.style.setProperty("--cc", "#8B5CF6");
+    gu.style.setProperty("--cc", catColor(2));
     var gh = el("div", "unit-head");
     var gt = el("div", "unit-title");
     gt.appendChild(el("span", null, "Grammar"));
@@ -2858,9 +3039,40 @@
     while (homeEl.firstChild) homeEl.removeChild(homeEl.firstChild);
     var r = dayRec(), nxt = nextLesson();
 
-    // continue card
+    // greeting
+    var hour = new Date().getHours();
+    var part = hour >= 5 && hour < 12 ? "Good morning" : hour >= 12 && hour < 18 ? "Good afternoon" : "Good evening";
+    var hello = el("div", "hello");
+    hello.appendChild(el("h2", null, profile.name ? part + ", " + profile.name : part));
+    if (storageOk){
+      var saved = el("p");
+      saved.innerHTML = ic("check");
+      saved.appendChild(document.createTextNode("Your progress is saved on this device"));
+      hello.appendChild(saved);
+    }
+    homeEl.appendChild(hello);
+
+    if (!storageOk){
+      homeEl.appendChild(notice("warn", "x", "This browser is not saving your progress",
+        "Private browsing or blocked site data makes Armanly forget you when you close it. Open it in a normal tab, or add it to your home screen."));
+    } else if (!isInstalled() && !profile.installTipSeen && (game.xp > 0 || lessonsDone() > 0)){
+      var ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      homeEl.appendChild(notice("", "phone", "Keep your progress safe",
+        (ios ? "Safari can clear data from websites you have not opened for a week. Tap Share, then \u201cAdd to Home Screen\u201d, and use Armanly from there."
+             : "Install Armanly so your browser keeps its data: open the browser menu and choose \u201cInstall app\u201d or \u201cAdd to Home screen\u201d.") +
+        " You can also save a backup file from the progress panel.",
+        "Got it", function(){ profile.installTipSeen = dayStr(0); saveProfile(); askPersistence(); renderHomeView(); }));
+    }
+
+    // continue card: an unfinished exercise first, otherwise the next lesson
     var cont = el("div", "continue");
-    if (nxt){
+    if (sessionLive && session && session.i < session.qs.length){
+      cont.appendChild(el("div", "label", "Pick up where you left off"));
+      cont.appendChild(el("div", "continue-title", session.title));
+      cont.appendChild(el("div", "continue-sub", "Step " + (session.i + 1) + " of " + session.qs.length + ". Your answers so far are kept."));
+      cont.appendChild(progressBar(session.i / session.qs.length));
+      cont.appendChild(btn("cbtn light block", "Resume", function(){ openView("practice"); }));
+    } else if (nxt){
       var started = lessonsDone() > 0;
       cont.appendChild(el("div", "label", started ? "Continue learning" : "Start here"));
       cont.appendChild(el("div", "continue-title", unitName(nxt.ci)));
@@ -2937,6 +3149,51 @@
     renderHero();
   }
 
+  function notice(kind, icon, title, text, action, onAction){
+    var n = el("div", "notice" + (kind ? " " + kind : ""));
+    n.setAttribute("role", kind === "warn" ? "alert" : "note");
+    var i = document.createElement("span");
+    i.innerHTML = ic(icon);
+    n.appendChild(i.firstChild);
+    var body = el("div", "notice-body");
+    body.appendChild(el("div", "m-title", title));
+    body.appendChild(el("div", "m-sub", text));
+    if (action) body.appendChild(btn("cbtn sm", action, onAction));
+    n.appendChild(body);
+    return n;
+  }
+
+  // First visit: a short welcome that asks for a name. Returning learners never see it.
+  function openWelcome(){
+    openSheet("welcomeModal", function(s, close){
+      s.appendChild(el("div", "label", "Welcome to Armanly"));
+      s.appendChild(el("div", "sheet-title", "What should we call you?"));
+      s.appendChild(el("div", "sheet-sub", "Your lessons, streak and words are saved in this browser, on this device. No account, and nothing leaves your phone."));
+      var f = el("div", "field");
+      var l = el("label", null, "Your name ");
+      l.setAttribute("for", "welcomeName");
+      l.appendChild(el("small", null, "(optional)"));
+      var inp = document.createElement("input");
+      inp.type = "text"; inp.id = "welcomeName"; inp.maxLength = 30; inp.autocomplete = "given-name"; inp.placeholder = "e.g. Sara";
+      f.appendChild(l); f.appendChild(inp);
+      s.appendChild(f);
+      function start(withName){
+        profile.since = dayStr(0);
+        if (withName) profile.name = inp.value.trim().replace(/\s+/g, " ").slice(0, 30);
+        saveProfile();
+        askPersistence();
+        close();
+        if (currentMode === "home") renderHomeView();
+      }
+      inp.addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); start(true); } });
+      var acts = el("div", "sheet-actions");
+      acts.appendChild(btn("cbtn", "Skip", function(){ start(false); }));
+      acts.appendChild(btn("cbtn known", "Let\u2019s start", function(){ start(true); }));
+      s.appendChild(acts);
+      setTimeout(function(){ inp.focus(); }, 60);
+    });
+  }
+
   // ---------- grammar questions ----------
   function grammarQuestion(topic, i){
     var g = topic.qs[i];
@@ -2962,20 +3219,23 @@
     shuffleArray(pool);
     return pool.slice(0, n).map(function(p){ return grammarQuestion(p[0], p[1]); });
   }
-  function startGrammar(topicId){
+  function grammarDef(topicId){
     var topic = null;
     GRAMMAR.forEach(function(t){ if (t.id === topicId) topic = t; });
-    openView("practice");
-    startSession("grammar", {
+    return {
       title: topic ? topic.title : "Mixed grammar drill",
       grammarId: topicId || null,
       build: function(){ return grammarSet(topicId, topic ? Math.min(10, topic.qs.length) : 10); }
-    });
+    };
+  }
+  function startGrammar(topicId){
+    openView("practice");
+    startSession("grammar", grammarDef(topicId));
   }
 
   // ---------- grammar tab ----------
   var grammarEl = document.getElementById("panel-grammar");
-  var grammarOpen = null;
+  var grammarOpen = typeof ui.grammarOpen === "string" ? ui.grammarOpen : null;
   function renderGrammar(){
     while (grammarEl.firstChild) grammarEl.removeChild(grammarEl.firstChild);
     var intro = el("div", "g-intro");
@@ -3011,6 +3271,7 @@
         grammarOpen = (grammarOpen === t.id) ? null : t.id;
         sfx("tap");
         renderGrammar();
+        saveUI();
         if (grammarOpen){
           var opened = grammarEl.querySelector(".g-item.open");
           if (opened) opened.scrollIntoView({ block: "start", behavior: reduceMotion ? "auto" : "smooth" });
@@ -3069,6 +3330,67 @@
   var session = null;
   var PRAISE = ["Correct", "That's right", "Exactly", "Well done", "Spot on"];
 
+  // An unfinished lesson or exercise is saved after every step, so closing the app (or the phone
+  // dropping it in the background) never sends the learner back to question 1.
+  var SESSION_KEY = "speakLearnSession";
+  var SESSION_MAX_AGE = 7 * 86400000;
+  var sessionLive = false; // true while a question of the current session is on screen
+  function saveSession(){
+    if (!session) return;
+    sessionLive = true;
+    saveJSON(SESSION_KEY, {
+      mode: session.mode, title: session.title, lessonId: session.lessonId || null, grammarId: session.grammarId || null,
+      qs: session.qs.map(function(q){ return q.kind === "study" ? { id: q.id, kind: "study", tag: q.tag, itemKey: q.item.key } : q; }),
+      i: session.i, answered: session.answered, correct: session.correct, missed: session.missed,
+      combo: session.combo, best: session.best, xp: session.xp, lvl0: session.lvl0, at: Date.now()
+    });
+  }
+  function forgetSession(){
+    sessionLive = false;
+    forget(SESSION_KEY);
+  }
+  function sessionDef(mode, lessonId, grammarId){
+    if (mode === "lesson"){
+      var L = LESSONS.filter(function(l){ return l.id === lessonId; })[0];
+      return L ? lessonDef(L) : null;
+    }
+    if (mode === "grammar") return grammarDef(grammarId);
+    if (mode === "mistakes") return mistakesDef();
+    return MODES[mode] || null;
+  }
+  // Returns "question" or "results" when a saved session was put back on the practice panel, else "".
+  function restoreSession(){
+    var s = loadObj(SESSION_KEY);
+    forgetSession();
+    if (!s || !Array.isArray(s.qs) || !s.qs.length || typeof s.i !== "number" || !(Date.now() - (s.at || 0) < SESSION_MAX_AGE)) return "";
+    var m = sessionDef(s.mode, s.lessonId, s.grammarId);
+    if (!m) return "";
+    var byKey = {};
+    FLAT.forEach(function(f){ byKey[f.key] = f; });
+    var qs = [];
+    for (var k = 0; k < s.qs.length; k++){
+      var q = s.qs[k];
+      if (!q || typeof q !== "object") return "";
+      if (q.kind === "study"){
+        if (!byKey[q.itemKey]) return ""; // the word was removed since
+        q = { id: q.id, kind: "study", tag: q.tag, item: byKey[q.itemKey] };
+      }
+      qs.push(q);
+    }
+    var custom = MODES[s.mode] === m ? null : m;
+    session = { mode: s.mode, title: s.title || m.title, build: m.build, custom: custom, grammarId: custom ? custom.grammarId : undefined, lessonId: custom ? custom.lessonId : undefined, isGrammar: s.mode === "grammar",
+      qs: qs, i: Math.max(0, s.i), answered: typeof s.answered === "number" ? s.answered : -1, correct: s.correct | 0, missed: Array.isArray(s.missed) ? s.missed : [],
+      combo: s.combo | 0, best: s.best | 0, xp: s.xp | 0, lvl0: s.lvl0 || levelFor(game.xp) };
+    // That answer was already scored, so continue with the next question.
+    if (session.answered === session.i) session.i++;
+    if (session.i >= session.qs.length){ renderResults(); return "results"; }
+    renderQuestion();
+    return "question";
+  }
+  function autoSpeak(text, b, rate){
+    if (practiceEl.classList.contains("active")) speak(text, b, rate);
+  }
+
   function goToCards(){
     var due = countReview();
     var cb = document.getElementById("dueOnly");
@@ -3110,14 +3432,14 @@
     var list = el("div", "pr-modes");
     var miss = missItems().length;
     var defs = [
-      { id: "daily", color: "#3B5BFF", icon: "target", title: "Daily 10", time: "5 min", desc: "Sentence completion, collocations and listening, mixed." },
-      { id: "grammar", color: "#8B5CF6", icon: "pen", title: "Grammar drill", time: "4 min", desc: "Ten questions across all seven grammar points." },
-      { id: "cloze", color: "#0E9AA0", icon: "blank", title: "Fill the blank", time: "3 min", desc: "Choose the expression that completes the sentence." },
-      { id: "colloc", color: "#D48A00", icon: "link", title: "Collocation builder", time: "2 min", desc: "Finish the word partnership." },
-      { id: "dict", color: "#D6457F", icon: "headphones", title: "Listen and type", time: "5 min", desc: "Hear a sentence, type exactly what you heard." },
-      { id: "speak", color: "#E8590C", icon: "mic", title: "Speaking drill", time: "2 to 5 min", desc: "Timed speaking with expressions you must use." }
+      { id: "daily", color: catColor(0), icon: "target", title: "Daily 10", time: "5 min", desc: "Sentence completion, collocations and listening, mixed." },
+      { id: "grammar", color: catColor(2), icon: "pen", title: "Grammar drill", time: "4 min", desc: "Ten questions across all seven grammar points." },
+      { id: "cloze", color: catColor(1), icon: "blank", title: "Fill the blank", time: "3 min", desc: "Choose the expression that completes the sentence." },
+      { id: "colloc", color: catColor(4), icon: "link", title: "Collocation builder", time: "2 min", desc: "Finish the word partnership." },
+      { id: "dict", color: catColor(5), icon: "headphones", title: "Listen and type", time: "5 min", desc: "Hear a sentence, type exactly what you heard." },
+      { id: "speak", color: catColor(3), icon: "mic", title: "Speaking drill", time: "2 to 5 min", desc: "Timed speaking with expressions you must use." }
     ];
-    if (miss > 0) defs.unshift({ id: "mistakes", color: "#E0434A", icon: "rotate", title: "Review mistakes", time: miss + (miss === 1 ? " item" : " items"), desc: "The expressions you got wrong recently." });
+    if (miss > 0) defs.unshift({ id: "mistakes", color: "var(--bad)", icon: "rotate", title: "Review mistakes", time: miss + (miss === 1 ? " item" : " items"), desc: "The expressions you got wrong recently." });
     defs.forEach(function(d){
       list.appendChild(modeRow(d, function(){
         if (d.id === "speak") renderSpeakMenu();
@@ -3134,7 +3456,7 @@
   function startSession(mode, custom){
     var m = custom || MODES[mode];
     session = { mode: mode, title: m.title, build: m.build, custom: custom || null, grammarId: custom ? custom.grammarId : undefined, lessonId: custom ? custom.lessonId : undefined, isGrammar: mode === "grammar",
-      qs: m.build(), i: 0, correct: 0, missed: [], combo: 0, best: 0, xp: 0, lvl0: levelFor(game.xp) };
+      qs: m.build(), i: 0, answered: -1, correct: 0, missed: [], combo: 0, best: 0, xp: 0, lvl0: levelFor(game.xp) };
     if (!session.qs.length){ renderHome(); return; }
     renderQuestion();
   }
@@ -3163,6 +3485,8 @@
       else if (game.miss[mk]){ game.miss[mk]--; if (game.miss[mk] <= 0) delete game.miss[mk]; }
     }
     session.xp += gained;
+    session.answered = session.i;
+    saveSession();
     noteActivity(1);
     award(gained, originEl);
   }
@@ -3174,6 +3498,7 @@
 
   function renderQuestion(){
     clearPractice();
+    saveSession();
     var q = session.qs[session.i];
     var last = session.i + 1 >= session.qs.length;
     var top = el("div", "pr-top");
@@ -3238,7 +3563,7 @@
       var goB = btn("cbtn known block", "Got it", function(){ sfx("tap"); bar.firstChild.style.width = ((session.i + 1) / session.qs.length * 100) + "%"; advance(); });
       goB.style.marginTop = "12px";
       practiceEl.appendChild(goB);
-      setTimeout(function(){ try { speak(it.term, sp); } catch (e) {} }, 350);
+      setTimeout(function(){ try { autoSpeak(it.term, sp); } catch (e) {} }, 350);
     } else if (q.kind === "mcq"){
       card.appendChild(el("div", "pr-prompt" + (q.audio ? " small" : ""), q.prompt));
       if (q.audio){
@@ -3248,7 +3573,7 @@
         arow.appendChild(ab);
         arow.appendChild(btn("cbtn", "Play slowly", function(){ speak(q.audio, null, 0.6); }));
         card.appendChild(arow);
-        setTimeout(function(){ try { speak(q.audio, ab); } catch (e) {} }, 350);
+        setTimeout(function(){ try { autoSpeak(q.audio, ab); } catch (e) {} }, 350);
       }
       var opts = el("div", "pr-opts");
       var answered = false;
@@ -3351,7 +3676,7 @@
       checkB.style.marginTop = "12px";
       input.addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); checkB.click(); } });
       card.appendChild(checkB);
-      setTimeout(function(){ try { speak(q.speakText, playBtn, 0.92); input.focus(); } catch (e) {} }, 300);
+      setTimeout(function(){ try { autoSpeak(q.speakText, playBtn, 0.92); input.focus(); } catch (e) {} }, 300);
     }
     practiceEl.appendChild(fb);
     if (q.kind === "mcq"){
@@ -3362,6 +3687,7 @@
 
   function renderResults(){
     clearPractice();
+    askPersistence();
     game.stats.sessions++;
     var n = Math.max(1, session.qs.filter(function(x){ return x.kind !== "study"; }).length), score = session.correct;
     var perfect = (score === n && n >= 5);
@@ -3465,8 +3791,8 @@
     clearPractice();
     addTopBar("Speaking drill", null);
     var wrap = el("div", "pr-modes");
-    wrap.appendChild(modeRow({ color: "#E8590C", icon: "mic", title: "Argue a topic", time: "60 s + 90 s", desc: "A debate topic and three expressions you must use, as in class.", primary: true }, topicDrill));
-    wrap.appendChild(modeRow({ color: "#D48A00", icon: "zap", title: "Quick-fire starters", time: "5 x 30 s", desc: "Five sentence starters. Finish each one out loud." }, quickFire));
+    wrap.appendChild(modeRow({ color: catColor(3), icon: "mic", title: "Argue a topic", time: "60 s + 90 s", desc: "A debate topic and three expressions you must use, as in class.", primary: true }, topicDrill));
+    wrap.appendChild(modeRow({ color: catColor(4), icon: "zap", title: "Quick-fire starters", time: "5 x 30 s", desc: "Five sentence starters. Finish each one out loud." }, quickFire));
     practiceEl.appendChild(wrap);
   }
 
@@ -3591,8 +3917,17 @@
 
   renderHero();
   renderGrammar();
-  renderHome();
-  openView("home");
+  // Reopen exactly where the learner was: an unfinished exercise, then the tab and scroll position.
+  var resumed = restoreSession();
+  if (!resumed) renderHome();
+  var startView = resumed === "results" ? "practice" : (VIEWS.indexOf(ui.view) !== -1 ? ui.view : "home");
+  openView(startView, true);
+  uiReady = true;
+  saveUI();
+  if (!profile.since){
+    if (game.xp > 0 || lessonsDone() > 0 || knownCount() > 0 || customWords.length){ profile.since = dayStr(0); saveProfile(); }
+    else if (storageOk) openWelcome();
+  }
   try {
     var fl = sessionStorage.getItem("slFlash");
     if (fl){
