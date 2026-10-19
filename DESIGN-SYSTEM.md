@@ -72,7 +72,7 @@ Each learner's data stays in their own browser (`localStorage`); there is no ser
 | `speakLearnSession` | The unfinished lesson or exercise, saved after every step (dropped after 7 days) |
 | `speakLearnAccent`, `speakLearnSound`, `speakLearnTheme` | Settings |
 
-The backup file includes everything except `speakLearnUI` and `speakLearnSession`. If storage is blocked (private browsing) Home says so. When the app is not installed, Home suggests adding it to the home screen, because Safari clears data of websites not opened for 7 days.
+The backup file and the transfer link ("Send to my other device") include everything except `speakLearnUI` and `speakLearnSession`. The link carries the backup deflate-compressed and base64url-encoded after `#move=`, so it never reaches a server; opening it asks before replacing this device's data. If storage is blocked (private browsing) Home says so. When the app is not installed, Home suggests adding it to the home screen, because Safari clears data of websites not opened for 7 days.
 
 ## Audit (October 2026)
 

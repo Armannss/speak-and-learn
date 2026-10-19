@@ -32,7 +32,7 @@ The app also remembers where you stopped. If you close it in the middle of a les
 
 Safari can delete data from websites you have not opened for 7 days. Adding the app to your home screen avoids this.
 
-This also means your progress does not follow you to another device. To move it, open the progress panel (tap the level or streak at the top), choose **Save backup file**, and use **Restore from file** on the other device. Save a backup before clearing your browser data.
+There is no login. To move your progress to another phone or computer, open the progress panel (tap the level or streak at the top) and choose **Send to my other device**. Send the link to yourself (Telegram, WhatsApp, email) and open it on the other device. The progress is inside the link itself and is never stored on a server, so keep the link private. You can also use **Save backup file** and **Restore from file**. Save a backup before clearing your browser data.
 
 Pronunciation uses the voice built into your device, so how it sounds depends on your phone or computer.
 
