@@ -14,6 +14,7 @@ It runs in any modern browser on a phone or a computer. There is nothing to inst
 - **Library.** The full word list, 11 groups of conversation phrases, and 7 grammar topics with rules, examples and common mistakes.
 - **My words.** Add your own words and phrases. They join your flashcards and practice.
 - **Progress.** XP, levels, a daily streak, badges, and a list of the expressions you got wrong so you can review them.
+- **Settings.** The button at the top right: American or British pronunciation, sound effects, and light or dark mode.
 
 About 10 to 15 minutes a day is enough: one lesson, ten flashcards, one speaking drill.
 
@@ -28,11 +29,11 @@ After the first visit it also works offline.
 
 Everything you do (progress, streak, your own words) is saved in your browser on your device. Nothing is sent to a server, and nobody else can see it. Each person who uses the app on their own phone has their own progress.
 
-The app also remembers where you stopped. If you close it in the middle of a lesson, it opens at the same question next time. Your tab, your place in the word list and your flashcard are kept too.
+The app also remembers where you stopped. If you close it in the middle of a lesson, it opens at the same question next time. The X in a lesson pauses it; Home and Practice show it with a Resume button. Your tab, your place in the word list and your flashcard are kept too.
 
 Safari can delete data from websites you have not opened for 7 days. Adding the app to your home screen avoids this.
 
-There is no login. To move your progress to another phone or computer, open the progress panel (tap the level or streak at the top) and choose **Send to my other device**. Send the link to yourself (Telegram, WhatsApp, email) and open it on the other device. The progress is inside the link itself and is never stored on a server, so keep the link private. You can also use **Save backup file** and **Restore from file**. Save a backup before clearing your browser data.
+There is no login. To move your progress to another phone or computer, open the progress panel (tap the streak at the top, or your level on Home) and choose **Send to my other device**. Send the link to yourself (Telegram, WhatsApp, email) and open it on the other device. The progress is inside the link itself and is never stored on a server, so keep the link private. You can also use **Save backup file** and **Restore from file**. Save a backup before clearing your browser data.
 
 Pronunciation uses the voice built into your device, so how it sounds depends on your phone or computer.
 
