@@ -4,7 +4,7 @@ A small web app for our English speaking class. It turns the vocabulary, phrases
 
 **Open the app:** https://armannss.github.io/speak-and-learn/
 
-It runs in any modern browser on a phone or a computer. There is nothing to install and no account to create.
+It runs in any modern browser on a phone or a computer. There is nothing to install and no account to create. The phone's back button or gesture works inside the app: it closes the open panel, leaves an exercise (which is paused, not lost), or goes back to the previous tab. A back arrow also appears at the top left.
 
 ## What you can do in it
 

@@ -109,6 +109,8 @@
     border:2px solid var(--line); background:var(--surface); color:var(--ink-2); border-radius:12px; height:38px; min-width:38px; padding:0 8px;
     font-size:var(--fs-xl); cursor:pointer; display:flex; align-items:center; justify-content:center;
   }
+  .nav-back{ flex:none; }
+  .nav-back .ic{ width:20px; height:20px; }
   .tool-btn:hover{ border-color:var(--accent); color:var(--accent); }
 
   .controls{ padding-bottom:10px; position:relative; }
@@ -878,6 +880,7 @@
   <header class="top">
     <div class="title-row">
       <div class="brand">
+        <button class="tool-btn nav-back" id="navBack" type="button" aria-label="Back" title="Back" hidden><i data-ic="back"></i></button>
         <div class="logo" aria-hidden="true">&ldquo;</div>
         <h1>Armanly</h1>
       </div>
@@ -1932,6 +1935,7 @@
     updateFocus();
     document.querySelector("footer").hidden = !LIB[view];
     // Each tab keeps its own scroll position; tapping the tab you are on goes back to the top.
+    if (view !== prev) navPush({ view: view });
     var keepsPlace = view !== "practice" && view !== "cards" && (restoring || view !== prev);
     window.scrollTo(0, keepsPlace ? (ui.scroll[view] || 0) : 0);
     if (view === "learn" && ui.scroll.learn === undefined && learnNextEl){
@@ -2980,26 +2984,97 @@
     box.appendChild(el("div", "c-kicker", c.kicker || "Level up"));
     box.appendChild(el("div", "c-title", c.title));
     box.appendChild(el("div", "c-sub", c.sub));
-    box.appendChild(btn("cbtn known block", c.btn || "Continue", function(){ if (m.parentNode) m.parentNode.removeChild(m); }));
+    function close(fromPop){
+      if (!m.parentNode) return;
+      m.parentNode.removeChild(m);
+      if (fromPop !== true && history.state && history.state.sheet === "celebrate") navPopOwn();
+    }
+    m._close = close;
+    box.appendChild(btn("cbtn known block", c.btn || "Continue", close));
     m.appendChild(box);
     document.body.appendChild(m);
+    navPush({ view: currentMode, sheet: "celebrate" });
   }
+  // Every sheet gets its own history entry, so the phone's back gesture closes it.
+  // close(true) is used when that entry is already gone (the back gesture itself).
   function openSheet(id, build){
     if (document.getElementById(id)) return null;
     var m = el("div", "modal");
     m.id = id;
-    function close(){ if (m.parentNode) m.parentNode.removeChild(m); }
+    function close(fromPop){
+      if (!m.parentNode) return;
+      m.parentNode.removeChild(m);
+      if (fromPop !== true && history.state && history.state.sheet === id) navPopOwn();
+    }
+    m._close = close;
     m.addEventListener("click", function(e){ if (e.target === m) close(); });
     var s = el("div", "sheet");
     build(s, close);
     m.appendChild(s);
     document.body.appendChild(m);
+    navPush({ view: currentMode, sheet: id });
     return m;
   }
   document.addEventListener("keydown", function(e){
     if (e.key !== "Escape") return;
     var ms = document.querySelectorAll(".modal");
-    if (ms.length) ms[ms.length - 1].parentNode.removeChild(ms[ms.length - 1]);
+    if (!ms.length) return;
+    var top = ms[ms.length - 1];
+    if (top._close) top._close(); else top.parentNode.removeChild(top);
+  });
+
+  // ---------- back navigation ----------
+  // Tab changes, sheets and full-screen exercises each add a history entry, so the phone's back button or
+  // gesture (and the back arrow in the header) steps back inside the app instead of closing it.
+  var navBackPending = false, navQueued = [], navFromPop = false;
+  function navIndex(){ return (history.state && history.state.armanly && history.state.i) || 0; }
+  function navPush(st){
+    if (!uiReady || navFromPop) return;
+    if (navBackPending){ navQueued.push(st); return; } // wait until our own back step has landed
+    st.armanly = 1;
+    st.i = navIndex() + 1;
+    try { history.pushState(st, ""); } catch (e) {}
+    updateBack();
+  }
+  // Remove an entry we added ourselves, e.g. a sheet closed with its own button.
+  function navPopOwn(){
+    if (navBackPending) return;
+    navBackPending = true;
+    try { history.back(); } catch (e) { navBackPending = false; }
+  }
+  function updateBack(){
+    var show = navIndex() > 0 && !document.body.classList.contains("focus");
+    document.getElementById("navBack").hidden = !show;
+    document.querySelector(".brand .logo").hidden = show;
+  }
+  document.getElementById("navBack").addEventListener("click", function(){ sfx("tap"); history.back(); });
+  window.addEventListener("popstate", function(e){
+    if (navBackPending){
+      navBackPending = false;
+      var q = navQueued;
+      navQueued = [];
+      q.forEach(navPush);
+      updateBack();
+      return;
+    }
+    var st = (e.state && e.state.armanly) ? e.state : { view: "home" };
+    navFromPop = true;
+    try {
+      var modals = document.querySelectorAll(".modal");
+      if (modals.length){
+        var top = modals[modals.length - 1];
+        if (top._close) top._close(true); else top.parentNode.removeChild(top);
+      } else if (document.body.classList.contains("focus") && !st.focus){
+        // leaving an exercise with the back gesture pauses it, like the X button
+        if (sessionLive && session && practiceEl.querySelector(".pr-dock")) pauseSession(); else renderHome();
+        if (st.view && st.view !== currentMode) openView(st.view);
+      } else if (st.view && VIEWS.indexOf(st.view) !== -1 && st.view !== currentMode){
+        openView(st.view);
+      }
+    } finally {
+      navFromPop = false;
+    }
+    updateBack();
   });
 
   // ---------- XP + badges ----------
@@ -3203,7 +3278,7 @@
   function checkMoveLink(){
     var m = /^#move=(.+)$/.exec(location.hash);
     if (!m) return false;
-    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    try { history.replaceState(history.state, "", location.pathname + location.search); } catch (e) {}
     readMoveCode(m[1]).then(function(obj){
       if (!obj || obj.app !== "speak-and-learn" || !obj.data || typeof obj.data !== "object") throw new Error("bad");
       var hasHere = game.xp > 0 || lessonsDone() > 0 || customWords.length > 0;
@@ -3931,8 +4006,21 @@
     if (window.ResizeObserver){ dockRO = new ResizeObserver(fit); dockRO.observe(dock); }
   }
   // Exercises take the whole screen: no header, no tab bar, just the question.
+  // Screens are rebuilt in steps (cleared, then filled), so the focus change is applied once the
+  // current step is finished; otherwise a passing state would add or remove a history entry.
+  var wasFocus = false, focusQueued = false;
   function updateFocus(){
-    document.body.classList.toggle("focus", currentMode === "practice" && practiceEl.getAttribute("data-view") === "other");
+    if (focusQueued) return;
+    focusQueued = true;
+    Promise.resolve().then(function(){ focusQueued = false; applyFocus(); });
+  }
+  function applyFocus(){
+    var on = currentMode === "practice" && practiceEl.getAttribute("data-view") === "other";
+    document.body.classList.toggle("focus", on);
+    if (on && !wasFocus) navPush({ view: "practice", focus: 1 });
+    if (!on && wasFocus && !navFromPop && history.state && history.state.focus) navPopOwn();
+    wasFocus = on;
+    if (uiReady) updateBack();
   }
   // Leaving an exercise pauses it: it stays saved and can be resumed from Home or Practice.
   function pauseSession(){
@@ -5565,6 +5653,11 @@
   var startView = resumed === "results" ? "practice" : (VIEWS.indexOf(ui.view) !== -1 ? ui.view : "home");
   openView(startView, true);
   uiReady = true;
+  // Label the entry we opened on. Reopened inside an exercise: put the practice menu underneath it,
+  // so the back gesture leaves the exercise instead of the app.
+  try { history.replaceState({ armanly: 1, i: navIndex(), view: currentMode }, ""); } catch (e) {}
+  wasFocus = false;
+  applyFocus();
   saveUI();
   var moving = checkMoveLink();
   window.addEventListener("hashchange", checkMoveLink); // a link opened while the app is already open in this tab
