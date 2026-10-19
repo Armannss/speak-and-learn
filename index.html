@@ -490,6 +490,10 @@
   .pr-phase{ margin-top:16px; font-size:14px; font-weight:600; color:var(--ink-2); text-align:center; }
   .pr-clock{ font-family:var(--f-display); font-weight:800; font-size:60px; text-align:center; font-variant-numeric:tabular-nums; line-height:1.25; letter-spacing:-.03em; }
   .pr-clock.speaking{ color:var(--bad); }
+  .pr-challenge{ margin-top:14px; padding:12px 14px; border-radius:16px; background:var(--sun-soft); border:2px solid var(--sun); font-family:var(--f-display); font-weight:800; font-size:18px; line-height:1.3; text-align:center; }
+  .pr-challenge.pop{ animation:pop .35s ease; }
+  .case-facts{ margin:12px 0 4px; }
+  .case-task{ font-size:15.5px; font-weight:700; line-height:1.45; }
   .pr-checks{ display:grid; gap:10px; margin-top:14px; }
   .pr-check{ display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; cursor:pointer; }
   .pr-check input{ accent-color:var(--accent); width:19px; height:19px; }
@@ -1191,6 +1195,13 @@
       ["I'm not convinced that the evidence supports that conclusion.", "قانع نشدم که شواهد از اون نتیجه‌گیری پشتیبانی می‌کنه."],
       ["I accept the premise of your argument, but I'm not sure the conclusion necessarily follows.", "مقدمه‌ی استدلالت رو قبول دارم، ولی مطمئن نیستم نتیجه‌اش حتماً درست دربیاد."],
       ["That's a valid point, and it highlights an aspect of the issue we haven't considered.", "نکته‌ی درستیه، و جنبه‌ای از موضوع رو نشون می‌ده که در نظر نگرفته بودیم."]
+    ]],
+    ["Challenging a speaker (the interruption rule)", "به چالش کشیدن گوینده (قانون قطع‌کردن حرف)", [
+      ["Would that apply to everyone?", "آیا این درباره‌ی همه صدق می‌کنه؟"],
+      ["What about the other possibility?", "پس اون احتمال دیگه چی؟"],
+      ["Is that true of all the people involved?", "آیا این درباره‌ی همه‌ی افراد درگیر درسته؟"],
+      ["Could you distinguish between the two situations?", "می‌تونی بین این دو وضعیت تمایز قائل بشی؟"],
+      ["What evidence would support that conclusion?", "چه شواهدی از اون نتیجه‌گیری پشتیبانی می‌کنه؟"]
     ]],
     ["Persuading someone", "متقاعدکردن دیگران", [
       ["According to recent research…", "طبق تحقیقات اخیر..."],
@@ -2513,6 +2524,102 @@
         { q: "Type the verb: \"The number of objections ______ (have) fallen since last year.\"", gap: ["has"], n: "The number of + singular verb." },
         { q: "Type the verb: \"This policy could ______ (shapes) public perceptions.\"", gap: ["shape"], n: "After could, the base form: shape." }
       ]
+    },
+    {
+      id: "other", icon: "layers", title: "Another, other, others, the other", fa: "تفاوت پنج شکلِ other و کاربرد هرکدام", src: "From session 7, the shades of \"other\"",
+      lead: "Five forms, one question: do you mean one more, something different, or the rest of a known group? Then check what follows: a singular noun, a plural noun, or nothing at all.",
+      rows: [
+        ["another", "one more, an additional one: + singular countable noun, or alone", ["We need another solution.", "Let's consider another."]],
+        ["another + number", "an additional amount or period: + number + plural noun", ["We need another three days.", "She bought another two books."]],
+        ["other", "additional or different: + plural or uncountable noun", ["Other students disagreed.", "We need other information."]],
+        ["others", "other people or things: a pronoun, no noun after it", ["Some agreed; others objected.", "Some people value security; others value freedom."]],
+        ["the other", "the remaining one of two, or a specific alternative", ["I have two options. One is expensive; the other is practical."]],
+        ["the others", "the remaining members of a specific group", ["Five people attended. Two left early; the others stayed."]],
+        ["One… another… the other", "organizing three items or groups", ["One explanation is that the policy is too expensive; another is that it is difficult to implement; the other is that the public does not support it."]],
+        ["each other / one another", "reciprocal actions: people do something to one another", ["The two colleagues respect each other.", "Members of the team should support one another."]]
+      ],
+      notes: [
+        "The makes the reference specific. Other students complained: students in general, or additional students. The other students complained: the remaining, specific students.",
+        "Another is not the same as the other. Could I have another cup of coffee? means one more cup. There are two cups. One is mine; the other is yours. means the remaining one of two.",
+        "For three or more possibilities, one… another… a third… is often clearer. Use the other for the remaining item in a known set, especially a set of two.",
+        "Another two solutions means two more. Two other solutions means two different ones.",
+        "Traditional grammar uses each other for two people and one another for more than two, but modern English does not strictly keep this distinction."
+      ],
+      fixes: [
+        ["The others people in the group disagreed with my conclusion.", "The other people in the group disagreed with my conclusion."],
+        ["I need other piece of information before I can decide.", "I need another piece of information before I can decide."],
+        ["Some people prefer working alone, whereas the others prefer working in teams.", "Some people prefer working alone, whereas others prefer working in teams."],
+        ["We have two options. Another is cheaper, but the other is more reliable.", "We have two options. One is cheaper, but the other is more reliable."],
+        ["Could you give me others example of how this works?", "Could you give me another example of how this works?"],
+        ["Some of the arguments were convincing, but another were poorly supported.", "Some of the arguments were convincing, but others were poorly supported."],
+        ["The company needs to collect more informations before making a decision.", "The company needs to collect more information before making a decision."],
+        ["One solution is to increase taxes; other is to reduce public spending.", "One solution is to increase taxes; the other is to reduce public spending."],
+        ["I have finished this book. Could you recommend the other one? (no specific second book)", "I have finished this book. Could you recommend another one?"],
+        ["We need another five minute to complete the task.", "We need another five minutes to complete the task."]
+      ],
+      qs: [
+        { q: "We have discussed three possible explanations, but I would like to consider ______ explanation before reaching a conclusion.", a: "another", o: ["other", "the other", "others"], n: "One more + singular countable noun (explanation): another." },
+        { q: "Some people believe that technology increases freedom, while ______ argue that it makes us more dependent.", a: "others", o: ["the other", "other", "another"], n: "No noun after the blank, and a general contrast with some people: others." },
+        { q: "Of the two proposals, one is affordable, but ______ would require a substantial investment.", a: "the other", o: ["another", "other", "others"], n: "The remaining one of two: the other." },
+        { q: "The company should consider ______ factors, including employee satisfaction and long-term sustainability.", a: "other", o: ["another", "others", "the others"], n: "A plural noun (factors) follows: other." },
+        { q: "Ten candidates applied for the position. Two were rejected immediately, and ______ were invited to an interview.", a: "the others", o: ["others", "the other", "another"], n: "The remaining members of a known group (the other eight candidates): the others." },
+        { q: "I don't like this explanation. Could you give me ______ one?", a: "another", o: ["the other", "other", "others"], n: "One more, a different one: another." },
+        { q: "Some students learn best through reading; ______ prefer practical activities.", a: "others", o: ["another", "other", "the other"], n: "A general contrast, no noun after it: others." },
+        { q: "We need ______ evidence before we can establish a causal relationship.", a: "other", o: ["another", "others", "the others"], n: "Evidence is uncountable, so other. Another needs a singular countable noun." },
+        { q: "She has already completed two assignments and plans to finish ______ two before Friday.", a: "another", o: ["other", "the other", "others"], n: "Another + number + plural noun means an additional amount." },
+        { q: "There are two sides to this argument. One concerns individual freedom; ______ concerns public safety.", a: "the other", o: ["another", "other", "others"], n: "Two sides, the remaining one: the other." },
+        { q: "Some of the participants supported the proposal, but ______ remained unconvinced.", a: "others", o: ["another", "other", "the other"], n: "Some… others… contrasts two groups." },
+        { q: "The first experiment produced inconsistent results, so the researchers conducted ______ experiment.", a: "another", o: ["other", "the other", "others"], n: "One more experiment: another." },
+        { q: "There are three possible reasons for the decline in productivity. One is poor management. ______ is a lack of motivation.", a: "Another", o: ["Other", "Others", "The others"], n: "One… another… a third (or the other) organizes three items." },
+        { q: "The two departments blame ______ for the delay.", a: "each other", o: ["the other", "others", "another"], n: "A reciprocal action between two groups: each other." },
+        { q: "The two politicians accused ______ of misleading the public.", a: "each other", o: ["another", "the others", "other"], n: "Reciprocal: each other (one another is also possible)." },
+        { q: "Different generations can learn from ______.", a: "one another", o: ["another", "other", "the other"], n: "Reciprocal: one another (each other is also possible)." },
+        { q: "Type the missing word: \"Could I have ______ cup of coffee?\" (one more cup)", gap: ["another"], n: "One more + singular noun: another." },
+        { q: "Type the noun: \"We need other ______ before we decide.\" (information)", gap: ["information"], n: "Information is uncountable. Never informations." }
+      ]
+    },
+    {
+      id: "advanced", icon: "star", title: "Advanced structures for arguments", fa: "ساختارهای پیشرفته برای مقایسه، تأکید و استدلال", src: "From session 8, some advanced structures",
+      lead: "Four structures that make an argument sound more advanced and less repetitive: contrast two groups, describe people by what they do, add emphasis, and link two changing factors.",
+      rows: [
+        ["Contrast two groups", "Some…, while / whereas others…", ["Some people prioritize financial security, while others prioritize personal freedom.", "Some people prioritize financial security, whereas others place greater value on personal freedom."]],
+        ["Describe a group", "Those who + verb…", ["Those who prioritize financial security may disagree with those who value flexibility."]],
+        ["Emphasis with inversion", "Not only + do / does / did + subject + base form…, but… also…", ["The policy not only reduces costs but also improves efficiency.", "Not only does the policy reduce costs, but it also improves efficiency."]],
+        ["Two changing factors", "The + comparative…, the + comparative…", ["The more information we have, the better our decisions become.", "The less clearly a policy is explained, the more likely it is to be misunderstood."]],
+        ["another two / two other", "two more / two different ones", ["We need another two solutions. (two additional ones)", "We need two other solutions. (two different ones)"]],
+        ["others / the others", "a general contrast / the rest of a known group", ["Some employees work remotely; others work in the office.", "Some employees work remotely; the others work in the office."]]
+      ],
+      notes: [
+        "These structures help you avoid repetitive sentences such as Some people… Other people…",
+        "The inverted version (Not only does…) is stronger and more emphatic. Use do or does for the present and did for the past.",
+        "After Not only + auxiliary, the main verb is in the base form: Not only did it save money, not saved.",
+        "Both halves of the more…, the more… start with the: The more you practise, the easier it gets.",
+        "When you use the more…, the more…, say whether the relationship is always true, generally true, or merely possible."
+      ],
+      fixes: [
+        ["Not only the policy reduces costs, but it also improves efficiency.", "Not only does the policy reduce costs, but it also improves efficiency."],
+        ["Not only did the decision affected employees, but it also damaged public trust.", "Not only did the decision affect employees, but it also damaged public trust."],
+        ["More information we have, better our decisions become.", "The more information we have, the better our decisions become."],
+        ["Some people prefer stability, whereas other prefer change.", "Some people prefer stability, whereas others prefer change."],
+        ["Who value salary may disagree with those who value flexibility.", "Those who value salary may disagree with those who value flexibility."]
+      ],
+      qs: [
+        { q: "Not only ______ the policy reduce costs, but it also improves efficiency.", a: "does", o: ["is", "do", "has"], n: "Present tense with a singular subject: Not only does + subject + base form." },
+        { q: "Not only ______ the decision affect employees, but it also damaged public trust.", a: "did", o: ["does", "was", "had"], n: "Past tense: Not only did + subject + base form (affect)." },
+        { q: "Not only did the company ignore customer concerns, but it ______ failed to explain its decision.", a: "also", o: ["too", "either", "neither"], n: "The pattern is Not only…, but it also…" },
+        { q: "______ does the new system improve accuracy, but it also makes the process faster.", a: "Not only", o: ["Only not", "Not just only", "Both"], n: "The inverted sentence starts with Not only." },
+        { q: "Not only does the proposal save money, but it also ______ administrative work.", a: "reduces", o: ["reduce", "reducing", "to reduce"], n: "The second half has normal word order: it also reduces." },
+        { q: "The more information we have, ______ our decisions become.", a: "the better", o: ["better", "the best", "more better"], n: "Both halves start with the + comparative." },
+        { q: "The more people rely on AI, the more important critical thinking ______.", a: "becomes", o: ["become", "becoming", "to become"], n: "Critical thinking is singular: becomes." },
+        { q: "The ______ clearly a policy is explained, the more likely it is to be misunderstood.", a: "less", o: ["fewer", "least", "lesser"], n: "Less + adverb (clearly). Fewer goes with plural nouns." },
+        { q: "Some people prefer stability, ______ others prefer change.", a: "whereas", o: ["despite", "however", "in spite of"], n: "Whereas (or while) joins two contrasting clauses in one sentence. However starts a new sentence." },
+        { q: "Some governments invest in public transport, ______ others prioritize roads.", a: "while", o: ["because", "so that", "despite"], n: "While can contrast two groups in one sentence." },
+        { q: "______ value salary may disagree with those who value flexibility.", a: "Those who", o: ["Who", "These which", "Them who"], n: "Those who + verb describes a group of people." },
+        { q: "We already have three solutions, but we need ______ two. (two more)", a: "another", o: ["other", "the other", "others"], n: "Another + number means an additional number." },
+        { q: "Ten people were invited. Some came early; ______ arrived after lunch. (the rest of the ten)", a: "the others", o: ["others", "other", "another"], n: "The others: the remaining members of a known group." },
+        { q: "Type the missing word: \"The more choices people have, ______ harder it is to decide.\"", gap: ["the"], n: "Both halves start with the." },
+        { q: "Type the auxiliary: \"Not only ______ the plan save money, but it also saves time.\"", gap: ["does"], n: "Present tense, singular subject: does." }
+      ]
     }
   ];
 
@@ -3175,6 +3282,11 @@
     "Governments should spend more money on public transport than on building new roads."
   ];
   var DRILL_STARTERS = [
+    "Some people believe that…, whereas others…",
+    "Not only does…, but it also…",
+    "The more people…, the more…",
+    "There are three possible reasons for this. One is…; another is…; the third is…",
+    "Those who… often disagree with those who…",
     "One assumption about modern society that I would challenge is…",
     "I would make a compelling case for…",
     "One argument that I find difficult to counter is…",
@@ -3776,7 +3888,7 @@
     var intro = el("div", "g-intro");
     var it = el("div");
     it.appendChild(el("h2", null, "Grammar from your sessions"));
-    it.appendChild(el("p", null, "Seven points the class has covered. Open one to read the rule, then test yourself."));
+    it.appendChild(el("p", null, GRAMMAR.length + " points the class has covered. Open one to read the rule, then test yourself."));
     intro.appendChild(it);
     intro.appendChild(btn("cbtn known", "Start mixed drill", function(){ startGrammar(null); }));
     grammarEl.appendChild(intro);
@@ -3987,7 +4099,7 @@
     var miss = missItems().length;
     var defs = [
       { id: "daily", color: catColor(0), icon: "target", title: "Daily 10", time: "5 min", desc: "Sentence completion, collocations and listening, mixed." },
-      { id: "grammar", color: catColor(2), icon: "pen", title: "Grammar drill", time: "4 min", desc: "Ten questions across all seven grammar points." },
+      { id: "grammar", color: catColor(2), icon: "pen", title: "Grammar drill", time: "4 min", desc: "Ten questions across all " + GRAMMAR.length + " grammar points." },
       { id: "cloze", color: catColor(1), icon: "blank", title: "Fill the blank", time: "3 min", desc: "Choose the expression that completes the sentence." },
       { id: "colloc", color: catColor(4), icon: "link", title: "Collocation builder", time: "2 min", desc: "Finish the word partnership." },
       { id: "words", color: "var(--accent-edge)", icon: "swap", title: "Synonyms & opposites", time: "3 min", desc: "Same meaning, opposite meaning, and what type of word it is." },
@@ -4353,6 +4465,7 @@
     addTopBar("Speaking drill", null);
     var wrap = el("div", "pr-modes");
     wrap.appendChild(modeRow({ color: catColor(3), icon: "mic", title: "Argue a topic", time: "60 s + 90 s", desc: "A debate topic and three expressions you must use, as in class.", primary: true }, topicDrill));
+    wrap.appendChild(modeRow({ color: catColor(0), icon: "chat", title: "Solve a case", time: "60 s + 2 min", desc: "A real dilemma from class. The app interrupts you twice with a challenge." }, caseDrill));
     wrap.appendChild(modeRow({ color: catColor(4), icon: "zap", title: "Quick-fire starters", time: "5 x 30 s", desc: "Five sentence starters. Finish each one out loud." }, quickFire));
     practiceEl.appendChild(wrap);
   }
@@ -4426,6 +4539,121 @@
       var ctr2 = el("div", "row-actions");
       ctr2.appendChild(btn("cbtn known", "Finish", function(e){ speakDone(e.currentTarget); setTimeout(renderHome, 600); }));
       ctr2.appendChild(btn("cbtn", "Another topic", function(e){ speakDone(e.currentTarget); topicDrill(); }));
+      card.appendChild(ctr2);
+    }
+  }
+
+  // ---------- complete the argument: case discussions from session 8 ----------
+  var CASES = [
+    { title: "The future of education", text: "A university is considering replacing traditional examinations with project-based assessment.",
+      facts: ["Some lecturers support the change; others oppose it.", "One group argues that projects measure practical ability. The other argues that examinations are fairer.", "The university can afford only one assessment system."],
+      task: "Recommend a system, acknowledge the strongest objection, and explain why your proposal is preferable to the alternatives." },
+    { title: "The workplace dilemma", text: "A company offers employees a choice between higher salaries, shorter working hours, and greater flexibility. It cannot improve all three.",
+      facts: [],
+      task: "Decide which benefit should receive priority. Explain how different employees might choose differently and propose a compromise." },
+    { title: "AI and human judgement", text: "Some professionals believe AI should make routine decisions; others argue that humans should remain responsible for every important decision.",
+      facts: [],
+      task: "Draw a distinction between low-risk and high-risk decisions. Decide where AI should be used, where human oversight is necessary, and why." }
+  ];
+  // The interruption rule: while one student speaks, the other interrupts twice with a challenge.
+  var CHALLENGES = ["Would that apply to everyone?", "What about the other possibility?", "Is that true of all the people involved?", "Could you distinguish between the two situations?", "What evidence would support that conclusion?"];
+  var CASE_TOOLS = ["Some…; others…", "One group… The other…", "Not only does…, but it also…", "Those who… may disagree with those who…", "The more…, the more…"];
+  var lastCase = -1;
+  function caseDrill(){
+    clearPractice();
+    addTopBar("Solve a case", null);
+    var ci = rand(CASES.length);
+    if (ci === lastCase) ci = (ci + 1) % CASES.length;
+    lastCase = ci;
+    var c = CASES[ci];
+    var card = el("div", "pr-card");
+    card.appendChild(el("div", "pr-tag", "Case " + (ci + 1) + ": " + c.title));
+    card.appendChild(el("div", "pr-topic", c.text));
+    if (c.facts.length){
+      var fl = el("ul", "g-notes case-facts");
+      c.facts.forEach(function(f){ fl.appendChild(el("li", null, f)); });
+      card.appendChild(fl);
+    }
+    card.appendChild(el("div", "pr-tag", "Your task"));
+    card.appendChild(el("div", "case-task", c.task));
+    card.appendChild(el("div", "pr-tag", "Structures to use"));
+    var tools = el("div", "pr-targets");
+    CASE_TOOLS.forEach(function(t){ tools.appendChild(el("div", "pr-target", t)); });
+    card.appendChild(tools);
+    var intLab = el("label", "pr-check");
+    intLab.style.marginTop = "14px";
+    var intCb = document.createElement("input");
+    intCb.type = "checkbox"; intCb.checked = true; intCb.id = "caseInterrupt";
+    intLab.appendChild(intCb);
+    intLab.appendChild(el("span", null, "Interrupt me twice with a challenge (the interruption rule)"));
+    card.appendChild(intLab);
+    var phase = el("div", "pr-phase", "You get 60 seconds to prepare, then speak for about 2 minutes.");
+    var clock = el("div", "pr-clock", "01:00");
+    var challenge = el("div", "pr-challenge");
+    challenge.hidden = true;
+    challenge.setAttribute("role", "status");
+    card.appendChild(phase);
+    card.appendChild(challenge);
+    card.appendChild(clock);
+    var ctr = el("div", "row-actions");
+    var startB = btn("cbtn known", "Start the timer", startPrep);
+    var skipB = btn("cbtn", "Skip preparation", startSpeak);
+    var stopB = btn("cbtn", "Finish early", finish);
+    var newB = btn("cbtn ghost", "Different case", caseDrill);
+    skipB.hidden = true; stopB.hidden = true;
+    ctr.appendChild(startB); ctr.appendChild(skipB); ctr.appendChild(stopB); ctr.appendChild(newB);
+    card.appendChild(ctr);
+    practiceEl.appendChild(card);
+    var asked = sample(CHALLENGES, 2), answered = 0;
+
+    function startPrep(){
+      startB.hidden = true; newB.hidden = true; skipB.hidden = false;
+      phase.textContent = "Prepare: choose your recommendation and the strongest objection to it.";
+      clock.classList.remove("speaking");
+      runTimer(60, function(t){ clock.textContent = fmt(t); }, startSpeak);
+    }
+    function interrupt(n){
+      if (!intCb.checked) return;
+      answered = n + 1;
+      challenge.textContent = asked[n];
+      challenge.hidden = false;
+      challenge.classList.remove("pop"); void challenge.offsetWidth; challenge.classList.add("pop");
+      sfx("tap"); buzz([20, 60, 20]);
+      try { speak(asked[n], null); } catch (e) {}
+    }
+    function startSpeak(){
+      skipB.hidden = true; startB.hidden = true; newB.hidden = true; stopB.hidden = false;
+      intCb.disabled = true;
+      phase.textContent = "Speak now, out loud. Answer each challenge, then continue your argument.";
+      clock.classList.add("speaking");
+      runTimer(120, function(t){
+        clock.textContent = fmt(t);
+        if (t === 85 && answered === 0) interrupt(0);
+        if (t === 40 && answered === 1) interrupt(1);
+      }, finish);
+    }
+    function finish(){
+      clearTimer();
+      clock.classList.remove("speaking");
+      skipB.hidden = true; stopB.hidden = true; startB.hidden = true; newB.hidden = true;
+      challenge.hidden = true;
+      phase.textContent = "Time. Check what you did:";
+      var checks = el("div", "pr-checks");
+      ["I answered the task", "I acknowledged an objection or another point of view", "I used another, other, others or the other correctly", "I used one of the structures above"]
+        .concat(intCb.checked ? ["I answered both challenges and kept going"] : [])
+        .forEach(function(t, i){
+          var lab = el("label", "pr-check");
+          var cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.id = "caseChk" + i;
+          lab.appendChild(cb);
+          lab.appendChild(el("span", null, t));
+          checks.appendChild(lab);
+        });
+      card.appendChild(checks);
+      var ctr2 = el("div", "row-actions");
+      ctr2.appendChild(btn("cbtn known", "Finish", function(e){ speakDone(e.currentTarget); setTimeout(renderHome, 600); }));
+      ctr2.appendChild(btn("cbtn", "Another case", function(e){ speakDone(e.currentTarget); caseDrill(); }));
       card.appendChild(ctr2);
     }
   }
