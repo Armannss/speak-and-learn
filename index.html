@@ -19,7 +19,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* Layout: a friendly study app. White surfaces on a cool ground, 2px outlines, pressable buttons with a
      small ledge, one hue per category, and a yellow highlighter marking the target expression. */
@@ -33,8 +33,10 @@
     --bad:#E0434A; --bad-edge:#B62F36; --bad-soft:#FDE9EA;
     --cc:#3B5BFF;
     /* Category palette: one hue per topic, also used for practice modes. Set as --cc on a container. */
+    /* Highlighter on coloured fills: the same yellow in both themes. */
+    --hl:#FFE566; --hl-ink:#1B2033;
     --cat-1:#3B5BFF; --cat-2:#0E9AA0; --cat-3:#8B5CF6; --cat-4:#E8590C; --cat-5:#D48A00; --cat-6:#D6457F;
-    --f-display:"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --f-display:"Bricolage Grotesque", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --f-body:"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --f-fa:"Vazirmatn", -apple-system, "Segoe UI", Tahoma, sans-serif;
     --r:16px;
@@ -96,12 +98,11 @@
   h1{ font-family:var(--f-display); font-weight:800; font-size:23px; margin:0; letter-spacing:-.02em; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
   h1 em{ font-style:normal; }
   .tools{ display:flex; gap:5px; align-items:center; flex:none; }
-  .tool-btn, .accent-toggle{
+  .tool-btn{
     border:2px solid var(--line); background:var(--surface); color:var(--ink-2); border-radius:12px; height:38px; min-width:38px; padding:0 8px;
     font-size:17px; cursor:pointer; display:flex; align-items:center; justify-content:center;
   }
-  .accent-toggle{ font-size:13px; font-weight:800; padding:0 11px; }
-  .tool-btn:hover, .accent-toggle:hover{ border-color:var(--accent); color:var(--accent); }
+  .tool-btn:hover{ border-color:var(--accent); color:var(--accent); }
 
   .controls{ padding-bottom:10px; position:relative; }
   .controls .ic{ position:absolute; left:14px; top:13px; color:var(--ink-3); width:19px; height:19px; }
@@ -125,20 +126,18 @@
 
   main{ padding-bottom:112px; }
 
-  /* ---------- Progress strip ---------- */
-  .hero{ display:grid; grid-template-columns:.9fr 1.25fr .9fr; gap:8px; margin:6px 0 0; }
-  .hstat{
-    min-width:0; border:2px solid var(--line); background:var(--surface); border-radius:var(--r); cursor:pointer; text-align:left;
-    padding:9px 10px; display:flex; align-items:center; gap:9px;
+  /* ---------- Header pills: streak and today's goal ---------- */
+  .pill{
+    height:38px; border:2px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:0 11px 0 8px;
+    display:flex; align-items:center; gap:5px; cursor:pointer; font-family:var(--f-display); font-weight:800; font-size:15px; font-variant-numeric:tabular-nums;
   }
-  .hstat:hover{ border-color:var(--accent); }
-  .hstat .hi{ width:36px; height:36px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:50%; background:var(--surface-2); color:var(--ink-3); }
-  .hstat .hi .ic{ width:19px; height:19px; }
-  .hstat.on .hi{ background:color-mix(in srgb, var(--flame) 16%, var(--surface)); color:var(--flame); }
-  .hstat.on .hi .ic{ fill:var(--flame); }
-  .hstat .ht{ min-width:0; display:flex; flex-direction:column; line-height:1.2; }
-  .hstat .hv{ font-family:var(--f-display); font-weight:800; font-size:15.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums; }
-  .hstat .hl{ font-size:12px; font-weight:600; color:var(--ink-3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pill:hover{ border-color:var(--accent); }
+  .pill .ic{ width:19px; height:19px; color:var(--ink-3); }
+  .pill.on .ic{ color:var(--flame); fill:var(--flame); }
+  .pill .ring{ width:22px; height:22px; }
+  .pill .ring circle{ stroke-width:6; }
+  .pill .ring text{ display:none; }
+  .pill small{ font-size:12px; color:var(--ink-3); font-weight:700; }
   .ring{ width:36px; height:36px; flex:none; display:block; }
   .ring circle{ fill:none; stroke-width:4.5; }
   .ring .bg{ stroke:var(--surface-2); }
@@ -201,9 +200,9 @@
   /* ---------- Phrase list ---------- */
   .phrase-box{ margin-bottom:6px; }
   .phrase-box.hide{ display:none; }
-  .phrase-list{ background:var(--surface); border:2px solid var(--line); border-radius:var(--r); padding:2px 15px; }
-  .phrase-row{ display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:2px solid var(--surface-2); }
-  .phrase-row:last-child{ border-bottom:none; }
+  /* Phrases are things you say, so each one is a chat bubble. */
+  .phrase-list{ display:grid; gap:8px; justify-items:start; }
+  .phrase-row{ display:flex; align-items:flex-start; gap:12px; padding:11px 12px 11px 15px; width:min(100%, 520px); background:var(--surface); border:2px solid var(--line); border-radius:20px 20px 20px 6px; }
   .phrase-row .txt{ flex:1; font-size:15.5px; color:var(--ink); line-height:1.4; font-weight:700; }
   .phrase-fa{ font-size:13px; color:var(--ink-2); margin-top:3px; font-weight:500; text-align:right; }
 
@@ -484,6 +483,7 @@
   .pr-check{ display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; cursor:pointer; }
   .pr-check input{ accent-color:var(--accent); width:19px; height:19px; }
   .row-actions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; align-items:flex-start; margin-top:16px; }
+  .row-actions.left{ justify-content:flex-start; margin-top:10px; }
 
   /* ---------- Toast, XP float, sheets ---------- */
   #fx{ position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:300; }
@@ -571,15 +571,15 @@
   .data-row .warn{ color:var(--bad); }
   .move-note{ margin-top:7px; }
   .move-link{ width:100%; margin-top:10px; min-height:84px; font:inherit; font-size:12.5px; padding:10px 12px; border-radius:14px; border:2px solid var(--accent); background:var(--surface); color:var(--ink); resize:none; word-break:break-all; }
-  .continue{ margin-top:14px; padding:18px 18px 16px; border-radius:22px; background:var(--accent); color:#fff; box-shadow:0 4px 0 var(--accent-edge); position:relative; overflow:hidden; }
-  .continue::before{ content:""; position:absolute; right:-50px; top:-50px; width:170px; height:170px; border-radius:50%; background:rgba(255,255,255,.09); }
-  .continue::after{ content:""; position:absolute; right:30px; top:54px; width:70px; height:70px; border-radius:50%; background:rgba(255,255,255,.08); }
-  .continue > *{ position:relative; z-index:1; }
+  /* The next lesson is said in a speech bubble: Armanly is a speaking class. */
+  .continue{ margin:14px 0 22px; padding:18px 18px 16px; border-radius:24px 24px 24px 8px; background:var(--accent); color:#fff; position:relative; }
+  .continue::after{ content:""; position:absolute; left:0; bottom:-17px; width:34px; height:18px; background:var(--accent); clip-path:polygon(0 0, 100% 0, 0 100%); }
   .continue .label{ color:rgba(255,255,255,.8); }
   .continue-title{ font-family:var(--f-display); font-weight:800; font-size:25px; line-height:1.12; letter-spacing:-.02em; margin-top:3px; text-wrap:balance; }
   .continue-sub{ font-size:14px; opacity:.9; margin-top:4px; }
   .continue-words{ display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 14px; }
-  .continue-words span{ font-size:13px; font-weight:700; background:rgba(255,255,255,.17); padding:3px 10px; border-radius:999px; }
+  .continue-words mark{ font-size:14.5px; font-weight:800; background:var(--hl); color:var(--hl-ink); padding:2px 8px; border-radius:3px 7px 4px 6px; transform:rotate(-1deg); }
+  .continue-words mark:nth-child(even){ transform:rotate(.8deg); }
   .cbtn.light{ background:#fff; color:var(--accent-edge); border:none; box-shadow:0 4px 0 rgba(0,0,0,.2); margin-bottom:4px; }
   .cbtn.light:active{ transform:translateY(4px); box-shadow:none; }
   .week{ display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; background:var(--surface); border:2px solid var(--line); border-radius:var(--r); padding:12px 10px; }
@@ -632,15 +632,51 @@
   .st-example{ width:100%; text-align:left; font-size:15px; line-height:1.5; display:flex; gap:10px; align-items:flex-start; background:var(--bg); border-radius:12px; padding:11px 12px 11px 14px; }
   .st-example span{ flex:1; }
 
+  /* ---------- Home: greeting, level, sections ---------- */
+  h3.sect{ font-family:var(--f-display); font-weight:800; font-size:19px; letter-spacing:-.01em; line-height:1.2; margin:28px 0 10px; color:var(--ink); }
+  .lvl{ width:100%; margin-top:14px; display:flex; align-items:center; gap:12px; text-align:left; cursor:pointer; background:var(--surface); border:2px solid var(--line); border-radius:var(--r); padding:10px 14px 10px 10px; color:var(--ink); font:inherit; }
+  .lvl:hover{ border-color:var(--accent); }
+  .lvl-num{ width:40px; height:40px; flex:none; border-radius:13px; background:var(--accent); color:#fff; box-shadow:0 3px 0 var(--accent-edge); display:flex; align-items:center; justify-content:center; font-family:var(--f-display); font-weight:800; font-size:19px; }
+  .lvl-main{ flex:1; min-width:0; display:grid; gap:7px; }
+  .lvl-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .lvl-name{ font-family:var(--f-display); font-weight:800; font-size:16.5px; }
+  .lvl-xp{ font-size:12.5px; font-weight:700; color:var(--ink-3); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .lvl .pbar{ height:9px; }
+  .lvl .pbar-fill{ min-width:9px; }
+  .lvl .pbar-fill::after{ display:none; }
+
+  /* ---------- Settings ---------- */
+  .set-row{ margin-top:18px; }
+  .set-label{ font-size:13.5px; font-weight:800; margin-bottom:7px; }
+  .seg{ display:flex; background:var(--surface-2); border-radius:14px; padding:4px; gap:2px; }
+  .seg button{ flex:1; border:none; background:transparent; color:var(--ink-2); font-weight:800; font-size:14px; padding:9px 6px; border-radius:11px; cursor:pointer; }
+  .seg button.active{ background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(20,24,40,.12); }
+
+  /* ---------- Focus mode: an exercise takes the whole screen ---------- */
+  body.focus header.top, body.focus .bottombar{ display:none; }
+  body.focus main{ padding-bottom:24px; }
+  body.focus #panel-practice{ max-width:600px; margin:0 auto; animation:none; } /* a transform here would unpin the dock */
+  body.focus .pr-top{ position:sticky; top:env(safe-area-inset-top,0px); z-index:30; margin:0 -16px; padding:12px 16px; background:var(--bg); }
+  .pr-dock{
+    position:fixed; left:0; right:0; bottom:0; z-index:45; background:var(--bg); border-top:2px solid var(--line);
+    padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));
+  }
+  .pr-dock.good, .pr-dock.bad{ animation:dockUp .22s cubic-bezier(.2,.9,.3,1) both; }
+  .pr-dock > *{ max-width:568px; margin-left:auto; margin-right:auto; }
+  .pr-dock .cbtn.block{ display:flex; }
+  .pr-dock.idle{ display:none; }
+  .pr-dock.good{ background:var(--good-soft); border-top-color:color-mix(in srgb, var(--good) 35%, transparent); }
+  .pr-dock.bad{ background:var(--bad-soft); border-top-color:color-mix(in srgb, var(--bad) 35%, transparent); }
+  .pr-dock .pr-feedback{ margin:2px auto 12px; padding:0; border:none; background:none; animation:none; }
+  .pr-dock.good .cbtn.known{ background:var(--good); box-shadow:0 4px 0 var(--good-edge); }
+  .pr-dock.bad .cbtn.known{ background:var(--bad); box-shadow:0 4px 0 var(--bad-edge); }
+  @keyframes dockUp{ from{ transform:translateY(100%);} to{ transform:none; } }
+
   footer{ text-align:center; color:var(--ink-3); font-size:12px; padding:20px 0 10px; }
 
-  @media (max-width:420px){
-    .hstat{ padding:8px 7px; gap:7px; }
-    .hstat .hi, .hstat .ring{ width:32px; height:32px; }
-    .hstat .hv{ font-size:13.5px; }
-    .hstat .hl{ font-size:11.5px; }
-    .tool-btn, .accent-toggle{ height:36px; min-width:36px; padding:0 7px; }
-    .accent-toggle{ padding:0 9px; }
+  @media (max-width:380px){
+    .pill small{ display:none; }
+    h1{ font-size:21px; }
   }
   @media (prefers-reduced-motion: reduce){
     *, *::before, *::after{ animation:none !important; transition-duration:.01ms !important; }
@@ -658,9 +694,9 @@
         <h1>Armanly</h1>
       </div>
       <div class="tools">
-        <button class="tool-btn" id="soundToggle" type="button" aria-label="Toggle sound effects" title="Sound effects"></button>
-        <button class="tool-btn" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Dark / light"></button>
-        <button class="accent-toggle" id="accentToggle" type="button" title="Pronunciation accent">US</button>
+        <button class="pill" id="streakPill" type="button"></button>
+        <button class="pill" id="todayPill" type="button"></button>
+        <button class="tool-btn" id="settingsBtn" type="button" aria-label="Settings" title="Settings"><i data-ic="sliders"></i></button>
       </div>
     </div>
     <div class="controls" style="display:none;">
@@ -674,8 +710,6 @@
     </div>
     <div class="chipnav" id="chipnav" style="display:none;"></div>
   </header>
-
-  <section class="hero" id="hero" aria-label="Your progress"></section>
 
   <main>
     <div class="tabpanel active" id="panel-home"></div>
@@ -1064,6 +1098,7 @@
     award: "M12 14a5.500 5.500 0 1 0 0-11 5.500 5.500 0 0 0 0 11z M8.500 13L7 21l5-2.500 5 2.500-1.500-8",
     search: "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z M20 20l-4-4",
     chevron: "M6 9l6 6 6-6",
+    sliders: "M4 7h9 M17 7h3 M15 5v4 M4 17h3 M11 17h9 M9 15v4",
     shield: "M12 3l8 3v6c0 4.500-3.400 8-8 9-4.600-1-8-4.500-8-9V6z M8.500 12l2.500 2.500 4.500-5",
     phone: "M7 2h10a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z M11 18h2"
   };
@@ -1142,18 +1177,10 @@
     if (savedAccent) currentAccent = savedAccent;
   } catch (e) {}
 
-  function updateAccentLabel(){
-    var btn = document.getElementById("accentToggle");
-    btn.textContent = currentAccent === "en-US" ? "US" : "UK";
-    btn.setAttribute("aria-label", "Pronunciation accent: " + (currentAccent === "en-US" ? "American" : "British") + ". Tap to switch.");
-  }
-
-  document.getElementById("accentToggle").addEventListener("click", function(){
-    currentAccent = (currentAccent === "en-US") ? "en-GB" : "en-US";
+  function setAccent(v){
+    currentAccent = v;
     try { localStorage.setItem("speakLearnAccent", currentAccent); } catch(e) {}
-    updateAccentLabel();
-  });
-  updateAccentLabel();
+  }
 
   var activeBtn = null;
   function speak(text, btn, rate){
@@ -1390,6 +1417,8 @@
     if (view === "home") renderHomeView();
     if (view === "learn") renderLearn();
     applyFilter();
+    updateFocus();
+    document.querySelector("footer").hidden = !LIB[view];
     // Each tab keeps its own scroll position; tapping the tab you are on goes back to the top.
     var keepsPlace = view !== "practice" && view !== "cards" && (restoring || view !== prev);
     window.scrollTo(0, keepsPlace ? (ui.scroll[view] || 0) : 0);
@@ -2429,14 +2458,13 @@
       '<text x="22" y="27" text-anchor="middle">' + label + '</text></svg>';
   }
   function renderHero(){
-    var h = document.getElementById("hero");
-    if (!h) return;
-    var st = currentStreak(), lv = levelFor(game.xp), lo = xpFloor(lv), hi = xpFloor(lv + 1);
-    var done = todayCount(), reached = done >= DAILY_GOAL;
-    h.innerHTML =
-      '<button class="hstat' + (st > 0 ? " on" : "") + '" type="button" aria-label="Streak: ' + st + ' days"><span class="hi">' + ic("flame") + '</span><span class="ht"><span class="hv">' + st + '</span><span class="hl">streak</span></span></button>' +
-      '<button class="hstat" type="button" aria-label="Level ' + lv + ', ' + game.xp + ' XP">' + ringSvg((game.xp - lo) / (hi - lo), lv, "") + '<span class="ht"><span class="hv">' + levelName(lv) + '</span><span class="hl">' + game.xp + ' XP</span></span></button>' +
-      '<button class="hstat" type="button" aria-label="Today: ' + Math.min(done, DAILY_GOAL) + ' of ' + DAILY_GOAL + '">' + ringSvg(done / DAILY_GOAL, reached ? "✓" : Math.min(done, DAILY_GOAL), "good") + '<span class="ht"><span class="hv">' + Math.min(done, DAILY_GOAL) + ' / ' + DAILY_GOAL + '</span><span class="hl">today</span></span></button>';
+    var st = currentStreak(), done = Math.min(todayCount(), DAILY_GOAL);
+    var sp = document.getElementById("streakPill"), tp = document.getElementById("todayPill");
+    sp.className = "pill" + (st > 0 ? " on" : "");
+    sp.innerHTML = ic("flame") + "<span>" + st + "</span>";
+    sp.setAttribute("aria-label", "Streak: " + st + (st === 1 ? " day" : " days") + ". Open your progress.");
+    tp.innerHTML = ringSvg(done / DAILY_GOAL, "", "good") + "<span>" + done + "<small>/" + DAILY_GOAL + "</small></span>";
+    tp.setAttribute("aria-label", "Today: " + done + " of " + DAILY_GOAL + " answers. Open your progress.");
     var badge = document.getElementById("dueBadge");
     if (badge){
       var n = countReview();
@@ -2681,7 +2709,7 @@
       s.appendChild(c);
     });
   }
-  document.getElementById("hero").addEventListener("click", function(){ sfx("tap"); openProgress(); });
+  ["streakPill", "todayPill"].forEach(function(id){ document.getElementById(id).addEventListener("click", function(){ sfx("tap"); openProgress(); }); });
 
   // ---------- your own words ----------
   function saveCustom(){ try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(customWords)); return true; } catch (e) { return false; } }
@@ -2735,37 +2763,62 @@
     location.reload();
   }
 
-  // ---------- header tools: sound + theme ----------
-  var soundBtn = document.getElementById("soundToggle");
-  function updateSoundBtn(){ soundBtn.innerHTML = ic(soundOn ? "bell" : "bellOff"); soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false"); }
-  soundBtn.addEventListener("click", function(){
-    soundOn = !soundOn;
+  // ---------- settings: accent, sound, theme ----------
+  function setSound(on){
+    soundOn = on;
     try { localStorage.setItem("speakLearnSound", soundOn ? "on" : "off"); } catch (e) {}
-    updateSoundBtn();
-    sfx("tap");
-  });
-  updateSoundBtn();
-
-  var themeBtn = document.getElementById("themeToggle");
-  function isDarkNow(){
-    var a = document.documentElement.getAttribute("data-theme");
-    if (a) return a === "dark";
-    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
   }
-  function updateThemeBtn(){ themeBtn.innerHTML = ic(isDarkNow() ? "sun" : "moon"); }
-  try {
-    var savedTheme = localStorage.getItem("speakLearnTheme");
-    if (savedTheme === "dark" || savedTheme === "light") document.documentElement.setAttribute("data-theme", savedTheme);
-  } catch (e) {}
-  themeBtn.addEventListener("click", function(){
-    var next = isDarkNow() ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
-    try { localStorage.setItem("speakLearnTheme", next); } catch (e) {}
-    updateThemeBtn();
-    sfx("tap");
-  });
-  updateThemeBtn();
-
+  function themeChoice(){
+    var a = document.documentElement.getAttribute("data-theme");
+    return a === "dark" || a === "light" ? a : "system";
+  }
+  function setTheme(v){
+    if (v === "system") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", v);
+    try { if (v === "system") localStorage.removeItem("speakLearnTheme"); else localStorage.setItem("speakLearnTheme", v); } catch (e) {}
+  }
+  // A row of mutually exclusive choices, like the Words / Phrases / Grammar switch.
+  function segmented(labelText, opts, current, onPick){
+    var f = el("div", "set-row");
+    var lab = el("div", "set-label", labelText);
+    f.appendChild(lab);
+    var seg = el("div", "seg");
+    seg.setAttribute("role", "radiogroup");
+    seg.setAttribute("aria-label", labelText);
+    opts.forEach(function(o){
+      var b = btn(o[0] === current ? "active" : "", o[1], function(){
+        Array.prototype.forEach.call(seg.children, function(x){ x.classList.remove("active"); x.setAttribute("aria-checked", "false"); });
+        b.classList.add("active");
+        b.setAttribute("aria-checked", "true");
+        onPick(o[0]);
+        sfx("tap");
+      });
+      b.setAttribute("role", "radio");
+      b.setAttribute("aria-checked", o[0] === current ? "true" : "false");
+      seg.appendChild(b);
+    });
+    f.appendChild(seg);
+    return f;
+  }
+  function openSettings(){
+    openSheet("settingsModal", function(s, close){
+      s.appendChild(el("div", "sheet-title", "Settings"));
+      s.appendChild(segmented("Pronunciation", [["en-US", "American"], ["en-GB", "British"]], currentAccent, function(v){
+        setAccent(v);
+        speak(v === "en-US" ? "Hello, this is the American voice." : "Hello, this is the British voice.", null);
+      }));
+      s.appendChild(segmented("Sound effects", [["on", "On"], ["off", "Off"]], soundOn ? "on" : "off", function(v){ setSound(v === "on"); }));
+      s.appendChild(segmented("Appearance", [["system", "Automatic"], ["light", "Light"], ["dark", "Dark"]], themeChoice(), setTheme));
+      var more = btn("cbtn block", "", function(){ close(); openProgress(); });
+      more.innerHTML = ic("award") + "<span>Progress, badges and your data</span>";
+      more.style.marginTop = "22px";
+      s.appendChild(more);
+      var c = btn("cbtn known block", "Done", close);
+      c.style.marginTop = "10px";
+      s.appendChild(c);
+    });
+  }
+  document.getElementById("settingsBtn").addEventListener("click", function(){ sfx("tap"); openSettings(); });
 
   // ---------- helpers ----------
   function el(tag, cls, text){
@@ -2810,8 +2863,42 @@
     clearTimer();
     try { window.speechSynthesis.cancel(); } catch (e) {}
     while (practiceEl.firstChild) practiceEl.removeChild(practiceEl.firstChild);
-    forgetSession(); // renderQuestion saves it again; anything else on this panel means it was left
+    if (dockRO){ dockRO.disconnect(); dockRO = null; }
+    practiceEl.style.paddingBottom = "";
+    updateFocus();
   }
+  // Keep the end of the question scrollable above the pinned dock, whatever the dock's height.
+  var dockRO = null;
+  function fitDock(dock){
+    function fit(){ practiceEl.style.paddingBottom = (dock.offsetHeight + 24) + "px"; }
+    fit();
+    if (window.ResizeObserver){ dockRO = new ResizeObserver(fit); dockRO.observe(dock); }
+  }
+  // Exercises take the whole screen: no header, no tab bar, just the question.
+  function updateFocus(){
+    document.body.classList.toggle("focus", currentMode === "practice" && practiceEl.getAttribute("data-view") === "other");
+  }
+  // Leaving an exercise pauses it: it stays saved and can be resumed from Home or Practice.
+  function pauseSession(){
+    if (!session || (session.i === 0 && session.answered < 0)){ forgetSession(); renderHome(); return; }
+    // An answered question is done; resuming starts at the next one.
+    if (session.answered === session.i){
+      session.i++;
+      if (session.i >= session.qs.length){ renderResults(); return; }
+    }
+    saveSession(true);
+    renderHome();
+    toast("check", "Saved for later", "Resume it from Home or Practice", 2600);
+  }
+  function resumeSession(){
+    openView("practice");
+    renderQuestion();
+  }
+  function endSession(){
+    forgetSession();
+    session = null;
+  }
+  function hasPaused(){ return sessionLive && session && session.i < session.qs.length; }
   function progressBar(frac){
     var bar = el("div", "pbar");
     var fill = el("div", "pbar-fill");
@@ -3175,33 +3262,42 @@
     }
     homeEl.appendChild(hello);
 
+    // level: tap for badges and stats
+    var lv = levelFor(game.xp), lo = xpFloor(lv), hi = xpFloor(lv + 1);
+    var lvl = el("button", "lvl");
+    lvl.type = "button";
+    lvl.setAttribute("aria-label", "Level " + lv + ", " + levelName(lv) + ", " + game.xp + " XP. Open your progress.");
+    lvl.appendChild(el("span", "lvl-num", String(lv)));
+    var lm = el("span", "lvl-main");
+    var lt = el("span", "lvl-top");
+    lt.appendChild(el("span", "lvl-name", levelName(lv)));
+    lt.appendChild(el("span", "lvl-xp", (hi - game.xp) + " XP to level " + (lv + 1)));
+    lm.appendChild(lt);
+    lm.appendChild(progressBar((game.xp - lo) / (hi - lo)));
+    lvl.appendChild(lm);
+    lvl.addEventListener("click", function(){ sfx("tap"); openProgress(); });
+    homeEl.appendChild(lvl);
+
     if (!storageOk){
       homeEl.appendChild(notice("warn", "x", "This browser is not saving your progress",
         "Private browsing or blocked site data makes Armanly forget you when you close it. Open it in a normal tab, or add it to your home screen."));
-    } else if (!isInstalled() && !profile.installTipSeen && (game.xp > 0 || lessonsDone() > 0)){
-      var ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-      homeEl.appendChild(notice("", "phone", "Keep your progress safe",
-        (ios ? "Safari can clear data from websites you have not opened for a week. Tap Share, then \u201cAdd to Home Screen\u201d, and use Armanly from there."
-             : "Install Armanly so your browser keeps its data: open the browser menu and choose \u201cInstall app\u201d or \u201cAdd to Home screen\u201d.") +
-        " You can also save a backup file from the progress panel.",
-        "Got it", function(){ profile.installTipSeen = dayStr(0); saveProfile(); askPersistence(); renderHomeView(); }));
     }
 
-    // continue card: an unfinished exercise first, otherwise the next lesson
+    // continue card, drawn as a speech bubble: an unfinished exercise first, otherwise the next lesson
     var cont = el("div", "continue");
-    if (sessionLive && session && session.i < session.qs.length){
+    if (hasPaused()){
       cont.appendChild(el("div", "label", "Pick up where you left off"));
       cont.appendChild(el("div", "continue-title", session.title));
       cont.appendChild(el("div", "continue-sub", "Step " + (session.i + 1) + " of " + session.qs.length + ". Your answers so far are kept."));
       cont.appendChild(progressBar(session.i / session.qs.length));
-      cont.appendChild(btn("cbtn light block", "Resume", function(){ openView("practice"); }));
+      cont.appendChild(btn("cbtn light block", "Resume", resumeSession));
     } else if (nxt){
       var started = lessonsDone() > 0;
       cont.appendChild(el("div", "label", started ? "Continue learning" : "Start here"));
       cont.appendChild(el("div", "continue-title", unitName(nxt.ci)));
-      cont.appendChild(el("div", "continue-sub", "Lesson " + nxt.n + " of " + unitLessons(nxt.ci).length + ". " + nxt.items.length + " expressions, about 4 minutes."));
+      cont.appendChild(el("div", "continue-sub", "Lesson " + nxt.n + " of " + unitLessons(nxt.ci).length + ", " + nxt.items.length + " expressions, about 4 minutes."));
       var words = el("div", "continue-words");
-      nxt.items.forEach(function(it){ words.appendChild(el("span", null, it.term)); });
+      nxt.items.forEach(function(it){ words.appendChild(el("mark", null, it.term)); });
       cont.appendChild(words);
       cont.appendChild(btn("cbtn light block", "Start lesson", function(){ startLesson(nxt); }));
     } else {
@@ -3213,7 +3309,7 @@
     homeEl.appendChild(cont);
 
     // plan for today
-    homeEl.appendChild(el("div", "label pr-sect", "Plan for today"));
+    homeEl.appendChild(el("h3", "sect", "Plan for today"));
     var plan = el("div", "pr-hero");
     var ml = el("div", "missions");
     var rev = countReview();
@@ -3235,8 +3331,17 @@
     plan.appendChild(ml);
     homeEl.appendChild(plan);
 
+    if (storageOk && !isInstalled() && !profile.installTipSeen && (game.xp > 0 || lessonsDone() > 0)){
+      var ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      homeEl.appendChild(notice("", "phone", "Keep your progress safe",
+        (ios ? "Safari can clear data from websites you have not opened for a week. Tap Share, then \u201cAdd to Home Screen\u201d, and use Armanly from there."
+             : "Install Armanly so your browser keeps its data: open the browser menu and choose \u201cInstall app\u201d or \u201cAdd to Home screen\u201d.") +
+        " You can also save a backup file from the progress panel.",
+        "Got it", function(){ profile.installTipSeen = dayStr(0); saveProfile(); askPersistence(); renderHomeView(); }));
+    }
+
     // last seven days
-    homeEl.appendChild(el("div", "label pr-sect", "Last 7 days"));
+    homeEl.appendChild(el("h3", "sect", "Last 7 days"));
     var week = el("div", "week");
     for (var d = -6; d <= 0; d++){
       var key = dayStr(d), n = progress.counts[key] || 0;
@@ -3266,7 +3371,7 @@
 
     // word of the day
     if (wotdNode){
-      homeEl.appendChild(el("div", "label pr-sect", "Word of the day"));
+      homeEl.appendChild(el("h3", "sect", "Word of the day"));
       homeEl.appendChild(wotdNode);
     }
     renderHero();
@@ -3458,14 +3563,15 @@
   var SESSION_KEY = "speakLearnSession";
   var SESSION_MAX_AGE = 7 * 86400000;
   var sessionLive = false; // true while a question of the current session is on screen
-  function saveSession(){
+  // paused: the learner left with X; it waits on Home and Practice instead of reopening on screen.
+  function saveSession(paused){
     if (!session) return;
     sessionLive = true;
     saveJSON(SESSION_KEY, {
       mode: session.mode, title: session.title, lessonId: session.lessonId || null, grammarId: session.grammarId || null,
       qs: session.qs.map(function(q){ return q.kind === "study" ? { id: q.id, kind: "study", tag: q.tag, itemKey: q.item.key } : q; }),
       i: session.i, answered: session.answered, correct: session.correct, missed: session.missed,
-      combo: session.combo, best: session.best, xp: session.xp, lvl0: session.lvl0, at: Date.now()
+      combo: session.combo, best: session.best, xp: session.xp, lvl0: session.lvl0, at: Date.now(), paused: !!paused
     });
   }
   function forgetSession(){
@@ -3507,6 +3613,7 @@
     // That answer was already scored, so continue with the next question.
     if (session.answered === session.i) session.i++;
     if (session.i >= session.qs.length){ renderResults(); return "results"; }
+    if (s.paused){ saveSession(true); return ""; }
     renderQuestion();
     return "question";
   }
@@ -3548,10 +3655,27 @@
   function renderHome(){
     clearPractice();
     practiceEl.setAttribute("data-view", "home");
+    updateFocus();
     var intro = el("div", "pg-head");
     intro.appendChild(el("h2", null, "Practice"));
     intro.appendChild(el("p", null, "Pick an exercise. Everything here uses the words, phrases and grammar from class."));
     practiceEl.appendChild(intro);
+    if (hasPaused()){
+      var paused = el("div", "notice");
+      var pi = document.createElement("span");
+      pi.innerHTML = ic("rotate");
+      paused.appendChild(pi.firstChild);
+      var pb = el("div", "notice-body");
+      pb.appendChild(el("div", "m-title", session.title));
+      pb.appendChild(el("div", "m-sub", "Paused at step " + (session.i + 1) + " of " + session.qs.length + "."));
+      var pa = el("div", "row-actions left");
+      pa.appendChild(btn("cbtn known sm", "Resume", resumeSession));
+      pa.appendChild(btn("cbtn ghost sm", "End it", function(){ endSession(); renderHome(); }));
+      pb.appendChild(pa);
+      paused.appendChild(pb);
+      paused.style.marginBottom = "12px";
+      practiceEl.appendChild(paused);
+    }
     var list = el("div", "pr-modes");
     var miss = missItems().length;
     var defs = [
@@ -3625,9 +3749,9 @@
     var q = session.qs[session.i];
     var last = session.i + 1 >= session.qs.length;
     var top = el("div", "pr-top");
-    var x = btn("xbtn", "", renderHome);
+    var x = btn("xbtn", "", pauseSession);
     x.innerHTML = ic("x");
-    x.setAttribute("aria-label", "Quit this exercise");
+    x.setAttribute("aria-label", "Leave and save for later");
     top.appendChild(x);
     var bar = progressBar(session.i / session.qs.length);
     top.appendChild(bar);
@@ -3646,12 +3770,16 @@
     card.appendChild(el("div", "pr-tag", q.tag));
     practiceEl.appendChild(card);
 
+    // The answer button and the feedback sit in a dock pinned to the bottom of the screen, under the thumb.
+    var dock = el("div", "pr-dock");
     var fb = el("div", "pr-feedback");
     fb.hidden = true;
+    dock.appendChild(fb);
     var nextB = btn("cbtn known block", last ? "See results" : "Continue", advance);
     nextB.hidden = true;
     function showFeedback(ok, headText){
       fb.className = "pr-feedback " + (ok ? "good" : "bad");
+      dock.className = "pr-dock " + (ok ? "good" : "bad");
       var fh = el("div", "pr-fb-head " + (ok ? "good" : "bad"));
       fh.appendChild(icEl(ok ? "check" : "x", "fbi"));
       fh.appendChild(el("span", null, headText));
@@ -3684,8 +3812,7 @@
         card.appendChild(exr);
       }
       var goB = btn("cbtn known block", "Got it", function(){ sfx("tap"); bar.firstChild.style.width = ((session.i + 1) / session.qs.length * 100) + "%"; advance(); });
-      goB.style.marginTop = "12px";
-      practiceEl.appendChild(goB);
+      dock.appendChild(goB);
       setTimeout(function(){ try { autoSpeak(it.term, sp); } catch (e) {} }, 350);
     } else if (q.kind === "mcq"){
       card.appendChild(el("div", "pr-prompt" + (q.audio ? " small" : ""), q.prompt));
@@ -3716,6 +3843,7 @@
           showFeedback(ok, ok ? pick(PRAISE) : "Not quite. The answer is: " + q.answer);
           addSentence();
           fb.hidden = false;
+          dock.classList.remove("idle");
           nextB.hidden = false;
           nextB.focus();
         });
@@ -3749,9 +3877,8 @@
         fb.hidden = false;
         gcheck.textContent = last ? "See results" : "Continue";
       });
-      gcheck.style.marginTop = "12px";
       ginput.addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); gcheck.click(); } });
-      card.appendChild(gcheck);
+      dock.appendChild(gcheck);
       setTimeout(function(){ try { ginput.focus(); } catch (e) {} }, 100);
     } else {
       var playRow = el("div", "pr-play");
@@ -3796,20 +3923,21 @@
         fb.hidden = false;
         checkB.textContent = last ? "See results" : "Continue";
       });
-      checkB.style.marginTop = "12px";
       input.addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); checkB.click(); } });
-      card.appendChild(checkB);
+      dock.appendChild(checkB);
       setTimeout(function(){ try { autoSpeak(q.speakText, playBtn, 0.92); input.focus(); } catch (e) {} }, 300);
     }
-    practiceEl.appendChild(fb);
     if (q.kind === "mcq"){
-      nextB.style.marginTop = "12px";
-      practiceEl.appendChild(nextB);
+      dock.appendChild(nextB);
+      dock.classList.add("idle"); // nothing to show until an option is picked
     }
+    practiceEl.appendChild(dock);
+    fitDock(dock);
   }
 
   function renderResults(){
     clearPractice();
+    forgetSession();
     askPersistence();
     game.stats.sessions++;
     var n = Math.max(1, session.qs.filter(function(x){ return x.kind !== "study"; }).length), score = session.correct;
