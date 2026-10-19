@@ -26,9 +26,13 @@ After the first visit it also works offline.
 
 ## Your data
 
-Everything you do (progress, streak, your own words) is saved in your browser on your device. Nothing is sent to a server, and nobody else can see it.
+Everything you do (progress, streak, your own words) is saved in your browser on your device. Nothing is sent to a server, and nobody else can see it. Each person who uses the app on their own phone has their own progress.
 
-This also means your progress does not follow you to another device. To move it, open the progress panel (tap the level or streak at the top), choose **Save backup file**, and use **Restore from file** on the other device. Save a backup before clearing your browser data.
+The app also remembers where you stopped. If you close it in the middle of a lesson, it opens at the same question next time. Your tab, your place in the word list and your flashcard are kept too.
+
+Safari can delete data from websites you have not opened for 7 days. Adding the app to your home screen avoids this.
+
+There is no login. To move your progress to another phone or computer, open the progress panel (tap the level or streak at the top) and choose **Send to my other device**. Send the link to yourself (Telegram, WhatsApp, email) and open it on the other device. The progress is inside the link itself and is never stored on a server, so keep the link private. You can also use **Save backup file** and **Restore from file**. Save a backup before clearing your browser data.
 
 Pronunciation uses the voice built into your device, so how it sounds depends on your phone or computer.
 
@@ -42,6 +46,7 @@ The app is plain HTML, CSS and JavaScript with no build step and no dependencies
 | `sw.js` | Service worker that makes the app work offline |
 | `manifest.json` | Name, colours and icons for the home-screen install |
 | `icon-180.png`, `icon-192.png`, `icon-512.png` | App icons |
+| `DESIGN-SYSTEM.md` | Colours, type, components and saved data, for anyone adding screens |
 
 It is hosted with GitHub Pages from the root of the `main` branch.
 
