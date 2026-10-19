@@ -82,6 +82,8 @@ Never write a font size in px; pick a token.
 | Form field | `.field`, `.field-err` | Label above, optional fields say "(optional)" |
 | Data row | `.data-row` | Label left, value right (`.ok`, `.warn`) |
 | Toast | `toast(icon, title, sub)` | Two at a time, the rest queue |
+| Star | `.star` (`.on`, `.small`), built with `starBtn(id, info)` | Saves an item and opens the note sheet. Every star for the same id updates together |
+| Saved item | `.saved-item`, `.saved-note` (`.empty`) | The note is a button: tapping it edits the note |
 | Word facts | `.pos`, `.facts`, `.rel` (`.on-color` on the flashcard back), built with `wordFacts(info)` | Word type pill, then "Synonyms" and "Opposite" lines. Data comes from `WORD_INFO` |
 
 ## Saved state
@@ -94,6 +96,7 @@ Each learner's data stays in their own browser (`localStorage`); there is no ser
 | `speakLearnProfile` | Name for the greeting, first-visit date, last backup, dismissed tips |
 | `speakLearnUI` | Current tab, scroll position per tab, open grammar topic, flashcard filters, order and position |
 | `speakLearnSession` | The unfinished lesson or exercise, saved after every step (dropped after 7 days). X pauses it (`paused: true`) instead of deleting it |
+| `speakLearnSaved` | Starred items and free notes, each with the learner's note |
 | `speakLearnAccent`, `speakLearnSound`, `speakLearnTheme` | Settings |
 
 The backup file and the transfer link ("Send to my other device") include everything except `speakLearnUI` and `speakLearnSession`. The link carries the backup deflate-compressed and base64url-encoded after `#move=`, so it never reaches a server; opening it asks before replacing this device's data. If storage is blocked (private browsing) Home says so. When the app is not installed, Home suggests adding it to the home screen, because Safari clears data of websites not opened for 7 days.

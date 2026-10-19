@@ -746,6 +746,45 @@
   .tour-dots i.on{ width:22px; background:var(--accent); }
   .sheet.tour .sheet-actions{ margin-top:16px; }
 
+  /* ---------- Saved: stars and notes ---------- */
+  .star{ flex:none; width:34px; height:34px; border-radius:50%; border:none; background:transparent; color:var(--ink-3); cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center; transition:transform .1s; }
+  .star .ic{ width:20px; height:20px; }
+  .star:hover{ color:color-mix(in srgb, var(--sun) 60%, var(--ink)); }
+  .star:active{ transform:scale(.85); }
+  .star.on{ color:color-mix(in srgb, var(--sun) 55%, var(--ink)); }
+  .star.on .ic{ fill:var(--sun); }
+  .star.on{ animation:pop .3s ease; }
+  .star.small{ width:28px; height:28px; }
+  .star.small .ic{ width:17px; height:17px; }
+  .row-tools{ display:flex; align-items:center; gap:2px; flex:none; }
+  .pr-card.study{ position:relative; }
+  .star.corner{ position:absolute; top:12px; right:12px; }
+  .star.wotd-star{ position:absolute; top:14px; right:58px; width:38px; height:38px; }
+  .wotd-term{ padding-right:96px; }
+  .star.fc-star{ position:absolute; top:58px; right:14px; width:40px; height:40px; z-index:3; }
+  .g-src{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .tbadge.soft{ background:var(--sun); color:#3A2A00; }
+  .bottombar button.active .ic[data-star], .bottombar button[data-tab="saved"].active .ic{ fill:color-mix(in srgb, var(--sun) 70%, transparent); }
+  .saved-tools{ display:flex; gap:8px; flex-wrap:wrap; margin:4px 0 12px; }
+  .s-search{ position:relative; margin-bottom:10px; }
+  .s-search .ic{ position:absolute; left:14px; top:12px; width:18px; height:18px; color:var(--ink-3); }
+  .s-search input{ width:100%; font:inherit; font-size:var(--fs-lg); padding:10px 14px 10px 42px; border-radius:14px; border:2px solid var(--line); background:var(--surface); color:var(--ink); }
+  .s-search input:focus{ outline:none; border-color:var(--accent); }
+  .saved-chips{ display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px; }
+  .saved-list{ display:grid; gap:10px; }
+  .saved-item{ background:var(--surface); border:2px solid var(--line); border-radius:var(--r); padding:12px 12px 10px 14px; display:grid; gap:8px; }
+  .saved-top{ display:flex; align-items:flex-start; gap:6px; }
+  .saved-main{ flex:1; min-width:0; }
+  .saved-type{ display:inline-block; font-size:var(--fs-2xs); font-weight:800; color:var(--ink-3); background:var(--surface-2); border-radius:6px; padding:1px 7px; margin-bottom:4px; }
+  .saved-text{ font-family:var(--f-display); font-weight:700; font-size:var(--fs-xl); line-height:1.25; overflow-wrap:anywhere; }
+  .saved-sub{ font-size:var(--fs-md); color:var(--ink-2); margin-top:2px; }
+  .saved-sub.fa{ text-align:left; }
+  .saved-note{ text-align:start; font:inherit; font-size:var(--fs-md); line-height:1.5; color:var(--ink); background:var(--sun-soft); border:none; border-radius:12px; padding:9px 12px; cursor:pointer; white-space:pre-wrap; overflow-wrap:anywhere; }
+  .saved-note.empty{ background:transparent; border:2px dashed var(--line); color:var(--ink-3); font-weight:700; }
+  .saved-meta{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:var(--fs-xs); color:var(--ink-3); }
+  .saved-meta .linklike{ font-size:var(--fs-xs); padding:0; }
+  .save-title{ overflow-wrap:anywhere; }
+
   /* ---------- Progress charts ---------- */
   .chart{ background:var(--surface); border:2px solid var(--line); border-radius:20px; padding:14px 14px 12px; }
   .chart-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
@@ -866,6 +905,7 @@
     <div class="tabpanel" id="panel-vocab"></div>
     <div class="tabpanel" id="panel-phrases"></div>
     <div class="tabpanel" id="panel-grammar"></div>
+    <div class="tabpanel" id="panel-saved"></div>
     <div class="tabpanel" id="panel-cards">
       <div class="cards-toolbar">
         <div class="toggles">
@@ -883,6 +923,7 @@
             <div class="fc-inner">
               <div class="face front">
                 <button class="spk big" id="cardSpkFront" type="button" aria-label="Play pronunciation"></button>
+                <span id="fcStarSlot"></span>
                 <div class="fc-cat" id="fcCatFront"></div>
                 <div class="fc-term" id="fcTerm"></div>
                 <div class="fc-pos" id="fcPos"></div>
@@ -933,6 +974,7 @@
 <nav class="bottombar" id="tabSeg" aria-label="Sections">
   <button data-tab="home" class="active" type="button"><i data-ic="home"></i><span class="tl">Home</span></button>
   <button data-tab="learn" type="button"><i data-ic="path"></i><span class="tl">Learn</span></button>
+  <button data-tab="saved" type="button"><i data-ic="star"></i><span class="tl">Saved</span><span class="tbadge soft" id="savedBadge" hidden></span></button>
   <button data-tab="cards" type="button"><i data-ic="layers"></i><span class="tl">Cards</span><span class="tbadge" id="dueBadge" hidden></span></button>
   <button data-tab="practice" type="button"><i data-ic="target"></i><span class="tl">Practice</span></button>
   <button data-tab="lib" type="button"><i data-ic="book"></i><span class="tl">Library</span></button>
@@ -1586,6 +1628,11 @@
   if (!ui.scroll || typeof ui.scroll !== "object") ui.scroll = {};
   var uiReady = false; // nothing is written until the saved place has been restored
 
+  // Starred words, phrases, grammar topics and sentences, each with an optional note (see "saved" below).
+  var SAVED_KEY = "speakLearnSaved";
+  var saved = loadObj(SAVED_KEY) || {};
+  if (!saved.items || typeof saved.items !== "object") saved.items = {};
+
   // ---------- the learner's own words (saved on this device) ----------
   var CUSTOM_KEY = "speakLearnCustom";
   var customWords = [];
@@ -1740,7 +1787,10 @@
       termSpan.className = "term";
       termSpan.textContent = term;
       termRow.appendChild(termSpan);
-      termRow.appendChild(makeSpkBtn(term, false));
+      var tools = el("span", "row-tools");
+      tools.appendChild(starBtn("w:" + (isCustom ? "my" : ci) + "::" + term, { type: "word", text: term, sub: meaning, ex: example, key: (isCustom ? "my" : ci) + "::" + term }));
+      tools.appendChild(makeSpkBtn(term, false));
+      termRow.appendChild(tools);
       card.appendChild(termRow);
 
       var meaningDiv = document.createElement("div");
@@ -1840,6 +1890,7 @@
       fa.textContent = meaningFa;
       txt.appendChild(fa);
       row.appendChild(txt);
+      row.appendChild(starBtn("p:" + phrase, { type: "phrase", text: phrase, sub: meaningFa }, "small"));
       row.appendChild(makeSpkBtn(phrase.replace(/…/g, "..."), true));
       plist.appendChild(row);
       texts.push(phrase.toLowerCase() + " " + meaningFa);
@@ -1852,7 +1903,7 @@
   // ============================================================
   // TABS
   // ============================================================
-  var VIEWS = ["home", "learn", "cards", "practice", "vocab", "phrases", "grammar"];
+  var VIEWS = ["home", "learn", "cards", "practice", "vocab", "phrases", "grammar", "saved"];
   var LIB = { vocab: 1, phrases: 1, grammar: 1 };
   var lastLib = LIB[ui.lib] ? ui.lib : "vocab";
   var tabButtons = document.querySelectorAll("#tabSeg button");
@@ -1876,6 +1927,7 @@
     if (view === "grammar") renderGrammar();
     if (view === "home") renderHomeView();
     if (view === "learn") renderLearn();
+    if (view === "saved") renderSaved();
     applyFilter();
     updateFocus();
     document.querySelector("footer").hidden = !LIB[view];
@@ -1997,6 +2049,7 @@
     var exs = document.createElement("span"); setMarked(exs, it.example, it.term);
     ex.appendChild(exs); ex.appendChild(makeSpkBtn(it.example, true));
     var big = makeSpkBtn(it.term, false); big.classList.add("big");
+    w.appendChild(starBtn("w:" + it.key, { type: "word", text: it.term, sub: it.meaning, ex: it.example, key: it.key }, "wotd-star"));
     w.appendChild(t); w.appendChild(fa); w.appendChild(ex); w.appendChild(big);
     wotdNode = w;
   })();
@@ -2156,6 +2209,9 @@
     fcCatFront.textContent = item.catEn;
     fcMeaning.textContent = item.meaning;
     fcExampleText.textContent = item.example;
+    var slot = document.getElementById("fcStarSlot");
+    slot.innerHTML = "";
+    slot.appendChild(starBtn("w:" + item.key, { type: "word", text: item.term, sub: item.meaning, ex: item.example, key: item.key }, "fc-star"));
     var fcPos = document.getElementById("fcPos"), fcRel = document.getElementById("fcRel");
     fcPos.textContent = POS_NAMES[item.pos] || "";
     fcPos.hidden = !item.pos;
@@ -2186,7 +2242,7 @@
   flashcardEl.setAttribute("role", "button");
   flashcardEl.setAttribute("aria-label", "Flashcard. Press Enter to flip, left arrow if still learning, right arrow if you got it.");
   flashcardEl.addEventListener("pointerdown", function(e){
-    if (flying || (e.target.closest && e.target.closest(".spk"))) return;
+    if (flying || (e.target.closest && e.target.closest(".spk, .star"))) return;
     drag = { x: e.clientX, y: e.clientY, dx: 0, moved: false, id: e.pointerId };
     flashcardEl.classList.remove("spring");
     flashcardEl.classList.add("dragging");
@@ -2224,6 +2280,7 @@
   flashcardEl.addEventListener("pointerup", function(e){ endDrag(e, false); });
   flashcardEl.addEventListener("pointercancel", function(e){ endDrag(e, true); });
   flashcardEl.addEventListener("keydown", function(e){
+    if (e.target !== flashcardEl) return; // Enter on the speaker or star buttons is theirs
     if (e.key === "Enter" || e.key === " "){
       e.preventDefault();
       flipCardNow();
@@ -3046,7 +3103,7 @@
       badge.textContent = n > 99 ? "99+" : String(n);
     }
   }
-  var DATA_KEYS = ["speakLearnGame", "speakLearnProgress", "speakLearnKnown", "speakLearnSRS", "speakLearnCustom", "speakLearnAccent", "speakLearnSound", "speakLearnTheme", "speakLearnProfile", "speakLearnTextSize"];
+  var DATA_KEYS = ["speakLearnGame", "speakLearnProgress", "speakLearnKnown", "speakLearnSRS", "speakLearnCustom", "speakLearnAccent", "speakLearnSound", "speakLearnTheme", "speakLearnProfile", "speakLearnTextSize", "speakLearnSaved"];
   function backupObj(){
     var out = { app: "speak-and-learn", v: 1, date: dayStr(0), data: {} };
     DATA_KEYS.forEach(function(k){ try { var v = localStorage.getItem(k); if (v !== null) out.data[k] = v; } catch (e) {} });
@@ -3516,6 +3573,240 @@
     try { sessionStorage.setItem("slFlash", "removed:" + term); } catch (x) {}
     location.reload();
   }
+  // ---------- saved: a star on anything worth keeping, with the learner's own note ----------
+  // saved.items[id] = { type: word | phrase | grammar | sentence | note, text, sub, ex, key, gid, note, at, up }
+  // ids: "w:" + word key, "p:" + phrase, "g:" + grammar topic id, "s:" + sentence, "n:" + time for free notes
+  var SAVED_TYPES = { word: "Word", phrase: "Phrase", grammar: "Grammar", sentence: "Sentence", note: "Note" };
+  function isSaved(id){ return !!saved.items[id]; }
+  function persistSaved(){
+    if (!saveJSON(SAVED_KEY, saved)) toast("x", "Could not save", "This browser is blocking storage", 3200);
+  }
+  function paintStar(b, on){
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.setAttribute("aria-label", on ? "Saved. Edit your note or remove it" : "Save this, with a note");
+    b.title = on ? "Saved" : "Save";
+  }
+  function refreshStars(id){
+    Array.prototype.forEach.call(document.querySelectorAll(".star[data-sid]"), function(b){
+      if (b.getAttribute("data-sid") === id) paintStar(b, isSaved(id));
+    });
+  }
+  // info: { type, text, sub, ex, key, gid } describes what is being saved
+  function starBtn(id, info, cls){
+    var b = el("button", "star" + (cls ? " " + cls : ""));
+    b.type = "button";
+    b.innerHTML = ic("star");
+    b.setAttribute("data-sid", id);
+    paintStar(b, isSaved(id));
+    b.addEventListener("click", function(e){
+      e.stopPropagation();
+      e.preventDefault();
+      openSaveSheet(id, typeof info === "function" ? info() : info);
+    });
+    return b;
+  }
+  function afterSavedChange(){
+    if (currentMode === "saved") renderSaved();
+    updateSavedCount();
+  }
+  // One tap saves; the sheet that opens lets the learner add or edit a note, or remove it again.
+  function openSaveSheet(id, info){
+    var fresh = !isSaved(id);
+    if (fresh){
+      saved.items[id] = { type: info.type, text: info.text, sub: info.sub || "", ex: info.ex || "", key: info.key || "", gid: info.gid || "", note: "", at: Date.now(), up: Date.now() };
+      persistSaved();
+      refreshStars(id);
+      sfx("yes");
+      buzz(12);
+      afterSavedChange();
+    } else sfx("tap");
+    var rec = saved.items[id];
+    openSheet("saveModal", function(s, close){
+      s.appendChild(el("div", "label", fresh ? "Saved" : SAVED_TYPES[rec.type] + " in your saved list"));
+      s.appendChild(el("div", "sheet-title save-title", rec.text));
+      if (rec.sub){
+        var sub = el("div", "sheet-sub" + (/[؀-ۿ]/.test(rec.sub) ? " fa" : ""), rec.sub);
+        s.appendChild(sub);
+      }
+      var f = el("div", "field");
+      var l = el("label", null, "Your note ");
+      l.setAttribute("for", "saveNote");
+      l.appendChild(el("small", null, "(optional)"));
+      var ta = document.createElement("textarea");
+      ta.id = "saveNote";
+      ta.dir = "auto";
+      ta.rows = 4;
+      ta.value = rec.note || "";
+      ta.placeholder = "Your own sentence, a memory trick, where you heard it… Persian is fine.";
+      ta.addEventListener("input", function(){
+        rec.note = ta.value;
+        rec.up = Date.now();
+        persistSaved();
+      });
+      f.appendChild(l); f.appendChild(ta);
+      s.appendChild(f);
+      var acts = el("div", "sheet-actions");
+      acts.appendChild(btn("cbtn", "Remove", function(){
+        delete saved.items[id];
+        persistSaved();
+        refreshStars(id);
+        close();
+        afterSavedChange();
+        toast("check", "Removed from Saved", rec.text, 2400);
+      }));
+      acts.appendChild(btn("cbtn known", "Done", function(){ close(); afterSavedChange(); }));
+      s.appendChild(acts);
+      if (!fresh && !rec.note) setTimeout(function(){ ta.focus(); }, 60);
+    });
+  }
+  function openNoteSheet(){
+    openSheet("noteModal", function(s, close){
+      s.appendChild(el("div", "sheet-title", "New note"));
+      s.appendChild(el("div", "sheet-sub", "Anything you want to remember from class. It is saved on this device."));
+      var tf = el("div", "field");
+      var tl = el("label", null, "Title");
+      tl.setAttribute("for", "noteTitle");
+      var ti = document.createElement("input");
+      ti.type = "text"; ti.id = "noteTitle"; ti.dir = "auto"; ti.maxLength = 120; ti.placeholder = "e.g. Phrases for disagreeing politely";
+      tf.appendChild(tl); tf.appendChild(ti);
+      s.appendChild(tf);
+      var nf = el("div", "field");
+      var nl = el("label", null, "Note");
+      nl.setAttribute("for", "noteBody");
+      var nb = document.createElement("textarea");
+      nb.id = "noteBody"; nb.dir = "auto"; nb.rows = 5;
+      nf.appendChild(nl); nf.appendChild(nb);
+      s.appendChild(nf);
+      var err = el("div", "field-err");
+      err.hidden = true;
+      s.appendChild(err);
+      var acts = el("div", "sheet-actions");
+      acts.appendChild(btn("cbtn", "Cancel", close));
+      acts.appendChild(btn("cbtn known", "Save note", function(){
+        var title = ti.value.trim();
+        if (!title && !nb.value.trim()){ err.textContent = "Write a title or a note first."; err.hidden = false; ti.focus(); return; }
+        var now = Date.now();
+        saved.items["n:" + now] = { type: "note", text: title || nb.value.trim().split("\n")[0].slice(0, 60), sub: "", note: title ? nb.value : nb.value.split("\n").slice(1).join("\n"), at: now, up: now };
+        persistSaved();
+        close();
+        afterSavedChange();
+        toast("check", "Note saved", "", 2000);
+      }));
+      s.appendChild(acts);
+      setTimeout(function(){ ti.focus(); }, 60);
+    });
+  }
+  function savedWordItems(){
+    var byKey = {};
+    FLAT.forEach(function(f){ byKey[f.key] = f; });
+    return Object.keys(saved.items).map(function(id){ return saved.items[id]; })
+      .filter(function(r){ return r.type === "word" && byKey[r.key]; })
+      .map(function(r){ return byKey[r.key]; });
+  }
+  function savedDef(){
+    return { title: "Saved words", build: function(){
+      return sample(savedWordItems(), 10).map(function(it){ return anyQuestionFor(it, FLAT); });
+    } };
+  }
+  // The Saved tab in the bottom bar shows how many items are saved.
+  function updateSavedCount(){
+    var b = document.getElementById("savedBadge");
+    var n = Object.keys(saved.items).length;
+    b.hidden = n < 1;
+    b.textContent = n > 99 ? "99+" : String(n);
+    var tab = document.querySelector('#tabSeg button[data-tab="saved"]');
+    tab.setAttribute("aria-label", "Saved" + (n ? ", " + n + (n === 1 ? " item" : " items") : ""));
+  }
+
+  var savedEl = document.getElementById("panel-saved");
+  var savedFilter = "all", savedQuery = "";
+  function renderSaved(){
+    while (savedEl.firstChild) savedEl.removeChild(savedEl.firstChild);
+    var all = Object.keys(saved.items).map(function(id){ var r = saved.items[id]; return { id: id, r: r }; })
+      .sort(function(a, b){ return (b.r.up || 0) - (a.r.up || 0); });
+    var head = el("div", "pg-head");
+    head.appendChild(el("h2", null, "Saved"));
+    head.appendChild(el("p", null, "Everything you starred, with your own notes. Tap a note to change it."));
+    savedEl.appendChild(head);
+
+    var tools = el("div", "saved-tools");
+    tools.appendChild(btn("cbtn known sm", "", openNoteSheet)).innerHTML = ic("plus") + "<span>New note</span>";
+    var words = savedWordItems().length;
+    if (words >= 3){
+      var pb = btn("cbtn sm", "", function(){ openView("practice"); startSession("saved", savedDef()); });
+      pb.innerHTML = ic("target") + "<span>Practise saved words</span>";
+      tools.appendChild(pb);
+    }
+    savedEl.appendChild(tools);
+
+    if (!all.length){
+      var empty = el("div", "empty");
+      empty.innerHTML = mascot("think");
+      empty.appendChild(document.createTextNode("Nothing saved yet. Tap the star next to any word, phrase, grammar topic or sentence to keep it here with your own note."));
+      savedEl.appendChild(empty);
+      return;
+    }
+
+    var sw = el("div", "s-search");
+    sw.innerHTML = ic("search");
+    var si = document.createElement("input");
+    si.type = "search"; si.placeholder = "Search your saved items and notes"; si.value = savedQuery;
+    si.setAttribute("aria-label", "Search saved items");
+    sw.appendChild(si);
+    savedEl.appendChild(sw);
+
+    var counts = { all: all.length };
+    all.forEach(function(x){ counts[x.r.type] = (counts[x.r.type] || 0) + 1; });
+    var chips = el("div", "saved-chips");
+    [["all", "All"], ["word", "Words"], ["phrase", "Phrases"], ["grammar", "Grammar"], ["sentence", "Sentences"], ["note", "Notes"]].forEach(function(c){
+      if (c[0] !== "all" && !counts[c[0]]) return;
+      var b = btn("chip" + (savedFilter === c[0] ? " active" : ""), c[1] + " " + counts[c[0]], function(){ savedFilter = c[0]; sfx("tap"); renderSaved(); });
+      chips.appendChild(b);
+    });
+    savedEl.appendChild(chips);
+
+    var list = el("div", "saved-list");
+    savedEl.appendChild(list);
+    function paintList(){
+      while (list.firstChild) list.removeChild(list.firstChild);
+      var q = savedQuery.trim().toLowerCase(), shown = 0;
+      all.forEach(function(x){
+        var r = x.r;
+        if (savedFilter !== "all" && r.type !== savedFilter) return;
+        if (q && (r.text + " " + (r.sub || "") + " " + (r.note || "")).toLowerCase().indexOf(q) === -1) return;
+        shown++;
+        var item = el("div", "saved-item");
+        var top = el("div", "saved-top");
+        var tx = el("div", "saved-main");
+        tx.appendChild(el("span", "saved-type", SAVED_TYPES[r.type] || "Saved"));
+        tx.appendChild(el("div", "saved-text", r.text));
+        if (r.sub){ var sb = el("div", "saved-sub" + (/[؀-ۿ]/.test(r.sub) ? " fa" : ""), r.sub); tx.appendChild(sb); }
+        top.appendChild(tx);
+        if (r.type !== "note" && r.type !== "grammar") top.appendChild(makeSpkBtn(r.text.replace(/…/g, "..."), true));
+        top.appendChild(starBtn(x.id, r));
+        item.appendChild(top);
+        var note = el("button", "saved-note" + (r.note ? "" : " empty"));
+        note.type = "button";
+        note.dir = "auto";
+        note.textContent = r.note || "Add a note";
+        note.addEventListener("click", function(){ openSaveSheet(x.id, r); });
+        item.appendChild(note);
+        var meta = el("div", "saved-meta");
+        var d = new Date(r.up || r.at);
+        meta.appendChild(document.createTextNode((r.up && r.up !== r.at ? "Edited " : "Saved ") + d.getDate() + " " + MONTHS[d.getMonth()]));
+        if (r.type === "grammar" && r.gid){
+          meta.appendChild(btn("linklike", "Open the rules", function(){ grammarOpen = r.gid; openView("grammar"); var o = grammarEl.querySelector(".g-item.open"); if (o) o.scrollIntoView({ block: "start" }); }));
+        }
+        item.appendChild(meta);
+        list.appendChild(item);
+      });
+      if (!shown) list.appendChild(el("div", "empty", "No saved items match."));
+    }
+    si.addEventListener("input", function(){ savedQuery = si.value; paintList(); });
+    paintList();
+  }
+
 
   // ---------- settings: accent, sound, theme ----------
   function setSound(on){
@@ -4470,7 +4761,10 @@
 
       var body = el("div", "g-body");
       if (grammarOpen === t.id){
-        body.appendChild(el("div", "label", t.src));
+        var srcRow = el("div", "g-src");
+        srcRow.appendChild(el("div", "label", t.src));
+        srcRow.appendChild(starBtn("g:" + t.id, { type: "grammar", text: t.title, sub: t.fa, gid: t.id }));
+        body.appendChild(srcRow);
         var lead = el("p", "g-lead", t.lead);
         lead.style.marginTop = "6px";
         body.appendChild(lead);
@@ -4546,6 +4840,7 @@
     }
     if (mode === "grammar") return grammarDef(grammarId);
     if (mode === "mistakes") return mistakesDef();
+    if (mode === "saved") return savedDef();
     return MODES[mode] || null;
   }
   // Returns "question" or "results" when a saved session was put back on the practice panel, else "".
@@ -4762,6 +5057,7 @@
       var st = el("div", "st-term", it.term);
       card.appendChild(st);
       if (it.pos) card.appendChild(el("span", "pos", POS_NAMES[it.pos] || it.pos));
+      card.appendChild(starBtn("w:" + it.key, { type: "word", text: it.term, sub: it.meaning, ex: it.example, key: it.key }, "corner"));
       var sp = makeSpkBtn(it.term, false);
       sp.classList.add("big-inline");
       card.appendChild(sp);
@@ -4972,6 +5268,8 @@
         var tx = el("div", "txt", q.review.replace(/[\[\]]/g, ""));
         if (q.explain && session.isGrammar) tx.appendChild(el("div", "phrase-fa", q.explain)).style.textAlign = "left";
         row.appendChild(tx);
+        var rv = q.review.replace(/[\[\]]/g, "");
+        row.appendChild(starBtn("s:" + rv, { type: "sentence", text: rv, sub: q.explain || "" }, "small"));
         row.appendChild(makeSpkBtn(q.speakText, true));
         box.appendChild(row);
       });
@@ -5261,6 +5559,7 @@
   renderHero();
   renderGrammar();
   // Reopen exactly where the learner was: an unfinished exercise, then the tab and scroll position.
+  updateSavedCount();
   var resumed = restoreSession();
   if (!resumed) renderHome();
   var startView = resumed === "results" ? "practice" : (VIEWS.indexOf(ui.view) !== -1 ? ui.view : "home");

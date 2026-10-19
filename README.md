@@ -13,6 +13,7 @@ It runs in any modern browser on a phone or a computer. There is nothing to inst
 - **Practice.** A mixed Daily 10, fill the blank, collocations, synonyms and opposites, listen and type, grammar drills, and timed speaking drills, including case discussions where the app interrupts you with a challenge. Lessons also ask a synonym and an opposite question.
 - **Library.** The full word list, 11 groups of conversation phrases, and 9 grammar topics with rules, examples and common mistakes.
 - **My words.** Add your own words and phrases. They join your flashcards and practice.
+- **Saved.** Tap the star next to any word, phrase, grammar topic or sentence to keep it in the Saved tab, with your own note (Persian is fine). You can edit or remove notes, write free notes, search them, and practise your saved words.
 - **Progress.** XP, levels, a daily streak, badges, charts of your activity and of the words you know, the cards coming up this week, and a list of the expressions you got wrong so you can review them.
 - **Settings.** The button at the top right: American or British pronunciation, sound effects, light or dark mode, text size, and a short tour of the app.
 
