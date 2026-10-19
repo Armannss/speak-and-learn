@@ -180,6 +180,17 @@
   .meaning{ color:var(--ink-2); font-size:14.5px; text-align:right; }
   .example{ color:var(--ink); font-size:14px; line-height:1.5; display:flex; gap:8px; align-items:flex-start; background:var(--bg); border-radius:11px; padding:9px 10px 9px 12px; margin-top:3px; }
   .example .ex-text{ flex:1; }
+  /* Word type, synonyms and opposites */
+  .pos{ align-self:flex-start; font-size:12px; font-weight:800; color:var(--cc); background:color-mix(in srgb, var(--cc) 12%, var(--surface)); border-radius:6px; padding:1px 8px; font-style:italic; }
+  .facts{ display:grid; gap:4px; justify-items:start; }
+  .rel{ font-size:13.5px; line-height:1.4; color:var(--ink); }
+  .rel-k{ font-size:12px; font-weight:800; color:var(--ink-3); margin-right:7px; }
+  .facts.on-color .rel, .facts.on-color .rel-k{ color:#fff; }
+  .facts.on-color .rel-k{ opacity:.75; }
+  .facts.study-rel{ width:100%; text-align:left; padding:2px 2px 0; }
+  .fc-pos{ font-size:13px; font-weight:800; font-style:italic; color:var(--cc); margin-top:-4px; }
+  .fc-rel{ width:100%; text-align:left; margin-top:2px; }
+  .flashcard .back{ gap:9px; }
   .card-del{ align-self:flex-end; border:none; background:transparent; color:var(--ink-3); font-size:12.5px; font-weight:700; cursor:pointer; padding:2px 4px; border-radius:6px; }
   .card-del:hover{ color:var(--bad); }
   .card.empty-add{ align-items:center; justify-content:center; text-align:center; color:var(--ink-2); border-style:dashed; min-height:120px; gap:4px; }
@@ -530,9 +541,9 @@
   .field{ display:grid; gap:5px; margin-top:14px; }
   .field label{ font-size:13.5px; font-weight:800; }
   .field label small{ font-weight:500; color:var(--ink-3); }
-  .field input, .field textarea{ width:100%; font:inherit; font-size:16px; padding:11px 13px; border-radius:14px; border:2px solid var(--line); background:var(--surface); color:var(--ink); }
+  .field input, .field textarea, .field select{ width:100%; font:inherit; font-size:16px; padding:11px 13px; border-radius:14px; border:2px solid var(--line); background:var(--surface); color:var(--ink); }
   .field textarea{ resize:vertical; min-height:70px; }
-  .field input:focus, .field textarea:focus{ outline:none; border-color:var(--accent); }
+  .field input:focus, .field textarea:focus, .field select:focus{ outline:none; border-color:var(--accent); }
   .field-err{ color:var(--bad); font-size:13.5px; font-weight:600; margin-top:10px; }
   .sheet-actions{ display:flex; gap:8px; margin-top:18px; align-items:flex-start; }
   .sheet-actions .cbtn{ flex:1; }
@@ -736,6 +747,7 @@
                 <button class="spk big" id="cardSpkFront" type="button" aria-label="Play pronunciation"></button>
                 <div class="fc-cat" id="fcCatFront"></div>
                 <div class="fc-term" id="fcTerm"></div>
+                <div class="fc-pos" id="fcPos"></div>
                 <div class="fc-hint">Tap to flip, swipe to answer</div>
               </div>
               <div class="face back">
@@ -744,6 +756,7 @@
                   <span id="fcExampleText"></span>
                   <button class="spk small" id="cardSpkBack" type="button" aria-label="Play example"></button>
                 </div>
+                <div class="fc-rel" id="fcRel"></div>
               </div>
             </div>
           </div>
@@ -975,6 +988,176 @@
     ]]
   ];
 
+  // ============================================================
+  // WORD INFO: part of speech, synonyms and opposites for every expression.
+  // [type, "synonym|synonym", "opposite|opposite"]. Types: n noun, v verb, adj adjective, np noun phrase, vp verb phrase.
+  // Leave the opposite empty when there is no natural one.
+  // ============================================================
+  var WORD_INFO = {
+    "persuasive": ["adj", "convincing|compelling", "unconvincing"],
+    "compelling": ["adj", "convincing|powerful|forceful", "weak|unconvincing"],
+    "flawed": ["adj", "faulty|unsound|defective", "sound|flawless"],
+    "valid": ["adj", "sound|reasonable|legitimate", "invalid|unfounded"],
+    "credible": ["adj", "believable|reliable|trustworthy", "unreliable|dubious"],
+    "substantiated": ["adj", "supported|proven|verified", "unsubstantiated|unfounded"],
+    "plausible": ["adj", "believable|likely|reasonable", "implausible|unlikely"],
+    "counterargument": ["n", "rebuttal|objection", "supporting argument"],
+    "premise": ["n", "assumption|basis|proposition", "conclusion"],
+
+    "social cohesion": ["np", "social unity|solidarity", "social division|fragmentation"],
+    "social inequality": ["np", "social disparity|inequity", "social equality"],
+    "social mobility": ["np", "upward mobility", "social immobility"],
+    "social welfare": ["np", "public welfare|social security", ""],
+    "public interest": ["np", "common good|general welfare", "self-interest|private interest"],
+    "collective responsibility": ["np", "shared responsibility", "individual responsibility"],
+    "individual autonomy": ["np", "self-determination|independence", "dependence"],
+    "social norms": ["np", "social conventions|customs", ""],
+    "marginalized groups": ["np", "disadvantaged groups|excluded groups", "privileged groups"],
+    "discrimination": ["n", "prejudice|bias|unfair treatment", "equality|fair treatment"],
+
+    "civil liberties": ["np", "civil rights|basic freedoms", "repression"],
+    "freedom of expression": ["np", "freedom of speech|free speech", "censorship"],
+    "personal autonomy": ["np", "independence|self-determination", "dependence"],
+    "privacy rights": ["np", "right to privacy|data protection", ""],
+    "individual rights": ["np", "personal rights", "collective interests"],
+    "collective interests": ["np", "common interests|shared interests", "individual interests"],
+    "government intervention": ["np", "state interference|state involvement", "laissez-faire|deregulation"],
+    "state regulation": ["np", "government regulation|state control", "deregulation|self-regulation"],
+    "restriction": ["n", "limitation|constraint|limit", "freedom|permission"],
+    "infringement of rights": ["np", "violation of rights|breach of rights", "protection of rights"],
+
+    "unintended consequences": ["np", "unforeseen effects|side effects", "intended outcomes"],
+    "long-term repercussions": ["np", "lasting consequences|long-term effects", "short-term effects"],
+    "economic downturn": ["np", "recession|slump|economic decline", "economic boom|upturn"],
+    "social unrest": ["np", "civil unrest|turmoil|disorder", "social stability|peace"],
+    "disparity": ["n", "gap|inequality|imbalance", "parity|equality"],
+    "vulnerability": ["n", "weakness|fragility|exposure", "resilience|strength"],
+    "polarization": ["n", "division|split", "consensus|unity"],
+    "backlash": ["n", "adverse reaction|outcry", "support|approval"],
+    "trade-off": ["n", "compromise|balance", ""],
+    "burden": ["n", "load|strain|weight", "relief"],
+
+    "public expenditure": ["np", "public spending|government spending", "public revenue"],
+    "fiscal policy": ["np", "budget policy|tax and spending policy", ""],
+    "tax incentives": ["np", "tax breaks|tax relief", "tax penalties"],
+    "public funding": ["np", "government funding|state funding", "private funding"],
+    "welfare provision": ["np", "social services|welfare services", ""],
+    "regulatory framework": ["np", "legal framework|regulatory system", ""],
+    "policy measure": ["np", "policy step|government action", ""],
+    "legislative reform": ["np", "law reform|legal reform", ""],
+    "resource allocation": ["np", "distribution of resources", ""],
+    "sustainable policy": ["np", "long-term policy", "quick fix|short-term policy"],
+
+    "compromise": ["n", "middle ground|settlement|give-and-take", "deadlock|stalemate"],
+    "consensus": ["n", "agreement|accord", "disagreement|dissent"],
+    "concession": ["n", "compromise|allowance", "demand"],
+    "middle ground": ["np", "compromise|common ground", "extreme position"],
+    "priority": ["n", "precedence|main concern", "afterthought"],
+    "feasibility": ["n", "practicality|viability|workability", "impracticality"],
+    "viability": ["n", "feasibility|sustainability", "impracticality"],
+    "rationale": ["n", "reasoning|justification|basis", ""],
+    "constraint": ["n", "limitation|restriction|restraint", "freedom"],
+    "criterion": ["n", "standard|benchmark|measure", ""],
+    "cost-benefit analysis": ["np", "cost-effectiveness analysis", ""],
+    "competing interests": ["np", "conflicting interests|rival interests", "shared interests|common interests"],
+
+    "motivation": ["n", "drive|incentive|reason", "apathy"],
+    "intention": ["n", "aim|purpose|goal", ""],
+    "impulse": ["n", "urge|whim", "restraint|self-control"],
+    "insecurity": ["n", "self-doubt|lack of confidence", "confidence|self-assurance"],
+    "self-esteem": ["n", "self-respect|self-worth", "self-doubt"],
+    "resentment": ["n", "bitterness|grudge|indignation", "goodwill|contentment"],
+    "frustration": ["n", "annoyance|exasperation", "satisfaction"],
+    "ambition": ["n", "drive|aspiration", "apathy|complacency"],
+    "reluctance": ["n", "unwillingness|hesitation", "willingness|eagerness"],
+    "inclination": ["n", "tendency|preference|leaning", "aversion|disinclination"],
+    "self-awareness": ["n", "self-knowledge|introspection", ""],
+
+    "underlying motivation": ["np", "real motive|true reason", "stated reason"],
+    "underlying cause": ["np", "root cause|fundamental cause", "symptom"],
+    "hidden agenda": ["np", "ulterior motive|secret aim", "honest intentions"],
+    "unconscious bias": ["np", "implicit bias", "explicit bias"],
+    "deep-rooted insecurity": ["np", "deep-seated insecurity|ingrained insecurity", "self-assurance"],
+    "emotional response": ["np", "emotional reaction|gut reaction", "rational response"],
+    "rational decision": ["np", "logical decision|reasoned decision", "irrational decision|impulsive decision"],
+    "irrational behavior": ["np", "illogical behavior|unreasonable behavior", "rational behavior"],
+    "defensive reaction": ["np", "defensive response", "receptive response"],
+    "coping mechanism": ["np", "coping strategy", ""],
+    "personal boundaries": ["np", "personal limits", ""],
+    "sense of identity": ["np", "sense of self|self-image", "identity crisis"],
+
+    "mutual understanding": ["np", "mutual respect|common understanding", "misunderstanding"],
+    "emotional attachment": ["np", "emotional bond|affection", "detachment|indifference"],
+    "interpersonal conflict": ["np", "personal conflict|friction", "harmony"],
+    "breakdown in communication": ["np", "communication breakdown|miscommunication", "clear communication"],
+    "strained relationship": ["np", "tense relationship|troubled relationship", "close relationship|healthy relationship"],
+    "close-knit family": ["np", "tight-knit family|close family", "distant family"],
+    "sense of belonging": ["np", "connection|acceptance", "alienation|isolation"],
+    "trust and loyalty": ["np", "faithfulness|commitment", "betrayal|distrust"],
+    "emotional support": ["np", "moral support|comfort", ""],
+    "peer pressure": ["np", "social pressure", ""],
+
+    "strike a balance between X and Y": ["vp", "find a balance between X and Y|balance X and Y", ""],
+    "take X into consideration": ["vp", "take X into account|consider X", "ignore X|overlook X"],
+    "give priority to X": ["vp", "prioritize X|put X first", "neglect X|deprioritize X"],
+    "address an issue": ["vp", "deal with an issue|tackle an issue", "ignore an issue"],
+    "tackle a problem": ["vp", "deal with a problem|address a problem", "avoid a problem"],
+    "pose a threat to X": ["vp", "threaten X|endanger X", "protect X"],
+    "have far-reaching consequences": ["vp", "have wide-ranging effects", "have little impact"],
+    "come at a cost": ["vp", "have a price|have a downside", "come for free"],
+    "place a burden on X": ["vp", "burden X|weigh on X", "ease the burden on X|relieve X"],
+    "allocate resources": ["vp", "distribute resources|assign resources", ""],
+    "reach a consensus": ["vp", "reach agreement|agree", "reach a deadlock|disagree"],
+    "make a concession": ["vp", "give ground|compromise", "stand firm"],
+    "find common ground": ["vp", "find middle ground|reach a compromise", "be at odds"],
+    "weigh the pros and cons": ["vp", "consider the advantages and disadvantages", "decide hastily"],
+    "take a long-term view": ["vp", "think long-term|plan ahead", "take a short-term view"],
+    "meet a particular need": ["vp", "satisfy a need|fulfil a need", "fail to meet a need"],
+    "serve the public interest": ["vp", "serve the common good|benefit the public", "serve private interests"],
+    "be economically viable": ["vp", "be financially sustainable|be profitable", "be unprofitable"],
+    "be politically feasible": ["vp", "be politically realistic|be politically achievable", "be politically unrealistic"],
+
+    "make a compelling case for something": ["vp", "make a strong case for something|argue convincingly for something", "make a weak case for something"],
+    "put forward an argument": ["vp", "present an argument|propose an argument", "withdraw an argument"],
+    "back up a claim": ["vp", "support a claim|substantiate a claim", "undermine a claim"],
+    "provide supporting evidence": ["vp", "give evidence|provide proof", ""],
+    "reach a convincing conclusion": ["vp", "come to a persuasive conclusion", "remain inconclusive"],
+    "present a balanced argument": ["vp", "present both sides|give a fair argument", "present a one-sided argument"],
+    "take a particular stance": ["vp", "take a stand|adopt a position", "remain neutral|sit on the fence"],
+    "adopt a position": ["vp", "take a position|take a stance", "abandon a position"],
+    "justify a decision": ["vp", "defend a decision|explain a decision", "question a decision"],
+    "defend a viewpoint": ["vp", "stand up for a view|argue for a viewpoint", "abandon a viewpoint"],
+    "have a vested interest in something": ["vp", "have a stake in something|have a personal interest in something", "be impartial|be neutral"],
+
+    "raise an objection": ["vp", "object|voice an objection|protest", "give approval|agree"],
+    "address a concern": ["vp", "deal with a concern|respond to a concern", "ignore a concern|dismiss a concern"],
+    "counter an argument": ["vp", "rebut an argument|refute an argument", "support an argument"],
+    "challenge an assumption": ["vp", "question an assumption", "accept an assumption"],
+    "undermine an argument": ["vp", "weaken an argument", "strengthen an argument"],
+    "acknowledge a valid point": ["vp", "concede a point|accept a point", "dismiss a point"],
+    "draw a distinction between X and Y": ["vp", "distinguish between X and Y|differentiate X from Y", "blur the line between X and Y"],
+    "take something out of context": ["vp", "distort something|misquote something|twist something", "quote something accurately"],
+    "influence public opinion": ["vp", "shape public opinion|sway public opinion", ""],
+    "shape perceptions": ["vp", "influence perceptions|mould perceptions", ""],
+    "sway someone's opinion": ["vp", "change someone's mind|persuade someone", ""],
+    "win someone over": ["vp", "persuade someone|bring someone round", "alienate someone|put someone off"],
+    "appeal to emotions": ["vp", "play on emotions|tug at the heartstrings", "appeal to reason"],
+    "appeal to reason": ["vp", "appeal to logic|use logical argument", "appeal to emotions"],
+    "exert influence": ["vp", "wield influence|exercise power", ""],
+    "gain credibility": ["vp", "earn credibility|build trust", "lose credibility"],
+
+    "emotional appeal": ["np", "pathos|appeal to emotion", "logical appeal"],
+    "rhetorical device": ["np", "rhetorical technique|figure of speech", ""],
+    "deliberate framing": ["np", "spin|slanting", "neutral presentation"],
+    "misleading claim": ["np", "false claim|deceptive claim", "accurate claim|honest claim"],
+    "biased presentation": ["np", "one-sided presentation|slanted account", "balanced presentation|impartial account"],
+    "selective use of evidence": ["np", "cherry-picking", "balanced use of evidence"],
+    "propaganda": ["n", "disinformation|spin", "objective information"],
+    "manipulation": ["n", "exploitation|undue influence", "transparency|honesty"],
+    "deception": ["n", "deceit|dishonesty|trickery", "honesty|truthfulness"]
+  };
+  var POS_NAMES = { n: "noun", v: "verb", adj: "adjective", adv: "adverb", np: "noun phrase", vp: "verb phrase", ph: "phrase" };
+
   var PHRASES = [
     ["Starting a discussion / giving your view", "شروع بحث و بیان دیدگاه", [
       ["I'd argue that…", "من استدلال می‌کنم که..."],
@@ -1098,6 +1281,7 @@
     award: "M12 14a5.500 5.500 0 1 0 0-11 5.500 5.500 0 0 0 0 11z M8.500 13L7 21l5-2.500 5 2.500-1.500-8",
     search: "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z M20 20l-4-4",
     chevron: "M6 9l6 6 6-6",
+    swap: "M4 8h14l-4-4 M20 16H6l4 4",
     sliders: "M4 7h9 M17 7h3 M15 5v4 M4 17h3 M11 17h9 M9 15v4",
     shield: "M12 3l8 3v6c0 4.500-3.400 8-8 9-4.600-1-8-4.500-8-9V6z M8.500 12l2.500 2.500 4.500-5",
     phone: "M7 2h10a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z M11 18h2"
@@ -1153,7 +1337,25 @@
     if (Array.isArray(savedCustom)) customWords = savedCustom.filter(function(w){ return w && typeof w.t === "string" && w.t; });
   } catch (e) {}
   var CUSTOM_CI = VOCAB.length;
-  VOCAB.push(["My words", "کلمه‌های خودم", customWords.map(function(w){ return [w.t, w.m || "", w.e || ""]; })]);
+  VOCAB.push(["My words", "کلمه‌های خودم", customWords.map(function(w){ return [w.t, w.m || "", w.e || "", w.p || "", w.s || "", w.a || ""]; })]);
+
+  // Type, synonyms and opposites of a VOCAB row (built-in from WORD_INFO, own words from the row itself).
+  function wordInfo(row){
+    var i = WORD_INFO[row[0]] || (row.length > 3 ? [row[3], row[4], row[5]] : null);
+    return { pos: (i && i[0]) || "", syn: i && i[1] ? i[1].split("|") : [], ant: i && i[2] ? i[2].split("|") : [] };
+  }
+  function wordFacts(info, cls){
+    var box = el("div", "facts" + (cls ? " " + cls : ""));
+    if (info.pos) box.appendChild(el("span", "pos", POS_NAMES[info.pos] || info.pos));
+    [["Synonyms", info.syn], ["Opposite", info.ant]].forEach(function(r){
+      if (!r[1].length) return;
+      var line = el("div", "rel");
+      line.appendChild(el("span", "rel-k", r[0]));
+      line.appendChild(el("span", null, r[1].join(", ")));
+      box.appendChild(line);
+    });
+    return box;
+  }
 
   // Highlight the target expression inside its example sentence.
   function setMarked(node, text, term){
@@ -1271,7 +1473,7 @@
     panelVocab.appendChild(grid);
 
     rows.forEach(function(row){
-      var term = row[0], meaning = row[1], example = row[2];
+      var term = row[0], meaning = row[1], example = row[2], info = wordInfo(row);
       var card = document.createElement("div");
       card.className = "card";
 
@@ -1297,6 +1499,7 @@
       exDiv.appendChild(exText);
       exDiv.appendChild(makeSpkBtn(example, true));
       card.appendChild(exDiv);
+      if (info.pos || info.syn.length || info.ant.length) card.appendChild(wordFacts(info));
 
       card.addEventListener("click", function(){
         speak(term, null);
@@ -1317,7 +1520,7 @@
         card.appendChild(del);
       }
       grid.appendChild(card);
-      allCards.push({ el: card, term: term.toLowerCase(), meaning: meaning, example: example.toLowerCase() });
+      allCards.push({ el: card, term: term.toLowerCase(), meaning: meaning, example: (example + " " + info.syn.join(" ") + " " + info.ant.join(" ")).toLowerCase() });
     });
 
     if (isCustom && rows.length === 0){
@@ -1516,6 +1719,8 @@
         term: row[0], meaning: row[1], example: row[2],
         key: (ci === CUSTOM_CI ? "my" : ci) + "::" + row[0]
       });
+      var info = wordInfo(row), f = FLAT[FLAT.length - 1];
+      f.pos = info.pos; f.syn = info.syn; f.ant = info.ant;
     });
   });
 
@@ -1689,6 +1894,12 @@
     fcCatFront.textContent = item.catEn;
     fcMeaning.textContent = item.meaning;
     fcExampleText.textContent = item.example;
+    var fcPos = document.getElementById("fcPos"), fcRel = document.getElementById("fcRel");
+    fcPos.textContent = POS_NAMES[item.pos] || "";
+    fcPos.hidden = !item.pos;
+    fcRel.textContent = "";
+    if (item.syn.length || item.ant.length) fcRel.appendChild(wordFacts({ pos: "", syn: item.syn, ant: item.ant }, "on-color"));
+    fcRel.hidden = !(item.syn.length || item.ant.length);
 
     var known = !!knownSet[cardKey(item)];
     flashcardEl.classList.toggle("is-known", known);
@@ -2734,6 +2945,22 @@
       var t = field("awTerm", "Word or phrase", false, false, "e.g. play devil's advocate");
       var m = field("awMeaning", "Meaning", true, false, "معنی فارسی یا توضیح کوتاه", true);
       var e = field("awExample", "Example sentence", true, true, "A sentence that uses it. If it contains the phrase, it becomes a fill-the-blank question.");
+      var pf = el("div", "field");
+      var pl = el("label", null, "Word type ");
+      pl.setAttribute("for", "awType");
+      pl.appendChild(el("small", null, "(optional)"));
+      var pt = document.createElement("select");
+      pt.id = "awType";
+      [["", "Not sure"], ["n", "noun"], ["v", "verb"], ["adj", "adjective"], ["adv", "adverb"], ["np", "noun phrase"], ["vp", "verb phrase"], ["ph", "phrase"]].forEach(function(o){
+        var op = document.createElement("option");
+        op.value = o[0]; op.textContent = o[1];
+        pt.appendChild(op);
+      });
+      pf.appendChild(pl); pf.appendChild(pt);
+      s.appendChild(pf);
+      var sy = field("awSyn", "Synonyms", true, false, "e.g. convincing, compelling");
+      var an = field("awAnt", "Opposite", true, false, "e.g. unconvincing");
+      function list(v){ return v.split(/[,،|]/).map(function(x){ return x.trim().replace(/\s+/g, " "); }).filter(Boolean).join("|"); }
       var err = el("div", "field-err");
       err.hidden = true;
       s.appendChild(err);
@@ -2744,7 +2971,7 @@
         if (!term){ err.textContent = "Type the word or phrase first."; err.hidden = false; t.focus(); return; }
         var dup = FLAT.some(function(it){ return it.term.toLowerCase() === term.toLowerCase(); });
         if (dup){ err.textContent = "\"" + term + "\" is already in the app. Search for it on the Words tab."; err.hidden = false; return; }
-        customWords.push({ t: term, m: m.value.trim(), e: e.value.trim().replace(/\s+/g, " ") });
+        customWords.push({ t: term, m: m.value.trim(), e: e.value.trim().replace(/\s+/g, " "), p: pt.value, s: list(sy.value), a: list(an.value) });
         if (!saveCustom()){ customWords.pop(); err.textContent = "This browser is blocking storage, so the word could not be saved. Turn off private browsing and try again."; err.hidden = false; return; }
         try { sessionStorage.setItem("slFlash", "added:" + term); } catch (x) {}
         location.reload();
@@ -3036,10 +3263,76 @@
     for (var i = 0; i < n; i++){ var q = gen(used); if (q) out.push(q); }
     return out;
   }
+  // ---------- synonyms, opposites and word types ----------
+  var WORD_TYPES = ["noun", "verb", "adjective", "adverb"];
+  // Wrong options for a synonym or opposite question: answers of the same word type from unrelated
+  // expressions, never anything that is also right for this one. Other topics give their synonyms too;
+  // the same topic only gives opposites, so close neighbours (persuasive, credible) can't be mixed up.
+  function relDistractors(item, n){
+    var taken = {}, out = [];
+    function lc(x){ return x.toLowerCase(); }
+    [item.term].concat(item.syn, item.ant).forEach(function(x){ taken[lc(x)] = true; });
+    var others = FLAT.filter(function(o){ return o !== item && o.pos === item.pos; });
+    shuffleArray(others);
+    others.sort(function(a, b){ return (a.ci === item.ci) - (b.ci === item.ci); });
+    others.forEach(function(o){
+      if (out.length >= n) return;
+      if ([o.term].concat(o.syn, o.ant).some(function(x){ return taken[lc(x)]; })) return; // related to this one
+      var pool = o.ci === item.ci ? o.ant : o.syn.concat(o.ant, [o.term]);
+      if (!pool.length) return;
+      var c = pick(pool);
+      taken[lc(c)] = true;
+      out.push(c);
+    });
+    return out;
+  }
+  function relNote(item){
+    var parts = [item.term + (item.pos ? " (" + POS_NAMES[item.pos] + ")" : "")];
+    if (item.syn.length) parts.push("Synonyms: " + item.syn.join(", "));
+    if (item.ant.length) parts.push("Opposite: " + item.ant.join(", "));
+    return parts.join(". ") + ".";
+  }
+  function relQuestion(item, field, idp, tag, prompt, sign){
+    var list = item[field];
+    if (!list.length) return null;
+    var ans = pick(list), dist = relDistractors(item, 3);
+    if (dist.length < 3) return null;
+    var opts = dist.concat([ans]);
+    shuffleArray(opts);
+    return { id: idp + item.key, itemKey: item.key, kind: "mcq", tag: tag, prompt: prompt + " \u201c" + item.term + "\u201d?", options: opts, answer: ans, explain: relNote(item), speakText: item.term + ". " + ans, review: item.term + " " + sign + " " + list.join(", ") };
+  }
+  function synonymFor(item){ return relQuestion(item, "syn", "sy", "Synonym", "Which one means the same as", "="); }
+  function oppositeFor(item){ return relQuestion(item, "ant", "an", "Opposite", "Which one is the opposite of", "\u2260"); }
+  function typeFor(item){
+    if (!item.pos) return null;
+    var opts = (item.pos === "np" || item.pos === "vp") ? ["noun phrase", "verb phrase"] : WORD_TYPES.slice();
+    var ans = POS_NAMES[item.pos];
+    if (opts.indexOf(ans) < 0) return null;
+    return { id: "ty" + item.key, itemKey: item.key, kind: "mcq", tag: "Word type", prompt: "What type of word is \u201c" + item.term + "\u201d?", options: opts, answer: ans, explain: item.example ? "Example: " + item.example : "", speakText: item.term, review: item.term + " (" + ans + ")" };
+  }
+  function relGen(builder, idp){
+    return function(used){
+      for (var t = 0; t < 60; t++){
+        var item = pick(FLAT);
+        if (used[idp + item.key]) continue;
+        var q = builder(item);
+        if (!q) continue;
+        used[q.id] = true;
+        return q;
+      }
+      return null;
+    };
+  }
+  var genSyn = relGen(synonymFor, "sy"), genAnt = relGen(oppositeFor, "an"), genType = relGen(function(item){
+    // "noun phrase or verb phrase?" is the easy case, so most word-type questions are about single words
+    if ((item.pos === "np" || item.pos === "vp") && Math.random() < 0.7) return null;
+    return typeFor(item);
+  }, "ty");
+
   var MODES = {
     daily: { title: "Daily 10", build: function(){
       var used = {};
-      var qs = genMany(genCurated, 3, used).concat(genMany(genCloze, 3, used), genMany(genColloc, 2, used), genMany(genDictation, 2, used));
+      var qs = genMany(genCurated, 3, used).concat(genMany(genCloze, 2, used), genMany(genColloc, 2, used), genMany(genDictation, 2, used), genMany(genSyn, 1, used));
       shuffleArray(qs);
       return qs;
     } },
@@ -3050,7 +3343,13 @@
       return qs;
     } },
     colloc: { title: "Collocation builder", build: function(){ return genMany(genColloc, 10, {}); } },
-    dict: { title: "Listen & type", build: function(){ return genMany(genDictation, 8, {}); } }
+    dict: { title: "Listen & type", build: function(){ return genMany(genDictation, 8, {}); } },
+    words: { title: "Synonyms & opposites", build: function(){
+      var used = {};
+      var qs = genMany(genSyn, 4, used).concat(genMany(genAnt, 3, used), genMany(genType, 3, used));
+      shuffleArray(qs);
+      return qs;
+    } }
   };
 
   // ---------- dictation checking ----------
@@ -3151,6 +3450,14 @@
       if (quiz.some(function(x){ return x.id === q.id; })) q = collocFor(it);
       if (q && !quiz.some(function(x){ return x.id === q.id; })) quiz.push(q);
     });
+    // one synonym question, plus one opposite (or word type) question on a different expression
+    var rel = [];
+    shuffleArray(L.items.slice()).forEach(function(it){
+      if (rel.length >= 2) return;
+      var q = rel.length === 0 ? synonymFor(it) : (oppositeFor(it) || typeFor(it));
+      if (q) rel.push(q);
+    });
+    quiz = quiz.concat(rel);
     shuffleArray(quiz);
     return study.concat(quiz);
   }
@@ -3683,6 +3990,7 @@
       { id: "grammar", color: catColor(2), icon: "pen", title: "Grammar drill", time: "4 min", desc: "Ten questions across all seven grammar points." },
       { id: "cloze", color: catColor(1), icon: "blank", title: "Fill the blank", time: "3 min", desc: "Choose the expression that completes the sentence." },
       { id: "colloc", color: catColor(4), icon: "link", title: "Collocation builder", time: "2 min", desc: "Finish the word partnership." },
+      { id: "words", color: "var(--accent-edge)", icon: "swap", title: "Synonyms & opposites", time: "3 min", desc: "Same meaning, opposite meaning, and what type of word it is." },
       { id: "dict", color: catColor(5), icon: "headphones", title: "Listen and type", time: "5 min", desc: "Hear a sentence, type exactly what you heard." },
       { id: "speak", color: catColor(3), icon: "mic", title: "Speaking drill", time: "2 to 5 min", desc: "Timed speaking with expressions you must use." }
     ];
@@ -3799,6 +4107,7 @@
       card.style.setProperty("--cc", catColor(it.ci));
       var st = el("div", "st-term", it.term);
       card.appendChild(st);
+      if (it.pos) card.appendChild(el("span", "pos", POS_NAMES[it.pos] || it.pos));
       var sp = makeSpkBtn(it.term, false);
       sp.classList.add("big-inline");
       card.appendChild(sp);
@@ -3811,6 +4120,7 @@
         exr.appendChild(makeSpkBtn(it.example, true));
         card.appendChild(exr);
       }
+      if (it.syn.length || it.ant.length) card.appendChild(wordFacts({ pos: "", syn: it.syn, ant: it.ant }, "study-rel"));
       var goB = btn("cbtn known block", "Got it", function(){ sfx("tap"); bar.firstChild.style.width = ((session.i + 1) / session.qs.length * 100) + "%"; advance(); });
       dock.appendChild(goB);
       setTimeout(function(){ try { autoSpeak(it.term, sp); } catch (e) {} }, 350);
