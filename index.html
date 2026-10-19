@@ -613,6 +613,8 @@
   .unit{ margin-top:14px; background:var(--surface); border:2px solid var(--line); border-radius:20px; padding:14px 15px 13px; border-top:6px solid var(--cc); }
   .unit-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
   .unit-title{ font-family:var(--f-display); font-weight:800; font-size:18px; line-height:1.2; letter-spacing:-.01em; }
+  .unit-top .unit-count{ display:inline-block; margin-top:8px; }
+  .topic-art{ max-width:150px; }
   .unit-count{ font-size:12.5px; font-weight:800; color:var(--cc); background:color-mix(in srgb, var(--cc) 13%, var(--surface)); border-radius:999px; padding:2px 10px; flex:none; font-variant-numeric:tabular-nums; }
   .unit.complete .unit-count{ color:#fff; background:var(--good); }
   .unit-fa{ font-size:13px; color:var(--ink-2); margin-top:1px; text-align:left; direction:rtl; }
@@ -659,6 +661,53 @@
   .lvl .pbar{ height:9px; }
   .lvl .pbar-fill{ min-width:9px; }
   .lvl .pbar-fill::after{ display:none; }
+
+  /* ---------- Illustrations and mascot ----------
+     Editorial line style: every shape has the same thin ink outline, fills are muted tints of the
+     topic colour on paper white, and the highlighter yellow is the only bright colour. */
+  .il, .mascot{ display:block; overflow:visible; --il-line:color-mix(in srgb, var(--ink) 88%, transparent); }
+  .il *{ stroke:var(--il-line); stroke-width:1.6px; vector-effect:non-scaling-stroke; stroke-linejoin:round; stroke-linecap:round; }
+  .il .c{ fill:color-mix(in srgb, var(--cc) 62%, var(--surface)); }
+  .il .d{ fill:color-mix(in srgb, var(--cc) 82%, #14182E); }
+  .il .s, .il .w{ fill:var(--surface); }
+  .il .w-a{ fill:var(--surface); opacity:.7; }
+  .il .y, .mascot .y{ fill:var(--hl); }
+  .il .g{ fill:none; }
+  .il .gl{ fill:none; stroke-width:1.6px; }
+  .il .mk, .mascot .mk{ fill:var(--il-line); stroke:none; }
+  .il .st, .il .st-c, .il .st-d, .il .st-y, .il .st-s, .il .st-w, .il .st-mk{ fill:none; stroke-width:2.4px; }
+  .il .w.st-c, .il .w.st-s{ fill:var(--surface); stroke:var(--il-line); stroke-width:1.6px; }
+  .il .st, .il .st-c, .il .st-s{ stroke:color-mix(in srgb, var(--cc) 75%, var(--ink)); }
+  .il .st-d, .il .st-mk{ stroke:var(--il-line); }
+  .il .st-y{ stroke:color-mix(in srgb, var(--hl) 70%, var(--ink)); }
+  .il .st-w{ stroke:var(--il-line); stroke-width:1.2px; opacity:.5; }
+  .il .thin{ stroke-width:1.6px; }
+  .il .faint{ opacity:.55; }
+  .il .ring{ stroke-width:3px; }
+  .mascot *{ stroke:var(--il-line); stroke-width:2px; vector-effect:non-scaling-stroke; stroke-linejoin:round; stroke-linecap:round; }
+  .mascot .m-body{ fill:color-mix(in srgb, var(--accent) 22%, var(--surface)); }
+  .mascot .m-shadow{ fill:var(--hl); stroke:none; }
+  .mascot .m-dot{ fill:var(--il-line); stroke:none; }
+  .mascot .m-line{ fill:none; stroke-width:2.4px; }
+  .mascot .m-spark{ fill:none; stroke:color-mix(in srgb, var(--hl) 60%, var(--ink)); stroke-width:2.2px; }
+  .mascot.pop{ animation:pop .45s cubic-bezier(.3,1.4,.5,1) both; }
+  .hello{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .hello > div{ min-width:0; }
+  .hello .mascot{ width:62px; height:56px; flex:none; }
+  .continue-top{ display:flex; gap:12px; align-items:flex-start; justify-content:space-between; }
+  .continue-top > div{ min-width:0; }
+  .continue-art{ flex:none; width:92px; height:70px; padding:5px 6px 3px; border-radius:16px; background:var(--surface); }
+  .continue-art .il, .continue-art .mascot{ width:100%; height:100%; }
+  .unit-top{ display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:4px 12px; align-items:start; }
+  .unit-art{ width:84px; height:63px; }
+  .res-hero{ display:flex; align-items:center; justify-content:center; gap:4px; }
+  .res-hero .res-ring{ margin:4px 0 2px; width:136px; height:136px; }
+  .res-hero .mascot{ width:96px; height:88px; }
+  .celebrate .mascot{ width:112px; height:102px; margin:-8px auto 6px; }
+  .sheet-mascot{ width:84px; height:77px; margin:0 0 6px; }
+  .empty .mascot{ width:96px; height:88px; margin:0 auto 10px; }
+  .case-art{ width:100%; max-width:300px; height:auto; margin:4px auto 10px; }
+  .card.empty-add .il{ width:84px; height:63px; margin:0 auto 4px; --cc:var(--accent); }
 
   /* ---------- Settings ---------- */
   .set-row{ margin-top:18px; }
@@ -1298,6 +1347,118 @@
     phone: "M7 2h10a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z M11 18h2"
   };
   function ic(n){ return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="' + ICONS[n] + '"/></svg>'; }
+
+  // ============================================================
+  // ILLUSTRATIONS: small inline SVG drawings. Colours come from CSS classes (.il .c, .d, .s …)
+  // so every drawing takes its topic colour from --cc and follows the light and dark themes.
+  // ============================================================
+  function svgArt(view, body, cls){
+    return '<svg class="il' + (cls ? " " + cls : "") + '" viewBox="' + view + '" aria-hidden="true" focusable="false">' + body + '</svg>';
+  }
+  function person(x, y, cls){
+    return '<circle class="' + cls + '" cx="' + x + '" cy="' + y + '" r="9"/>' +
+      '<path class="' + cls + '" d="M' + (x - 14) + ' ' + (y + 40) + 'Q' + (x - 14) + ' ' + (y + 13) + ' ' + x + ' ' + (y + 13) + 'Q' + (x + 14) + ' ' + (y + 13) + ' ' + (x + 14) + ' ' + (y + 40) + 'Z"/>';
+  }
+  function heart(x, y, s, cls){
+    return '<path class="' + cls + '" transform="translate(' + x + ' ' + y + ') scale(' + s + ')" d="M0 7C-7 2-9-4-5-6.5-2.5-8 0-5.5 0-4-0-5.5 2.5-8 5-6.5 9-4 7 2 0 7Z"/>';
+  }
+  function bubble(x, y, w, h, cls, tailLeft){
+    var t = tailLeft ? x + 6 : x + w - 6;
+    return '<rect class="' + cls + '" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (h / 2) + '"/>' +
+      '<path class="' + cls + '" d="M' + t + ' ' + (y + h - 3) + 'L' + (tailLeft ? t - 4 : t + 4) + ' ' + (y + h + 6) + 'L' + (tailLeft ? t + 8 : t - 8) + ' ' + (y + h - 1) + 'Z"/>';
+  }
+  var GROUND = '<path class="gl" d="M10 82H110"/>';
+  // One drawing per topic, in VOCAB order.
+  var UNIT_ART = [
+    // Persuasion & Argumentation: a megaphone
+    GROUND + bubble(8, 10, 26, 14, "s", true) + bubble(86, 6, 28, 15, "y") +
+      '<rect class="d" x="22" y="40" width="11" height="15" rx="3"/><path class="c" d="M31 41L71 25V67L31 53Z"/><ellipse class="d" cx="71" cy="46" rx="6" ry="21"/>' +
+      '<rect class="d" x="38" y="53" width="8" height="18" rx="3"/><path class="st" d="M84 35Q91 46 84 57M92 28Q103 46 92 64"/>',
+    // Society & Social Structures: three people
+    GROUND + person(33, 40, "s") + person(87, 40, "d") + person(60, 30, "c") + '<circle class="y" cx="60" cy="58" r="4"/>',
+    // Freedom & Rights: an open cage and a bird
+    GROUND + '<path class="st-d" d="M24 66V40Q42 8 60 40V66M33 66V31M42 66V24M51 66V31"/><circle class="d" cx="42" cy="16" r="3"/>' +
+      '<rect class="d" x="20" y="64" width="44" height="7" rx="2"/><path class="s" d="M60 42L76 34V60L60 66Z"/>' +
+      '<ellipse class="c" cx="92" cy="30" rx="13" ry="8"/><path class="d" d="M86 28L97 13L101 30Z"/><path class="y" d="M104 28L112 30L104 33Z"/><circle class="mk" cx="99" cy="28" r="1.6"/>',
+    // Problems & Consequences: falling dominoes
+    GROUND + '<g transform="rotate(0 24 78)"><rect class="c" x="14" y="36" width="12" height="42" rx="2"/><circle class="w" cx="20" cy="47" r="2.4"/></g>' +
+      '<g transform="rotate(14 44 78)"><rect class="c" x="34" y="36" width="12" height="42" rx="2"/><circle class="w" cx="40" cy="47" r="2.4"/></g>' +
+      '<g transform="rotate(32 64 78)"><rect class="d" x="54" y="36" width="12" height="42" rx="2"/><circle class="w" cx="60" cy="47" r="2.4"/></g>' +
+      '<g transform="rotate(56 84 78)"><rect class="d" x="74" y="36" width="12" height="42" rx="2"/><circle class="w" cx="80" cy="47" r="2.4"/></g>' +
+      '<path class="st-y" d="M9 30l-6-4M9 40H2"/>',
+    // Government & Policy: a public building
+    GROUND + '<path class="d" d="M16 34L60 11L104 34Z"/><circle class="y" cx="60" cy="26" r="4"/><rect class="c" x="18" y="34" width="84" height="6"/>' +
+      '<rect class="s" x="24" y="40" width="8" height="28"/><rect class="s" x="40" y="40" width="8" height="28"/><rect class="s" x="56" y="40" width="8" height="28"/><rect class="s" x="72" y="40" width="8" height="28"/><rect class="s" x="88" y="40" width="8" height="28"/>' +
+      '<rect class="c" x="14" y="68" width="92" height="6" rx="1"/><rect class="d" x="10" y="74" width="100" height="5" rx="1"/>',
+    // Compromise & Decision-Making: a balanced scale
+    GROUND + '<rect class="d" x="57" y="20" width="6" height="52"/><rect class="c" x="40" y="70" width="40" height="8" rx="3"/><rect class="c" x="20" y="22" width="80" height="5" rx="2"/>' +
+      '<circle class="y" cx="60" cy="20" r="5"/><path class="st-d thin" d="M28 26L18 50M28 26L38 50M92 26L82 50M92 26L102 50"/>' +
+      '<path class="s" d="M14 50Q28 64 42 50Z"/><path class="s" d="M78 50Q92 64 106 50Z"/><rect class="c" x="22" y="40" width="12" height="10" rx="2"/><circle class="y" cx="92" cy="45" r="6"/>',
+    // Human Behavior & Psychology: a head with a heart inside
+    GROUND + '<path class="c" d="M44 79V65Q30 60 30 44Q30 19 55 18Q79 18 80 40L87 51L80 53Q80 63 70 65L68 79Z"/>' + heart(55, 40, 1.5, "y") +
+      '<circle class="s" cx="94" cy="26" r="6"/><circle class="s" cx="103" cy="14" r="4"/>',
+    // Psychological Collocations: an iceberg (what is underneath)
+    '<path class="c faint" d="M30 40H90L100 60L76 80L44 78L22 58Z"/><path class="w" d="M44 40L56 17L64 25L72 14L82 40Z"/>' +
+      '<path class="st-c" d="M6 40q6-4 12 0t12 0 12 0 12 0 12 0 12 0 12 0 12 0 12 0"/><path class="st-w" d="M14 52H26M94 56H108M20 72H32"/>',
+    // Relationships: two people and a heart
+    GROUND + person(42, 40, "c") + person(78, 40, "d") + '<circle class="y" cx="60" cy="66" r="5"/>' + heart(60, 18, 1.6, "y"),
+    // Policy & Debate Collocations: a lectern and a microphone
+    GROUND + bubble(8, 12, 30, 15, "s", true) + bubble(84, 8, 28, 15, "y") +
+      '<path class="st-d" d="M60 40L66 25"/><circle class="d" cx="67" cy="22" r="5"/>' +
+      '<path class="d" d="M33 40H87L83 48H37Z"/><path class="c" d="M38 48H82L76 80H44Z"/><circle class="y" cx="60" cy="63" r="6"/>',
+    // Building & Defending an Argument: blocks and a shield
+    GROUND + '<rect class="c" x="8" y="64" width="24" height="14" rx="2"/><rect class="d" x="34" y="64" width="24" height="14" rx="2"/>' +
+      '<rect class="s" x="21" y="48" width="24" height="14" rx="2"/><rect class="c" x="26" y="32" width="14" height="14" rx="2"/>' +
+      '<path class="y" d="M86 26L106 33V51Q106 67 86 74Q66 67 66 51V33Z"/><path class="st-mk" d="M77 50L84 57L96 43"/>',
+    // Challenging & Influencing Others: a chess knight and a pawn
+    GROUND + '<path class="c" d="M40 74V70H44L46 57L38 51Q33 45 39 38L48 26L50 17L57 24Q73 28 73 48L70 70H74V74Z"/><circle class="mk" cx="51" cy="32" r="2"/>' +
+      '<rect class="d" x="33" y="74" width="47" height="6" rx="2"/><circle class="s" cx="96" cy="46" r="7"/><path class="s" d="M90 55H102L106 73H86Z"/><rect class="d" x="82" y="73" width="28" height="6" rx="2"/>' +
+      '<path class="st-y" d="M70 20Q88 10 95 30"/><path class="y" d="M91 30L96 37L99 28Z"/>',
+    // Persuasion Techniques & Bias: a tilted picture under a magnifying glass
+    GROUND + '<g transform="rotate(-8 48 46)"><rect class="s" x="16" y="22" width="62" height="48" rx="4"/><rect class="w" x="22" y="28" width="50" height="36" rx="2"/>' +
+      '<path class="st-c thin" d="M28 56L40 44L48 50L64 34"/></g><circle class="w-a" cx="80" cy="52" r="15"/><circle class="st-d ring" cx="80" cy="52" r="15"/><path class="st-d" d="M91 63L104 76"/>',
+    // My words: a notebook and a pencil
+    GROUND + '<rect class="c" x="28" y="14" width="54" height="64" rx="5"/><rect class="w" x="36" y="14" width="46" height="64" rx="3"/>' +
+      '<path class="st-s thin" d="M44 30H74M44 40H74M44 50H66M44 60H72"/><g transform="rotate(35 92 46)"><rect class="y" x="88" y="18" width="9" height="46" rx="2"/><path class="d" d="M88 64H97L92.5 74Z"/></g>'
+  ];
+  function unitArt(ci, cls){ return svgArt("0 0 120 90", UNIT_ART[Math.min(ci, UNIT_ART.length - 1)], cls); }
+
+  // Scenes for the three case discussions.
+  var CASE_ART = [
+    // The future of education: an exam paper, a graduation cap and a project board
+    '<path class="gl" d="M8 82H152"/><rect class="w st-s thin" x="14" y="24" width="34" height="46" rx="3"/><path class="st-s thin" d="M21 36H41M21 46H41M21 56H35"/>' +
+      '<path class="c" d="M50 34L80 20L110 34L80 48Z"/><path class="d" d="M64 41V54Q80 62 96 54V41L80 48Z"/><path class="st-y thin" d="M110 34V48"/><circle class="y" cx="110" cy="50" r="3"/>' +
+      '<rect class="s" x="116" y="22" width="36" height="48" rx="3"/><rect class="y" x="121" y="28" width="12" height="11" rx="1"/><rect class="c" x="136" y="28" width="11" height="11" rx="1"/><rect class="d" x="121" y="43" width="26" height="9" rx="1"/>',
+    // The workplace dilemma: money, time, flexibility
+    '<path class="gl" d="M8 82H152"/><ellipse class="d" cx="32" cy="70" rx="16" ry="5"/><rect class="y" x="16" y="52" width="32" height="18"/><ellipse class="y" cx="32" cy="52" rx="16" ry="5"/><ellipse class="d" cx="32" cy="61" rx="16" ry="1.2"/>' +
+      '<circle class="s" cx="80" cy="46" r="24"/><circle class="w" cx="80" cy="46" r="18"/><path class="st-d" d="M80 46V33M80 46L90 52"/>' +
+      '<rect class="c" x="114" y="36" width="34" height="24" rx="3"/><rect class="w" x="118" y="40" width="26" height="16" rx="1"/><path class="d" d="M108 62H154L150 68H112Z"/>',
+    // AI and human judgement: a robot and a person
+    '<path class="gl" d="M8 82H152"/><rect class="c" x="22" y="26" width="40" height="32" rx="9"/><path class="st-c" d="M42 26V16"/><circle class="y" cx="42" cy="14" r="4"/>' +
+      '<circle class="y" cx="34" cy="41" r="5"/><circle class="y" cx="50" cy="41" r="5"/><rect class="d" x="32" y="50" width="20" height="3" rx="1.5"/><rect class="d" x="28" y="60" width="28" height="20" rx="4"/>' +
+      '<path class="st-s thin" d="M80 18V78" stroke-dasharray="4 5"/>' + person(118, 38, "d").replace(/r="9"/, 'r="12"') + '<circle class="s" cx="138" cy="20" r="5"/><circle class="s" cx="146" cy="12" r="3"/>'
+  ];
+
+  // Mascot: the logo's speech bubble with a quiet face. Moods: happy, wave, cheer, think, keep.
+  function mascot(mood, cls){
+    var shape = "M14 41a28 28 0 0 1 28-28h36a28 28 0 0 1 28 28v18a28 28 0 0 1-28 28H44l-16 14 3-15A28 28 0 0 1 14 59Z";
+    var body = '<path class="m-shadow" d="' + shape + '" transform="translate(5 5)"/><path class="m-body" d="' + shape + '"/>';
+    var face;
+    if (mood === "cheer"){
+      face = '<path class="m-line" d="M40 47Q46 40 52 47M68 47Q74 40 80 47"/><path class="m-line" d="M48 59Q60 70 72 59"/>' +
+        '<path class="m-spark" d="M108 12v10M103 17h10"/><path class="m-spark" d="M6 22v8M2 26h8"/>';
+    } else if (mood === "think"){
+      face = '<circle class="m-dot" cx="49" cy="42" r="3.6"/><circle class="m-dot" cx="77" cy="42" r="3.6"/><path class="m-line" d="M54 62H67"/>' +
+        '<circle class="m-body" cx="110" cy="14" r="4.5"/><circle class="m-body" cx="117" cy="4" r="2.8"/>';
+    } else if (mood === "keep"){
+      face = '<path class="m-line" d="M39 36Q46 33 53 36M67 36Q74 33 81 36"/><circle class="m-dot" cx="46" cy="46" r="3.6"/><circle class="m-dot" cx="74" cy="46" r="3.6"/><path class="m-line" d="M51 60Q60 66 69 60"/>';
+    } else {
+      face = '<circle class="m-dot" cx="46" cy="45" r="3.6"/><circle class="m-dot" cx="74" cy="45" r="3.6"/><path class="m-line" d="M50 59Q60 67 70 59"/>';
+      if (mood === "wave") face += '<path class="m-line" d="M110 30q6 6 0 14M116 24q10 12 0 26"/>';
+    }
+    return '<svg class="mascot' + (cls ? " " + cls : "") + '" viewBox="-2 -2 124 112" aria-hidden="true" focusable="false">' + body + face + '</svg>';
+  }
+
   Array.prototype.forEach.call(document.querySelectorAll("[data-ic]"), function(node){
     var tmp = document.createElement("span");
     tmp.innerHTML = ic(node.getAttribute("data-ic"));
@@ -1537,7 +1698,7 @@
     if (isCustom && rows.length === 0){
       var emptyCard = document.createElement("div");
       emptyCard.className = "card empty-add";
-      emptyCard.innerHTML = "<div>Words you add yourself appear here and join your flashcards.</div><b>Add your first word</b>";
+      emptyCard.innerHTML = unitArt(13) + "<div>Words you add yourself appear here and join your flashcards.</div><b>Add your first word</b>";
       emptyCard.addEventListener("click", function(){ openAddWord(); });
       grid.appendChild(emptyCard);
       allCards.push({ el: emptyCard, term: "", meaning: "", example: "" });
@@ -1886,11 +2047,12 @@
       setCardsVisible(false);
       cardsProgress.textContent = "";
       cardsEmpty.style.display = "block";
-      cardsEmpty.textContent = cardsDueOnly
+      cardsEmpty.innerHTML = mascot(cardsDueOnly || cardsUnlearnedOnly ? "cheer" : "think");
+      cardsEmpty.appendChild(document.createTextNode(cardsDueOnly
         ? "Nothing is due right now, so you are done for today. Turn off \"Due today\" to keep practising."
         : cardsUnlearnedOnly
         ? "Every word here is marked as known. Turn off \"Unlearned only\" to review them again."
-        : "No cards in this category yet.";
+        : "No cards in this category yet."));
       saveUI();
       return;
     }
@@ -2664,6 +2826,7 @@
   function celebrate(c){
     var m = el("div", "modal center");
     var box = el("div", "celebrate");
+    box.innerHTML = mascot("cheer", "pop");
     box.appendChild(el("div", "c-kicker", c.kicker || "Level up"));
     box.appendChild(el("div", "c-title", c.title));
     box.appendChild(el("div", "c-sub", c.sub));
@@ -3607,13 +3770,20 @@
       var dn = ls.filter(lessonDone).length;
       var unit = el("section", "unit" + (dn === ls.length ? " complete" : ""));
       unit.style.setProperty("--cc", catColor(ci));
+      var utop = el("div", "unit-top");
+      var uleft = el("div");
       var head = el("div", "unit-head");
       var ht = el("div", "unit-title");
       ht.appendChild(el("span", null, unitName(ci)));
       head.appendChild(ht);
-      head.appendChild(el("span", "unit-count", dn + " / " + ls.length));
-      unit.appendChild(head);
-      unit.appendChild(el("div", "unit-fa fa", cat[1]));
+      uleft.appendChild(head);
+      uleft.appendChild(el("div", "unit-fa fa", cat[1]));
+      uleft.appendChild(el("span", "unit-count", dn + " / " + ls.length + " lessons"));
+      utop.appendChild(uleft);
+      var uart = el("div");
+      uart.innerHTML = unitArt(ci, "unit-art");
+      utop.appendChild(uart.firstChild);
+      unit.appendChild(utop);
       var row = el("div", "nodes");
       var firstOpen = null;
       ls.forEach(function(L){
@@ -3672,13 +3842,19 @@
     var hour = new Date().getHours();
     var part = hour >= 5 && hour < 12 ? "Good morning" : hour >= 12 && hour < 18 ? "Good afternoon" : "Good evening";
     var hello = el("div", "hello");
-    hello.appendChild(el("h2", null, profile.name ? part + ", " + profile.name : part));
+    var helloText = el("div");
+    helloText.appendChild(el("h2", null, profile.name ? part + ", " + profile.name : part));
     if (storageOk){
       var saved = el("p");
       saved.innerHTML = ic("check");
       saved.appendChild(document.createTextNode("Your progress is saved on this device"));
-      hello.appendChild(saved);
+      helloText.appendChild(saved);
     }
+    hello.appendChild(helloText);
+    var helloMood = todayCount() >= DAILY_GOAL ? "cheer" : todayCount() > 0 ? "happy" : "wave";
+    var hm = el("div");
+    hm.innerHTML = mascot(helloMood);
+    hello.appendChild(hm.firstChild);
     homeEl.appendChild(hello);
 
     // level: tap for badges and stats
@@ -3704,25 +3880,35 @@
 
     // continue card, drawn as a speech bubble: an unfinished exercise first, otherwise the next lesson
     var cont = el("div", "continue");
+    // label, title and subtitle on the left, a drawing in a white window on the right
+    function contTop(label, title, sub, artHtml, cc){
+      var top = el("div", "continue-top");
+      var tx = el("div");
+      tx.appendChild(el("div", "label", label));
+      tx.appendChild(el("div", "continue-title", title));
+      tx.appendChild(el("div", "continue-sub", sub));
+      top.appendChild(tx);
+      var box = el("div", "continue-art");
+      if (cc) box.style.setProperty("--cc", cc);
+      box.innerHTML = artHtml;
+      top.appendChild(box);
+      cont.appendChild(top);
+    }
+    var pausedL = hasPaused() && session.lessonId ? LESSONS.filter(function(l){ return l.id === session.lessonId; })[0] : null;
     if (hasPaused()){
-      cont.appendChild(el("div", "label", "Pick up where you left off"));
-      cont.appendChild(el("div", "continue-title", session.title));
-      cont.appendChild(el("div", "continue-sub", "Step " + (session.i + 1) + " of " + session.qs.length + ". Your answers so far are kept."));
+      contTop("Pick up where you left off", session.title, "Step " + (session.i + 1) + " of " + session.qs.length + ". Your answers so far are kept.",
+        pausedL ? unitArt(pausedL.ci) : mascot("keep"), pausedL ? catColor(pausedL.ci) : null);
       cont.appendChild(progressBar(session.i / session.qs.length));
       cont.appendChild(btn("cbtn light block", "Resume", resumeSession));
     } else if (nxt){
       var started = lessonsDone() > 0;
-      cont.appendChild(el("div", "label", started ? "Continue learning" : "Start here"));
-      cont.appendChild(el("div", "continue-title", unitName(nxt.ci)));
-      cont.appendChild(el("div", "continue-sub", "Lesson " + nxt.n + " of " + unitLessons(nxt.ci).length + ", " + nxt.items.length + " expressions, about 4 minutes."));
+      contTop(started ? "Continue learning" : "Start here", unitName(nxt.ci), "Lesson " + nxt.n + " of " + unitLessons(nxt.ci).length + ", " + nxt.items.length + " expressions, about 4 minutes.", unitArt(nxt.ci), catColor(nxt.ci));
       var words = el("div", "continue-words");
       nxt.items.forEach(function(it){ words.appendChild(el("mark", null, it.term)); });
       cont.appendChild(words);
       cont.appendChild(btn("cbtn light block", "Start lesson", function(){ startLesson(nxt); }));
     } else {
-      cont.appendChild(el("div", "label", "Path complete"));
-      cont.appendChild(el("div", "continue-title", "Every lesson is done"));
-      cont.appendChild(el("div", "continue-sub", "Keep the words fresh with flashcards and the Daily 10."));
+      contTop("Path complete", "Every lesson is done", "Keep the words fresh with flashcards and the Daily 10.", mascot("cheer"), null);
       cont.appendChild(btn("cbtn light block", "Review flashcards", goToCards));
     }
     homeEl.appendChild(cont);
@@ -3813,6 +3999,9 @@
   // First visit: a short welcome that asks for a name. Returning learners never see it.
   function openWelcome(){
     openSheet("welcomeModal", function(s, close){
+      var wm = el("div");
+      wm.innerHTML = mascot("wave", "sheet-mascot pop");
+      s.appendChild(wm.firstChild);
       s.appendChild(el("div", "label", "Welcome to Armanly"));
       s.appendChild(el("div", "sheet-title", "What should we call you?"));
       s.appendChild(el("div", "sheet-sub", "Your lessons, streak and words are saved in this browser, on this device. No account, and nothing leaves your phone."));
@@ -4398,8 +4587,13 @@
       '<circle class="bg" cx="22" cy="22" r="18"/>' +
       '<circle class="fg" cx="22" cy="22" r="18" transform="rotate(-90 22 22)" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - frac)).toFixed(1) + '"/>' +
       '<text x="22" y="25.500" text-anchor="middle" font-size="10">' + Math.round(frac * 100) + '%</text></svg>';
-    card.appendChild(rw.firstChild);
     var failedLesson = session.lessonId && frac < LESSON_PASS;
+    var hero = el("div", "res-hero");
+    hero.appendChild(rw.firstChild);
+    var rm = el("div");
+    rm.innerHTML = mascot(frac >= 0.7 ? "cheer" : (failedLesson || frac < 0.4) ? "keep" : "happy", "pop");
+    hero.appendChild(rm.firstChild);
+    card.appendChild(hero);
     card.appendChild(el("div", "res-title", score === n ? "A perfect round" : frac >= 0.7 ? "Good work" : failedLesson ? "Not there yet" : "Keep going"));
     var msg = failedLesson ? "You need 60% to complete this lesson. Go through it once more." : score === n ? (perfect ? "You earned a perfect-score bonus." : "Every answer correct.")
             : frac >= 0.7 ? "Review the ones you missed below."
@@ -4477,6 +4671,9 @@
     var targets = sample(TARGET_EXPR, 3);
     var opener = pick(OPENERS);
     var card = el("div", "pr-card");
+    var ta = el("div");
+    ta.innerHTML = unitArt(9, "case-art topic-art");
+    card.appendChild(ta.firstChild);
     card.appendChild(el("div", "pr-tag", "Topic"));
     card.appendChild(el("div", "pr-topic", topic));
     card.appendChild(el("div", "pr-tag", "Use these expressions"));
@@ -4567,6 +4764,10 @@
     lastCase = ci;
     var c = CASES[ci];
     var card = el("div", "pr-card");
+    var ca = el("div");
+    ca.innerHTML = svgArt("0 0 160 90", CASE_ART[ci], "case-art");
+    ca.firstChild.style.setProperty("--cc", catColor(ci));
+    card.appendChild(ca.firstChild);
     card.appendChild(el("div", "pr-tag", "Case " + (ci + 1) + ": " + c.title));
     card.appendChild(el("div", "pr-topic", c.text));
     if (c.facts.length){
