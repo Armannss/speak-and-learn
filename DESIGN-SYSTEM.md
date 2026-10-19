@@ -71,6 +71,7 @@ Sizes in use: 25px page titles (`.pg-head h2`, `.hello h2`), 19px section headin
 | Form field | `.field`, `.field-err` | Label above, optional fields say "(optional)" |
 | Data row | `.data-row` | Label left, value right (`.ok`, `.warn`) |
 | Toast | `toast(icon, title, sub)` | Two at a time, the rest queue |
+| Word facts | `.pos`, `.facts`, `.rel` (`.on-color` on the flashcard back), built with `wordFacts(info)` | Word type pill, then "Synonyms" and "Opposite" lines. Data comes from `WORD_INFO` |
 
 ## Saved state
 
