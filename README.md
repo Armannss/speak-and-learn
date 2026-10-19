@@ -9,8 +9,8 @@ It runs in any modern browser on a phone or a computer. There is nothing to inst
 ## What you can do in it
 
 - **Learn.** 151 expressions in 13 topics, split into 29 short lessons. Each lesson teaches about five expressions (pronunciation, Persian meaning, example sentence) and then checks them with a few questions.
-- **Cards.** Swipe flashcards with spaced repetition: words you know come back less often, words you miss come back sooner.
-- **Practice.** A mixed Daily 10, fill the blank, collocations, listen and type, grammar drills, and timed speaking drills.
+- **Cards.** Swipe flashcards with spaced repetition: words you know come back less often, words you miss come back sooner. Each card shows the word type (noun, adjective, verb phrase…), synonyms and the opposite.
+- **Practice.** A mixed Daily 10, fill the blank, collocations, synonyms and opposites, listen and type, grammar drills, and timed speaking drills. Lessons also ask a synonym and an opposite question.
 - **Library.** The full word list, 11 groups of conversation phrases, and 7 grammar topics with rules, examples and common mistakes.
 - **My words.** Add your own words and phrases. They join your flashcards and practice.
 - **Progress.** XP, levels, a daily streak, badges, and a list of the expressions you got wrong so you can review them.
@@ -51,7 +51,7 @@ The app is plain HTML, CSS and JavaScript with no build step and no dependencies
 
 It is hosted with GitHub Pages from the root of the `main` branch.
 
-To update the content after a class, replace `index.html` and `sw.js` with the new versions. The cache name at the top of `sw.js` has to change with every update, otherwise phones keep showing the old version.
+To update the content after a class, replace `index.html` and `sw.js` with the new versions. When you add an expression to `VOCAB`, also add a line for it to `WORD_INFO` (word type, synonyms, opposite) just below; an expression without one simply shows no synonyms. The cache name at the top of `sw.js` has to change with every update, otherwise phones keep showing the old version.
 
 ## Credits
 
