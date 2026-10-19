@@ -569,6 +569,8 @@
   .data-row span:last-child{ font-weight:800; text-align:right; }
   .data-row .ok{ color:var(--good); }
   .data-row .warn{ color:var(--bad); }
+  .move-note{ margin-top:7px; }
+  .move-link{ width:100%; margin-top:10px; min-height:84px; font:inherit; font-size:12.5px; padding:10px 12px; border-radius:14px; border:2px solid var(--accent); background:var(--surface); color:var(--ink); resize:none; word-break:break-all; }
   .continue{ margin-top:14px; padding:18px 18px 16px; border-radius:22px; background:var(--accent); color:#fff; box-shadow:0 4px 0 var(--accent-edge); position:relative; overflow:hidden; }
   .continue::before{ content:""; position:absolute; right:-50px; top:-50px; width:170px; height:170px; border-radius:50%; background:rgba(255,255,255,.09); }
   .continue::after{ content:""; position:absolute; right:30px; top:54px; width:70px; height:70px; border-radius:50%; background:rgba(255,255,255,.08); }
@@ -2443,12 +2445,25 @@
     }
   }
   var DATA_KEYS = ["speakLearnGame", "speakLearnProgress", "speakLearnKnown", "speakLearnSRS", "speakLearnCustom", "speakLearnAccent", "speakLearnSound", "speakLearnTheme", "speakLearnProfile"];
+  function backupObj(){
+    var out = { app: "speak-and-learn", v: 1, date: dayStr(0), data: {} };
+    DATA_KEYS.forEach(function(k){ try { var v = localStorage.getItem(k); if (v !== null) out.data[k] = v; } catch (e) {} });
+    return out;
+  }
+  // Replaces this device's data with a backup (from a file or a transfer link). The caller reloads.
+  function applyBackup(obj){
+    if (!obj || obj.app !== "speak-and-learn" || !obj.data || typeof obj.data !== "object") throw new Error("bad");
+    uiReady = false; // don't write the old place back while the page unloads
+    DATA_KEYS.forEach(function(k){
+      if (typeof obj.data[k] === "string") localStorage.setItem(k, obj.data[k]); else localStorage.removeItem(k);
+    });
+    forget(SESSION_KEY);
+    forget(UI_KEY);
+  }
   function exportData(){
     profile.lastBackup = dayStr(0);
     saveProfile();
-    var out = { app: "speak-and-learn", v: 1, date: dayStr(0), data: {} };
-    DATA_KEYS.forEach(function(k){ try { var v = localStorage.getItem(k); if (v !== null) out.data[k] = v; } catch (e) {} });
-    var blob = new Blob([JSON.stringify(out)], { type: "application/json" });
+    var blob = new Blob([JSON.stringify(backupObj())], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "armanly-backup-" + dayStr(0) + ".json";
@@ -2461,15 +2476,110 @@
     var rd = new FileReader();
     rd.onload = function(){
       try {
-        var obj = JSON.parse(String(rd.result));
-        if (!obj || obj.app !== "speak-and-learn" || !obj.data) throw new Error("bad");
-        DATA_KEYS.forEach(function(k){ if (typeof obj.data[k] === "string") localStorage.setItem(k, obj.data[k]); });
+        applyBackup(JSON.parse(String(rd.result)));
         location.reload();
       } catch (e) { onError("That file is not an Armanly backup. Choose the .json file you saved earlier."); }
     };
     rd.onerror = function(){ onError("The file could not be read. Try again."); };
     rd.readAsText(file);
   }
+  // ---------- moving progress to another device with a link ----------
+  // No server: the progress is packed into the part of the link after "#", which browsers never send anywhere.
+  // The learner sends the link to themselves (Telegram, WhatsApp, email) and opens it on the other device.
+  function bytesToB64url(bytes){
+    var bin = "";
+    for (var i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64urlToBytes(t){
+    t = t.replace(/-/g, "+").replace(/_/g, "/");
+    while (t.length % 4) t += "=";
+    var bin = atob(t), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function pipeBytes(bytes, stream){
+    return new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer().then(function(b){ return new Uint8Array(b); });
+  }
+  function makeMoveLink(){
+    var bytes = new TextEncoder().encode(JSON.stringify(backupObj()));
+    var base = location.origin + location.pathname + "#move=";
+    if (typeof CompressionStream === "undefined") return Promise.resolve(base + "j" + bytesToB64url(bytes));
+    return pipeBytes(bytes, new CompressionStream("deflate-raw")).then(function(z){ return base + "z" + bytesToB64url(z); });
+  }
+  function readMoveCode(code){
+    var kind = code.charAt(0), bytes = b64urlToBytes(code.slice(1));
+    var p = kind === "j" ? Promise.resolve(bytes)
+          : kind !== "z" ? Promise.reject(new Error("bad"))
+          : typeof DecompressionStream === "undefined" ? Promise.reject(new Error("old"))
+          : pipeBytes(bytes, new DecompressionStream("deflate-raw"));
+    return p.then(function(b){ return JSON.parse(new TextDecoder().decode(b)); });
+  }
+  function summarize(data){
+    var g = {}, pr = {}, pf = {};
+    try { g = JSON.parse(data.speakLearnGame || "{}") || {}; } catch (e) {}
+    try { pr = JSON.parse(data.speakLearnProgress || "{}") || {}; } catch (e) {}
+    try { pf = JSON.parse(data.speakLearnProfile || "{}") || {}; } catch (e) {}
+    var xp = g.xp || 0, done = 0;
+    for (var k in (g.lessons || {})) if (g.lessons[k] >= LESSON_PASS) done++;
+    return (pf.name ? pf.name + ": " : "") + "level " + levelFor(xp) + ", " + xp + " XP, " + done + " of " + LESSONS.length + " lessons, best streak " + (pr.streak || 0);
+  }
+  function sendMoveLink(link, box){
+    if (!link){ toast("rotate", "Preparing the link", "Try again in a second"); return; }
+    function showLink(){
+      box.hidden = false;
+      box.value = link;
+      box.focus();
+      box.select();
+    }
+    if (navigator.share){
+      navigator.share({ title: "Armanly progress", text: "My Armanly progress. Open this link on my other device.", url: link }).catch(function(e){ if (!e || e.name !== "AbortError") showLink(); });
+    } else if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(link).then(function(){
+        toast("check", "Link copied", "Send it to yourself and open it on the other device", 4200);
+      }, showLink);
+    } else showLink();
+  }
+  // Runs once on start. Returns true when the page was opened from a transfer link.
+  function checkMoveLink(){
+    var m = /^#move=(.+)$/.exec(location.hash);
+    if (!m) return false;
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    readMoveCode(m[1]).then(function(obj){
+      if (!obj || obj.app !== "speak-and-learn" || !obj.data || typeof obj.data !== "object") throw new Error("bad");
+      var hasHere = game.xp > 0 || lessonsDone() > 0 || customWords.length > 0;
+      openSheet("moveModal", function(s, close){
+        s.appendChild(el("div", "label", "Transfer link"));
+        s.appendChild(el("div", "sheet-title", "Use the progress from your other device?"));
+        s.appendChild(el("div", "sheet-sub", "Saved on " + (obj.date || "an earlier day") + "."));
+        var rows = el("div");
+        rows.style.marginTop = "12px";
+        [["From the link", summarize(obj.data)], ["On this device", hasHere ? summarize(backupObj().data) : "Nothing yet"]].forEach(function(r){
+          var row = el("div", "data-row");
+          row.appendChild(el("span", null, r[0]));
+          row.appendChild(el("span", null, r[1]));
+          rows.appendChild(row);
+        });
+        s.appendChild(rows);
+        if (hasHere) s.appendChild(el("div", "sheet-note", "This replaces what is on this device. To keep it, tap Keep, then save a backup file first."));
+        var err = el("div", "field-err");
+        err.hidden = true;
+        var acts = el("div", "sheet-actions");
+        acts.appendChild(btn("cbtn", hasHere ? "Keep this device's" : "Not now", close));
+        acts.appendChild(btn("cbtn known", "Use this progress", function(){
+          try { applyBackup(obj); } catch (e){ err.textContent = "This browser is blocking storage, so the progress could not be saved here."; err.hidden = false; return; }
+          try { sessionStorage.setItem("slMoved", "1"); } catch (x) {}
+          location.reload();
+        }));
+        s.appendChild(acts);
+        s.appendChild(err);
+      });
+    }).catch(function(e){
+      toast("x", "That transfer link did not work", e && e.message === "old" ? "Update this browser, then open the link again" : "Copy the whole link and try again", 5000);
+    });
+    return true;
+  }
+
   function openProgress(){
     openSheet("progressModal", function(s, close){
       var lv = levelFor(game.xp), lo = xpFloor(lv), hi = xpFloor(lv + 1);
@@ -2546,6 +2656,19 @@
       fi.addEventListener("change", function(){
         if (fi.files && fi.files[0]) importData(fi.files[0], function(msg){ err.textContent = msg; err.hidden = false; });
       });
+      var moveLink = null;
+      makeMoveLink().then(function(l){ moveLink = l; }).catch(function(){});
+      var linkBox = document.createElement("textarea");
+      linkBox.className = "move-link";
+      linkBox.readOnly = true;
+      linkBox.hidden = true;
+      linkBox.setAttribute("aria-label", "Transfer link");
+      var send = btn("cbtn known block", "", function(){ sendMoveLink(moveLink, linkBox); });
+      send.innerHTML = ic("phone") + "<span>Send to my other device</span>";
+      send.style.marginTop = "14px";
+      s.appendChild(send);
+      s.appendChild(el("div", "sheet-note move-note", "Makes a link that carries your progress. Send it to yourself and open it on the other phone or computer. The link is never stored on a server, so keep it private."));
+      s.appendChild(linkBox);
       var acts = el("div", "sheet-actions");
       acts.appendChild(btn("cbtn", "Save backup file", exportData));
       acts.appendChild(btn("cbtn", "Restore from file", function(){ fi.click(); }));
@@ -3924,7 +4047,15 @@
   openView(startView, true);
   uiReady = true;
   saveUI();
-  if (!profile.since){
+  var moving = checkMoveLink();
+  window.addEventListener("hashchange", checkMoveLink); // a link opened while the app is already open in this tab
+  try {
+    if (sessionStorage.getItem("slMoved")){
+      sessionStorage.removeItem("slMoved");
+      toast("check", "Progress moved to this device", profile.name ? "Welcome back, " + profile.name : "Everything is where you left it", 4000);
+    }
+  } catch (e) {}
+  if (!profile.since && !moving){
     if (game.xp > 0 || lessonsDone() > 0 || knownCount() > 0 || customWords.length){ profile.since = dayStr(0); saveProfile(); }
     else if (storageOk) openWelcome();
   }
