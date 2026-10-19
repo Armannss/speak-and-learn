@@ -42,7 +42,18 @@ Rule: no new hex values in components. Pick a token, or add one to `:root` and b
 | `--f-body` | Plus Jakarta Sans 500–700 | Everything else |
 | `--f-fa` | Vazirmatn | Persian text, always with class `fa` (sets `direction:rtl`) |
 
-Sizes in use: 25px page titles (`.pg-head h2`, `.hello h2`), 19px section headings (`h3.sect`), 21–23px card titles, 15–16px body and answers, 13–13.5px secondary, 12–12.5px labels. Inputs are 16px so iOS doesn't zoom.
+Sizes come from one scale of tokens in `rem`, so the Text size setting (Small, Default, Large, Largest) resizes all text through `--text-scale` on `<html>`:
+
+| Token | Size at default | Use |
+| --- | --- | --- |
+| `--fs-2xs`, `--fs-xs` | 11, 12 | Badges, labels, tab names |
+| `--fs-sm`, `--fs-md` | 13, 14 | Secondary text, notes |
+| `--fs-base`, `--fs-lg` | 15, 16 | Body, answers, inputs (16 so iOS doesn't zoom) |
+| `--fs-xl`, `--fs-2xl` | 18, 20 | Card titles, section headings |
+| `--fs-3xl`, `--fs-4xl` | 24, 26 | Page and sheet titles |
+| `--fs-5xl`, `--fs-6xl` | 34, 60 | Chart headline numbers, the speaking timer |
+
+Never write a font size in px; pick a token.
 
 ### Shape, space, motion
 
@@ -106,11 +117,17 @@ First pass:
 - The theme is applied before the first paint (no light flash in dark mode).
 - "Reset card progress" now needs a second tap, like removing a word.
 
+Third pass (accessibility and charts):
+
+- Font sizes: 26 px values became the 12-step `--fs-*` scale above, plus a Text size setting.
+- Contrast: the topic palette was darkened one step, so white text and icons on topic fills reach 4.5:1. Topic-coloured text uses `--cc-ink` (the topic colour mixed with the ink colour), which reaches 4.5:1 on cards in both themes. `--ink-3` was darkened in light mode (2.8:1 before) and lightened in dark mode.
+- Progress charts (activity calendar, words you know, cards coming up): one hue, light to dark; a headline number on each; the value of any mark appears under the chart on tap or hover. The Home "Last 7 days" strip fills each day toward the daily goal.
+- The Learn tab is a winding path: a sign with the topic drawing, then the lessons as stops. The walked part of the path is in the topic colour.
+- New learners see a three-screen tour after the welcome; Settings has "How Armanly works" to see it again.
+
 Still open:
 
 | Issue | Where | Suggestion |
 | --- | --- | --- |
-| `#fff` used for text on coloured fills (18 places) | Flashcard back, tiles, done nodes | Add `--on-color` token |
-| `--cat-*` text on dark surfaces is low contrast (for example `--cat-1` on `--surface` is about 3.3:1) | `.band .count`, `.fc-cat`, `.unit-count` | Add dark-mode `--cat-*` values for text, keep the fills |
-| 26 different font sizes | Whole file | Snap to a 12 / 13.5 / 15 / 17 / 21 / 25 scale |
-| White text on `--cat-5` (amber) is about 2.8:1 | Practice mode icons, flashcard back | Darken `--cat-5` or use dark text on it |
+| `#fff` used for text on coloured fills | Flashcard back, tiles, done nodes | Add an `--on-color` token |
+| White text on the dark-mode accent (`#6C83FF`) is about 3.3:1 | Primary buttons in dark mode | Use a darker accent for fills and keep the light one for text |
